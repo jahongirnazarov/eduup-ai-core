@@ -1,75 +1,180 @@
-[17.05.2026 7:21] Jahongir Nazarov Math: <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduUp AI Academy - Ultimate Mini App</title>
-    <!-- Tailwind CSS global dizayn infratuzilmasi -->
-    <script src="https://tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>EduUp AI Academy</title>
+    <!-- SILLIQ INTERAKTIV MOTORLAR -->
+    <link rel="stylesheet" href="https://jsdelivr.net" />
     <style>
-        body { background-color: #0B0F19; font-family: sans-serif; }
-        /* Silliq surilish va kartalarni o'rtaga qulflash kiber-kodi */
-        .carousel-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; }
-        .carousel-item { shrink: 0; width: 85vw; max-width: 380px; scroll-snap-align: center; margin-right: 15px; }
-        .carousel-container::-webkit-scrollbar { display: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        
+        /* ==========================================
+           ☀️ 1. KUNDUZGI REJIM (LIGHT REJIM) - DEFAULT
+           ========================================== */
+        body { 
+            background: linear-gradient(135deg, #f5f5f7 0%, #e5e5ea 100%); 
+            color: #1d1d1f; 
+            min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; 
+            transition: background 0.5s, color 0.5s;
+        }
+        .swiper-slide { 
+            width: 320px; height: 480px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; border-radius: 28px; padding: 35px 20px; 
+            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.05); 
+            transition: transform 0.4s, background 0.5s, box-shadow 0.4s; 
+        }
+        .icon-box { width: 95px; height: 95px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0,0,0,0.04); font-size: 45px; margin-top: 15px; }
+        .title { font-size: 20px; font-weight: 800; text-align: center; line-height: 1.4; color: #1d1d1f; letter-spacing: 0.3px; }
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 16px; background: linear-gradient(45deg, #007aff, #5856d6); color: #fff; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,122,255,0.2); }
+        
+        .sub-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 100; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.1, 0.76, 0.55, 0.94); padding: 30px 20px; display: flex; flex-direction: column; overflow-y: auto; }
+        .panel-title { font-size: 24px; font-weight: 800; color: #007aff; }
+        .close-btn { font-size: 32px; cursor: pointer; color: #ff3b30; font-weight: bold; }
+        
+        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; }
+        .grid-item { background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.06); padding: 20px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; font-weight: 800; font-size: 15px; cursor: pointer; min-height: 115px; transition: 0.2s; }
+        .grid-item:active { transform: scale(0.96); background: rgba(0,0,0,0.07); }
+        .grid-item span { font-size: 32px; }
+        .grid-item p { color: #1d1d1f; }
+        .grid-item small { font-size: 11px; color: #8e8e93; font-weight: 500; margin-top: 2px; }
+
+        /* MULTIMEDIA TUGMALARI */
+        .ai-workspace { background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.05); padding: 20px; border-radius: 22px; display: none; margin-top: 10px; }
+        .ai-status { font-size: 14px; color: #34c759; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .ai-status::before { content: ''; width: 8px; height: 8px; background: #34c759; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #34c759; }
+        .chat-input { width: 100%; height: 90px; background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.1); border-radius: 14px; padding: 12px; color: #000; font-size: 15px; resize: none; margin-bottom: 15px; font-weight: 500; }
+[17.05.2026 15:50] Jahongir Nazarov Math: .action-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
+        .action-item { background: #fff; border: 1px solid rgba(0,0,0,0.08); padding: 14px; border-radius: 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .action-item:active { transform: scale(0.95); }
+        .action-item span { font-size: 24px; }
+        .submit-btn { width: 100%; padding: 15px; border: none; border-radius: 14px; background: linear-gradient(45deg, #007aff, #5856d6); color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,122,255,0.2); }
+
+        /* ==========================================
+           🌙 2. TUNGI REJIM (DARK NEON REJIM)
+           ========================================== */
+        @media (prefers-color-scheme: dark) {
+            body { background: linear-gradient(135deg, #09090e 0%, #120c1f 50%, #050508 100%); color: #fff; }
+            .swiper-slide { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); }
+            .title { color: #f5f5f7; }
+            .icon-box { background: rgba(255,255,255,0.05); }
+            
+            .dtm { box-shadow: 0 15px 35px rgba(0, 240, 255, 0.22); border-bottom: 4px solid #00f0ff; }
+            .ielts { box-shadow: 0 15px 35px rgba(255, 0, 124, 0.22); border-bottom: 4px solid #ff007c; }
+            .cefr { box-shadow: 0 15px 35px rgba(112, 0, 255, 0.22); border-bottom: 4px solid #7000ff; }
+            .multilevel { box-shadow: 0 15px 35px rgba(0, 255, 204, 0.22); border-bottom: 4px solid #00ffcc; }
+            .sat { box-shadow: 0 15px 35px rgba(255, 240, 0, 0.22); border-bottom: 4px solid #fff000; }
+            .piima { box-shadow: 0 15px 35px rgba(0, 255, 102, 0.22); border-bottom: 4px solid #00ff66; }
+            .attest { box-shadow: 0 15px 35px rgba(255, 170, 0, 0.22); border-bottom: 4px solid #ffaa00; }
+            .cert { box-shadow: 0 15px 35px rgba(230, 0, 255, 0.22); border-bottom: 4px solid #e600ff; }
+            .method { box-shadow: 0 15px 35px rgba(255, 255, 255, 0.12); border-bottom: 4px solid #ffffff; }
+            
+            .btn { background: linear-gradient(45deg, #ff007c, #7000ff); box-shadow: 0 5px 15px rgba(112,0,255,0.3); }
+            .sub-panel { background: #08060d; }
+            .panel-title { color: #00f0ff; }
+            .grid-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+            .grid-item p { color: #fff; }
+            .grid-item small { color: #aaa; }
+            .close-btn { color: #ff007c; }
+            
+            .ai-workspace { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); }
+            .ai-status { color: #00ff66; }
+            .ai-status::before { background: #00ff66; box-shadow: 0 0 10px #00ff66; }
+            .chat-input { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); color: #fff; }
+            .action-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+            .submit-btn { background: linear-gradient(45deg, #00f0ff, #7000ff); box-shadow: 0 4px 15px rgba(0,240,255,0.2); }
+        }
+
+        .swiper-slide-active { transform: scale(1.05); }
+        .sub-panel.active { transform: translateY(0); }
     </style>
 </head>
-<body class="text-white p-4 select-none">
+<body>
 
-    <!-- 👑 HEADER LOGO -->
-    <div class="text-center my-4">
-        <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">📱 EduUp AI Academy</h1>
-        <p class="text-xs text-gray-400 mt-1">Barmog'ingiz bilan fanlarni chapga-o'ngga suring</p>
+    <!-- 1-QATLAM: REELS USLUBIDAGI ASOSIY SURILMA -->
+    <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide dtm"><div class="icon-box">🏛️</div><div class="title">1. DTM DAVLAT IMTIHONI</div><button class="btn" onclick="openPanel('dtm')">Kiring</button></div>
+            <div class="swiper-slide ielts"><div class="icon-box">🇬🇧</div><div class="title">2. IELTS GLOBAL EXAM</div><button class="btn" onclick="openPanel('ielts')">Kiring</button></div>
+[17.05.2026 15:50] Jahongir Nazarov Math: <div class="swiper-slide cefr"><div class="icon-box">🇪🇺</div><div class="title">3. CEFR REJIMI</div><button class="btn" onclick="openPanel('cefr')">Kiring</button></div>
+            <div class="swiper-slide multilevel"><div class="icon-box">📊</div><div class="title">4. MULTI-LEVEL EXAM</div><button class="btn" onclick="openPanel('multilevel')">Kiring</button></div>
+            <div class="swiper-slide sat"><div class="icon-box">🇺🇸</div><div class="title">5. SAT INTERNATIONAL</div><button class="btn" onclick="openPanel('sat')">Kiring</button></div>
+            <div class="swiper-slide piima"><div class="icon-box">🎓</div><div class="title">6. AGENTLIK MAKTABLARI</div><button class="btn" onclick="openPanel('piima')">Kiring</button></div>
+            <div class="swiper-slide attest"><div class="icon-box">🏫</div><div class="title">7. ATTESTATSIYA</div><button class="btn" onclick="openPanel('attest')">Kiring</button></div>
+            <div class="swiper-slide cert"><div class="icon-box">📜</div><div class="title">8. MILLIY SERTIFIKAT</div><button class="btn" onclick="openPanel('cert')">Kiring</button></div>
+            <div class="swiper-slide method"><div class="icon-box">👩‍🏫</div><div class="title">9. KREATIV METODIKA</div><button class="btn" onclick="openPanel('method')">Kiring</button></div>
+        </div>
     </div>
 
-    <!-- 🚀 CAROUSEL REELS ELEMENT (SENSORLI MATRITSA) -->
-    <div class="carousel-container py-4 px-2">
-
-        <!-- 1-KARTA: DTM MAJBURIY FANLAR -->
-        <div class="carousel-item bg-gradient-to-br from-emerald-900 to-cyan-950 p-6 rounded-3xl border border-emerald-500/30 shadow-2xl relative">
-            <span class="absolute top-4 right-4 bg-emerald-500 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">Yangi</span>
-            <h2 class="text-xl font-extrabold text-emerald-400 mb-2">🇺🇿 DTM 2026</h2>
-            <p class="text-xs text-gray-300 min-h-[40px]">Majburiy fanlar: Matematika, Tarix, Ona tili darsliklari matritsasi.</p>
-            <button class="w-full mt-6 bg-emerald-500 hover:bg-emerald-600 font-bold py-3 rounded-2xl active:scale-95 transition text-sm">Imtihonni Boshlash</button>
+    <!-- 2-QATLAM: DYNAMIC CHUNCHALIK ICHKI PANEL -->
+    <div class="sub-panel" id="dynamicPanel">
+        <div class="panel-header">
+            <div class="panel-title" id="panelTitle">Yo'nalish</div>
+            <div class="close-btn" onclick="closePanel()">✕</div>
         </div>
-
-        <!-- 2-KARTA: INGLIZ TILIDAN MULTI-LEVEL -->
-        <div class="carousel-item bg-gradient-to-br from-blue-900 to-indigo-950 p-6 rounded-3xl border border-blue-500/30 shadow-2xl relative">
-            <span class="absolute top-4 right-4 bg-blue-500 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">CEFR</span>
-            <h2 class="text-xl font-extrabold text-blue-400 mb-2">🇬🇧 Multi-level Pro</h2>
-            <p class="text-xs text-gray-300 min-h-[40px]">Milliy CEFR imtihoni. Writing insho va Speaking audio tahlili.</p>
-            <button class="w-full mt-6 bg-blue-500 hover:bg-blue-600 font-bold py-3 rounded-2xl active:scale-95 transition text-sm">Sinovni Yoqish</button>
+        
+        <!-- ELEMENTLAR JADVALI -->
+        <div class="grid-container" id="panelGrid"></div>
+        
+        <!-- 3-QATLAM: MULTIMEDIA INTEGRATSIYALASHGAN MULTIMEDIA WORKSPACE -->
+        <div class="ai-workspace" id="aiWorkspace">
+            <div class="ai-status" id="aiStatusName">Mr. Edward AI Online</div>
+            <textarea class="chat-input" placeholder="Savolingizni yoki masalangizni bu yerga yozing..."></textarea>
+            <div class="action-grid">
+                <div class="action-item" onclick="alert('📸 Planshet kamerasi rasmga olishga tayyor!')"><span>📸</span> Rasmga Olish</div>
+                <div class="action-item" onclick="alert('🎙️ Mikrofon yoqildi, ovozingizni yozib jo\'nating!')"><span>🎙️</span> Ovoz Jo'natish</div>
+            </div>
+            <button class="submit-btn" onclick="alert('🚀 Savol Groq / DeepSeek neyron tarmoqlariga yuborildi!')">AI Ustozga Savol Berish 🚀</button>
         </div>
-
-        <!-- 3-KARTA: IELTS PREMIUM EXAMINER -->
-        <div class="carousel-item bg-gradient-to-br from-indigo-900 to-purple-950 p-6 rounded-3xl border border-indigo-500/30 shadow-2xl">
-            <h2 class="text-xl font-extrabold text-indigo-400 mb-2">🎓 IELTS Academic</h2>
-            <p class="text-xs text-gray-300 min-h-[40px]">Kembrij 0-9 ballik tizimida insholarni real vaqtda baholash.</p>
-            <button class="w-full mt-6 bg-indigo-500 hover:bg-indigo-600 font-bold py-3 rounded-2xl active:scale-95 transition text-sm">Inshoni Yuklash</button>
-        </div>
-
-        <!-- 4-KARTA: DIGITAL SAT MATEMATIKA -->
-        <div class="carousel-item bg-gradient-to-br from-amber-900 to-orange-950 p-6 rounded-3xl border border-amber-500/30 shadow-2xl">
-            <h2 class="text-xl font-extrabold text-amber-400 mb-2">📐 SAT Digital</h2>
-            <p class="text-xs text-gray-300 min-h-[40px]">DeepSeek-R1 va Wolfram Alpha yordamida mantiqiy matematika.</p>
-            <button class="w-full mt-6 bg-amber-500 hover:bg-amber-600 font-bold py-3 rounded-2xl active:scale-95 transition text-sm">Masalani Yechish</button>
-        </div>
-[17.05.2026 7:21] Jahongir Nazarov Math: <!-- 5-KARTA: PIIMA TAYYORLOV -->
-        <div class="carousel-item bg-gradient-to-br from-rose-900 to-red-950 p-6 rounded-3xl border border-rose-500/30 shadow-2xl">
-            <h2 class="text-xl font-extrabold text-rose-400 mb-2">🏫 PIIMA Prep</h2>
-            <p class="text-xs text-gray-300 min-h-[40px]">Prezident maktablariga kirish uchun Tanqidiy Fikrlar testi.</p>
-            <button class="w-full mt-6 bg-rose-500 hover:bg-rose-600 font-bold py-3 rounded-2xl active:scale-95 transition text-sm">Kiber-Testni Ochish</button>
-        </div>
-
-        <!-- 6-KARTA: USTOZLAR ATTESTATSIYASI -->
-        <div class="carousel-item bg-gradient-to-br from-violet-900 to-fuchsia-950 p-6 rounded-3xl border border-violet-500/30 shadow-2xl relative">
-            <span class="absolute top-4 right-4 bg-violet-500 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">Pedagogika</span>
-            <h2 class="text-xl font-extrabold text-violet-400 mb-2">👩‍🏫 Ustozlar Attestatsiyasi</h2>
-            <p class="text-xs text-gray-300 min-h-[40px]">Pedagogika, metodika va mutaxassislik fanlaridan milliy savollar va AI tahlili.</p>
-            <button class="w-full mt-6 bg-violet-500 hover:bg-violet-600 font-bold py-3 rounded-2xl active:scale-95 transition text-sm">Metodikani Tekshirish</button>
-        </div>
-
     </div>
 
+    <script src="https://jsdelivr.net"></script>
+    <script>
+        var swiper = new Swiper(".mySwiper", {
+            effect: "coverflow", grabCursor: true, centeredSlides: true, slidesPerView: "auto",
+            coverflowEffect: { rotate: 10, stretch: -10, depth: 160, modifier: 1, slideShadows: false }, loop: true
+        });
+
+        // KIBER CONFIGURATION DATA - MAP DIRECTORY
+        const dataConfig = {
+            dtm: { title: "DTM Fanlar Bo'limi", content: [ {icon:"🧮", text:"Matematika", detail:"Majburiy + Asosiy"}, {icon:"📜", text:"Tarix", detail:"Dunyo va O'zbekiston"}, {icon:"🇺🇿", text:"O'zbek Tili", detail:"Grammatika + Savodxonlik"}, {icon:"🇬🇧", text:"Ingliz Tili", detail:"Grammar + Lexicon"}, {icon:"🧪", text:"Kimyo", detail:"Organik + Noorganik"}, {icon:"🧬", text:"Biologiya", detail:"Anatomiya + Botanika"} ] },
+            ielts: { title: "IELTS Global Prep", content: [ {icon:"🎧", text:"Listening", detail:"Sections 1-4"}, {icon:"📖", text:"Reading", detail:"Academic Passages"}, {icon:"✍️", text:"Writing", detail:"Task 1 & Task 2"}, {icon:"🗣️", text:"Speaking", detail:"Parts 1-3"} ] },
+            cefr: { title: "CEFR Milliy Tizimi", content: [ {icon:"🅰️", text:"B1 Daraja", detail:"Boshlang'ich kiber-sertifikat"}, {icon:"🅱️", text:"B2 Daraja", detail:"Oliy imtiyozli daraja"}, {icon:"🆃", text:"C1 Daraja", detail:"Professional kiber-ekspert"} ] },
+[17.05.2026 15:50] Jahongir Nazarov Math: multilevel: { title: "Multi-Level Ekspert", content: [ {icon:"📝", text:"Mock Imtihon", detail:"Jonli sinov testlari"}, {icon:"🤖", text:"AI Tahlil", detail:"Xatolarni chuqur tekshirish"} ] },
+            sat: { title: "SAT International", content: [ {icon:"📐", text:"SAT Math", detail:"Algebra & Geometry"}, {icon:"📖", text:"SAT Reading & Writing", detail:"Evidence-Based Science"} ] },
+            piima: { title: "Agentlik Maktablari", content: [ {icon:"👑", text:"Prezident Maktablari", detail:"Matematika + Tanqidiy Fikr"}, {icon:"🧪", text:"Ijod Maktablari", detail:"O'zbek tili + Adabiyot"}, {icon:"💻", text:"Ixtisoslashtirilgan", detail:"Aniq & Tabiiy fanlar"} ] },
+            attest: { title: "O'qituvchilar Attestatsiyasi", content: [ {icon:"🧮", text:"Matematika & Info", detail:"Metodika + Masalalar"}, {icon:"🇺🇿", text:"O'zbek Tili", detail:"Adabiyot va Fonetika"}, {icon:"🧪", text:"Kimyo & Biologiya", detail:"Laboratoriya metodlari"}, {icon:"📜", text:"Tarix & Huquq", detail:"Milliy g'oya + Tarix"} ] },
+            cert: { title: "Milliy Sertifikat", content: [ {icon:"🧮", text:"Matematika", detail:"A+ darajali sertifikat"}, {icon:"🧪", text:"Kimyo", detail:"Oliy darajali testlar"}, {icon:"🧬", text:"Biologiya", detail:"Murakkab neyron testlari"} ] },
+            method: { title: "Kreativ Metodika AI", content: [ {icon:"🧠", text:"Psixologik Tahlil", detail:"Yoshga mos yondashuv"}, {icon:"🎙️", text:"Interaktiv Metod", detail:"Ovozli kiber-darslar"}, {icon:"🎮", text:"Gamifikatsiya", detail:"O'yinlar orqali ta'lim"} ] }
+        };
+
+        function openPanel(type) {
+            const config = dataConfig[type];
+            document.getElementById("panelTitle").innerText = config.title;
+            const container = document.getElementById("panelGrid");
+            container.innerHTML = "";
+            
+            config.content.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'grid-item';
+                div.innerHTML = <span>${item.icon}</span><p>${item.text}</p><small>${item.detail}</small>;
+                div.onclick = () => selectSubject(item.text);
+                container.appendChild(div);
+            });
+            
+            document.getElementById("aiWorkspace").style.display = "none";
+            document.getElementById("customPanel").classList.add("active");
+        }
+
+        function selectSubject(subjectName) {
+            document.getElementById("aiStatusName").innerText = Mr. Edward AI: ${subjectName} Xonasi;
+            document.getElementById("aiWorkspace").style.display = "block";
+            document.getElementById("aiWorkspace").scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function closePanel() {
+            document.getElementById("customPanel").classList.remove("active");
+        }
+    </script>
 </body>
 </html>

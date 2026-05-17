@@ -1,54 +1,86 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>EduUp AI Academy - Infinite Deep Core</title>
-    <link rel="stylesheet" href="https://jsdelivr.net" />
+    <title>EduUp AI Academy</title>
+    <!-- GLOBAL SILLIQ SURILISH MOTORINING LINKLARI -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         
-        /* ☀️ REJIMLAR FON INTEGRATSIYASI */
+        /* ==========================================
+           ☀️ 1. KUNDUZGI REJIM (LIGHT MODE) - DEFAULT
+           ========================================== */
         body { 
             background: linear-gradient(135deg, #f5f5f7 0%, #e5e5ea 100%); 
-            color: #1d1d1f; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: 0.5s;
+            color: #1d1d1f; 
+            min-height: 100vh; overflow-x: hidden; overflow-y: auto; 
+            transition: background 0.5s, color 0.5s;
         }
-        .swiper { width: 100%; padding: 40px 0; }
+        .app-shell { max-width: 980px; margin: 0 auto; padding: 30px 20px 110px; }
+        .page-header { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+        .search-box { width: 100%; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.08); border-radius: 18px; padding: 12px 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .search-box input { width: 100%; border: none; outline: none; background: transparent; font-size: 15px; color: inherit; }
+        .search-box span { font-size: 18px; }
+        .subject-overview { margin: 0 -20px 25px; padding: 20px 20px 8px; background: rgba(255,255,255,0.9); border-radius: 24px; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+        .overview-group { margin-bottom: 18px; }
+        .overview-group-title { font-size: 15px; font-weight: 800; margin-bottom: 12px; color: #1d1d1f; }
+        .overview-group-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .admin-panel .admin-status { font-size: 14px; font-weight: 800; margin-bottom: 12px; color: #1d1d1f; }
+        .admin-panel .admin-controls { display: grid; gap: 12px; }
+        .admin-panel .admin-controls button { width: 100%; border-radius: 14px; padding: 14px; border: none; font-size: 14px; font-weight: 700; color: #fff; background: #333; cursor: pointer; }
+        .admin-panel .admin-controls button:hover { opacity: .95; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); opacity: 0; visibility: hidden; transition: opacity 0.25s ease; z-index: 105; }
+        .overlay.visible { opacity: 1; visibility: visible; }
+        .bottom-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 130; display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: rgba(0,0,0,0.08); }
+        .bottom-bar button { padding: 14px 0; border: none; background: #ffffff; color: #1d1d1f; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .bottom-bar button span { font-size: 20px; margin-bottom: 4px; }
+        .swiper { width: 100%; max-width: 100%; padding: 30px 0; display: flex; align-items: center; }
         .swiper-slide { 
-            width: 300px; height: 450px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; border-radius: 28px; padding: 35px 20px; 
-            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(0, 0, 0, 0.05); transition: 0.4s; 
+            min-width: 280px; width: 310px; height: 460px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; border-radius: 28px; padding: 35px 20px; 
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+            border: 1px solid rgba(0, 0, 0, 0.05); 
+            transition: transform 0.4s, background 0.5s, box-shadow 0.4s; 
         }
         .icon-box { width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0,0,0,0.04); font-size: 45px; }
         .title { font-size: 19px; font-weight: 800; text-align: center; line-height: 1.4; color: #1d1d1f; }
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 16px; background: linear-gradient(45deg, #007aff, #5856d6); color: #fff; font-weight: 800; font-size: 16px; cursor: pointer; }
-
-        /* 👑 MULTI-LAYER DRAWER MATRITSASI (ICHMA-ICH SURILUVCHI PANELDAR) */
-        .panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.1, 0.76, 0.55, 0.94); padding: 30px 20px; display: flex; flex-direction: column; overflow-y: auto; background: #ffffff; }
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 16px; background: linear-gradient(45deg, #007aff, #5856d6); color: #fff; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,122,255,0.2); }
+        
+        /* MULTI-LAYER DRAWER (ICHMA-ICH SURILMA PANELDAR) */
+        .panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.1, 0.76, 0.55, 0.94); padding: 30px 20px; display: flex; flex-direction: column; overflow-y: auto; background: #ffffff; touch-action: pan-y; }
         .panel.active { transform: translateY(0); }
         .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); }
         .panel-title { font-size: 22px; font-weight: 800; color: #007aff; }
-        .back-btn { font-size: 28px; cursor: pointer; color: #ff3b30; font-weight: bold; }
-
+        .back-btn { font-size: 32px; cursor: pointer; color: #ff3b30; font-weight: bold; }
+        
         .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .grid-item { background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); padding: 15px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; font-weight: 800; font-size: 14px; cursor: pointer; min-height: 115px; }
+        .grid-item { background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); padding: 15px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; font-weight: 800; font-size: 14px; cursor: pointer; min-height: 115px; transition: 0.2s; }
+        .grid-item:active { transform: scale(0.96); }
         .grid-item span { font-size: 30px; }
+        .grid-item p { color: #1d1d1f; }
         .grid-item small { font-size: 11px; color: #8e8e93; font-weight: 500; }
 
-        /* 🪐 3-QATLAM: LABS WORKSPACE (AI INTERFAKTIV XONA) */
+        /* MULTIMEDIA WORKSPACE */
         .ai-workspace { background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.05); padding: 20px; border-radius: 22px; width: 100%; margin-top: 10px; }
         .ai-status { font-size: 14px; color: #34c759; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .ai-status::before { content: ''; width: 8px; height: 8px; background: #34c759; border-radius: 50%; box-shadow: 0 0 8px #34c759; }
+        .ai-status::before { content: ''; width: 8px; height: 8px; background: #34c759; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #34c759; }
         .chat-input { width: 100%; height: 90px; background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 14px; padding: 12px; color: #000; font-size: 15px; resize: none; margin-bottom: 15px; }
         .action-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
         .action-item { background: #fff; border: 1px solid rgba(0,0,0,0.06); padding: 14px; border-radius: 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-[17.05.2026 16:17] Jahongir Nazarov Math: .action-item span { font-size: 24px; }
+        .action-item span { font-size: 24px; }
         .submit-btn { width: 100%; padding: 15px; border: none; border-radius: 14px; background: linear-gradient(45deg, #007aff, #5856d6); color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .action-item button { width: 100%; padding: 15px 12px; border: none; background: transparent; font: inherit; color: inherit; cursor: pointer; text-align: left; }
+        .action-item.stop-btn { background: linear-gradient(45deg, #ff3b30, #ff8c00); color: white; }
 
-        /* 🌙 TUNGI KIBER-REON TUNINGI */
+        /* ==========================================
+           🌙 2. TUNGI REJIM (DARK NEON REJIM) - MEDIA
+           ========================================== */
         @media (prefers-color-scheme: dark) {
             body { background: linear-gradient(135deg, #09090e 0%, #120c1f 50%, #050508 100%); color: #fff; }
             .swiper-slide { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); }
             .title { color: #f5f5f7; } .icon-box { background: rgba(255,255,255,0.05); }
+            
             .dtm { box-shadow: 0 15px 35px rgba(0, 240, 255, 0.22); border-bottom: 4px solid #00f0ff; }
             .ielts { box-shadow: 0 15px 35px rgba(255, 0, 124, 0.22); border-bottom: 4px solid #ff007c; }
             .cefr { box-shadow: 0 15px 35px rgba(112, 0, 255, 0.22); border-bottom: 4px solid #7000ff; }
@@ -58,9 +90,9 @@
             .attest { box-shadow: 0 15px 35px rgba(255, 170, 0, 0.22); border-bottom: 4px solid #ffaa00; }
             .cert { box-shadow: 0 15px 35px rgba(230, 0, 255, 0.22); border-bottom: 4px solid #e600ff; }
             .method { box-shadow: 0 15px 35px rgba(255, 255, 255, 0.12); border-bottom: 4px solid #ffffff; }
+            
             .btn { background: linear-gradient(45deg, #ff007c, #7000ff); box-shadow: 0 5px 15px rgba(112,0,255,0.3); }
-            .panel { background: #08060d; border-bottom: 1px solid rgba(255,255,255,0.1); }
-            .panel-title { color: #00f0ff; } .back-btn { color: #ff007c; }
+            .panel { background: #08060d; } .panel-title { color: #00f0ff; } .back-btn { color: #ff007c; }
             .grid-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #fff; }
             .grid-item p { color: #fff; } .grid-item small { color: #aaa; }
             .ai-workspace { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); }
@@ -69,22 +101,35 @@
             .submit-btn { background: linear-gradient(45deg, #00f0ff, #7000ff); }
         }
         .swiper-slide-active { transform: scale(1.05); }
+        .panel.active { transform: translateY(0); }
     </style>
 </head>
 <body>
+    <noscript><div style="padding:20px; text-align:center; background:#fffbeb; color:#b45309; font-weight:700;">JavaScript yoqilmagan. Platformani to‘liq ishlashi uchun JS yoqing.</div></noscript>
+    <div class="overlay" id="screenOverlay" onclick="closeActivePanel()" aria-hidden="true"></div>
+    <div class="app-shell">
+        <div class="page-header">
+            <div class="search-box"><span>🔍</span><input type="search" placeholder="Fan, imtihon yoki AI yordam qidiruv..." aria-label="Qidiruv"></div>
+        </div>
 
-    <!-- 1-QATLAM: REELS ASOSIY KATALOGI -->
-    <div class="swiper mySwiper">
+        <div class="subject-overview" id="subjectOverview">
+            <div class="overview-group-title">Barcha fanlar ro‘yxati</div>
+            <div class="overview-group-grid" id="subjectOverviewGrid"></div>
+        </div>
+
+        <!-- 1-QATLAM: REELS ASOSIY KATALOGI -->
+        <div class="swiper mySwiper">
         <div class="swiper-wrapper">
             <div class="swiper-slide dtm"><div class="icon-box">🏛️</div><div class="title">1. DTM DAVLAT IMTIHONI</div><button class="btn" onclick="openLayer2('dtm')">Kiring</button></div>
             <div class="swiper-slide ielts"><div class="icon-box">🇬🇧</div><div class="title">2. IELTS GLOBAL EXAM</div><button class="btn" onclick="openLayer2('ielts')">Kiring</button></div>
             <div class="swiper-slide cefr"><div class="icon-box">🇪🇺</div><div class="title">3. CEFR REJIMI</div><button class="btn" onclick="openLayer2('cefr')">Kiring</button></div>
-            <div class="swiper-slide multilevel"><div class="icon-box">📊</div><div class="title">4. MULTI-LEVEL EXAM</div><button class="btn" onclick="openLayer2('multilevel')">Kiring</button></div>
-            <div class="swiper-slide sat"><div class="icon-box">🇺🇸</div><div class="title">5. SAT INTERNATIONAL</div><button class="btn" onclick="openLayer2('sat')">Kiring</button></div>
+            <div class="swiper-slide multilevel"><div class="icon-box">📊</div><div class="title">4. MULTI-LEVEL EXAM</div><button class="btn" onclick="openLayer3('Multi-Level Exam')">Kiring</button></div>
+            <div class="swiper-slide sat"><div class="icon-box">🇺🇸</div><div class="title">5. SAT INTERNATIONAL</div><button class="btn" onclick="openLayer3('SAT International')">Kiring</button></div>
             <div class="swiper-slide piima"><div class="icon-box">🎓</div><div class="title">6. AGENTLIK MAKTABLARI</div><button class="btn" onclick="openLayer2('piima')">Kiring</button></div>
-[17.05.2026 16:17] Jahongir Nazarov Math: <div class="swiper-slide attest"><div class="icon-box">🏫</div><div class="title">7. ATTESTATSIYA</div><button class="btn" onclick="openLayer2('attest')">Kiring</button></div>
+            <div class="swiper-slide attest"><div class="icon-box">🏫</div><div class="title">7. ATTESTATSIYA</div><button class="btn" onclick="openLayer2('attest')">Kiring</button></div>
             <div class="swiper-slide cert"><div class="icon-box">📜</div><div class="title">8. MILLIY SERTIFIKAT</div><button class="btn" onclick="openLayer2('cert')">Kiring</button></div>
-            <div class="swiper-slide method"><div class="icon-box">👩‍🏫</div><div class="title">9. KREATIV METODIKA</div><button class="btn" onclick="openLayer2('method')">Kiring</button></div>
+            <div class="swiper-slide method"><div class="icon-box">👩‍🏫</div><div class="title">9. KREATIV METODIKA</div><button class="btn" onclick="openLayer3('Kreativ Metodika AI')">Kiring</button></div>
+            <div class="swiper-slide vip"><div class="icon-box">💎</div><div class="title">VIP TA'LIM BO'LIMI</div><button class="btn vip-open-btn" onclick="openVIPPanel()">Kiring</button></div>
         </div>
     </div>
 
@@ -95,47 +140,110 @@
             <div class="back-btn" onclick="closeLayer2()">✕</div>
         </div>
         <div class="grid-container" id="layer2Grid"></div>
+        <div class="ai-workspace">
+            <div class="ai-status" id="layer2Status">Tezkor yordamchi</div>
+            <textarea class="chat-input" data-placeholder="Fan bo‘yicha savol yozing yoki rasm/ovoz yuboring..." placeholder="Fan bo‘yicha savol yozing yoki rasm/ovoz yuboring..."></textarea>
+            <div class="action-grid">
+                <div class="action-item"><button type="button" class="camera-btn" onclick="capturePhoto()" aria-label="Rasmga olish"><span>📸</span> Rasmga Olish</button></div>
+                <div class="action-item"><button type="button" class="voice-btn" onclick="sendVoice()" aria-label="Ovoz yuborish"><span>🎙️</span> Ovoz Yozish</button></div>
+                <div class="action-item stop-btn"><button type="button" onclick="pauseLesson()" aria-label="Darsni to'xtatish"><span>⏸️</span> To'xtatish</button></div>
+            </div>
+            <button type="button" class="submit-btn chat-btn" onclick="askAI('layer2Panel')">AI Ustozga Savol Berish 🚀</button>
+        </div>
     </div>
 
     <!-- 3-QATLAM PANEL: ANIQ FAN XONASI VA MULTIMEDIA LABORATORIYASI -->
-    <div class="panel" id="layer3Panel" style="z-index: 120;">
+    <div class="panel" id="vipPanel" style="z-index: 115;">
         <div class="panel-header">
-            <div class="panel-title" id="layer3Title">AI Laboratoriya</div>
-            <div class="back-btn" onclick="closeLayer3()">← Ortga</div>
+            <div class="panel-title">VIP Ta'lim Portali</div>
+            <div class="back-btn" onclick="closeVIPPanel()">✕</div>
         </div>
-        
         <div class="ai-workspace">
-            <div class="ai-status" id="aiStatusName">Mr. Edward AI Running</div>
-            <textarea class="chat-input" placeholder="Masalani yozing yoki pastdagi tugmalar orqali rasm/ovoz ko'rinishida yuboring..."></textarea>
+            <div class="ai-status">VIP Eksklyuziv Darslar</div>
+            <textarea class="chat-input" data-placeholder="VIP savolingizni yozing..." placeholder="VIP savolingizni yozing..."></textarea>
             <div class="action-grid">
-                <div class="action-item" onclick="alert('📸 Planshet kamerasi faollashdi. Masalani rasmga oling!')"><span>📸</span> Rasmga Olish</div>
-                <div class="action-item" onclick="alert('🎙️ Ovoz yozish audiotizimi yoqildi!')"><span>🎙️</span> Ovoz Jo'natish</div>
+                <div class="action-item"><button type="button" class="camera-btn" onclick="capturePhoto()" aria-label="VIP rasmga olish"><span>📸</span> Rasmga Olish</button></div>
+                <div class="action-item"><button type="button" class="voice-btn" onclick="sendVoice()" aria-label="VIP ovoz yuborish"><span>🎙️</span> Ovoz Jo'natish</button></div>
+                <div class="action-item stop-btn"><button type="button" onclick="pauseLesson()" aria-label="VIP darsni to'xtatish"><span>⏸️</span> Darsni To'xtatish</button></div>
             </div>
-            <button class="submit-btn" onclick="alert('🚀 Ma\'lumotlar tahlil uchun DeepSeek-R1 neyron tarmog\'iga yuborildi!')">AI Ustozga Savol Berish 🚀</button>
+            <button type="button" class="submit-btn chat-btn" onclick="askAI('vipPanel')">VIP AI Savol</button>
         </div>
     </div>
 
-    <script src="https://jsdelivr.net"></script>
-    <script>
-        var swiper = new Swiper(".mySwiper", {
-            effect: "coverflow", grabCursor: true, centeredSlides: true, slidesPerView: "auto",
-            coverflowEffect: { rotate: 5, stretch: -15, depth: 140, modifier: 1, slideShadows: false }, loop: true
-        });
+    <div class="panel admin-panel" id="adminPanel" style="z-index: 140;">
+        <div class="panel-header">
+            <div class="panel-title">Admin Boshqaruv Paneli</div>
+            <div class="back-btn" onclick="closeAdminPanel()">✕</div>
+        </div>
+        <div class="admin-status">Administrator holati: faollashtirilgan</div>
+        <div class="admin-controls">
+            <button type="button" onclick="openLayer2('dtm')">DTM Yo'nalishi</button>
+            <button type="button" onclick="openLayer2('ielts')">IELTS Yo'nalishi</button>
+            <button type="button" onclick="openLayer2('cefr')">CEFR Yo'nalishi</button>
+            <button type="button" onclick="openVIPPanel()">VIP Panel</button>
+            <button type="button" onclick="openLayer3('Kreativ Metodika AI')">AI Laboratoriya</button>
+            <button type="button" onclick="toggleFeature('voice')">Ovoz: <span id="adminVoiceState">ON</span></button>
+            <button type="button" onclick="toggleFeature('camera')">Kamera: <span id="adminCameraState">ON</span></button>
+            <button type="button" onclick="toggleFeature('chat')">Chat: <span id="adminChatState">ON</span></button>
+            <button type="button" onclick="toggleFeature('vip')">VIP: <span id="adminVipState">ON</span></button>
+            <button type="button" onclick="showOverlay()">Overlayni yoqish</button>
+            <button type="button" onclick="hideOverlay()">Overlayni o‘chirish</button>
+            <button type="button" onclick="closeActivePanel()">Hammasini yopish</button>
+            <button type="button" onclick="resetAppForAdmin()">Bot va Mini App reset</button>
+        </div>
+    </div>
 
-        // CHEKSIZ MULTI-DENSE DATA MATRIX STRUKTURASI
+    <div class="panel" id="layer3Panel" style="z-index: 120;">
+        <div class="panel-header">
+            <div class="panel-title" id="layer3Title">AI Laboratoriya</div>
+            <div class="back-btn" onclick="closeLayer3()">✕</div>
+        </div>
+        <div class="ai-workspace">
+            <div class="ai-status" id="aiStatusName">Mr. Edward AI Running</div>
+            <textarea class="chat-input" data-placeholder="Masalani yozing yoki pastdagi tugmalar orqali rasm/ovoz ko'rinishida yuboring..." placeholder="Masalani yozing yoki pastdagi tugmalar orqali rasm/ovoz ko'rinishida yuboring..."></textarea>
+            <div class="action-grid">
+                <div class="action-item"><button type="button" onclick="capturePhoto()" aria-label="Rasmga olish"><span>📸</span> Rasmga Olish</button></div>
+                <div class="action-item"><button type="button" onclick="sendVoice()" aria-label="Ovoz yuborish"><span>🎙️</span> Ovoz Jo'natish</button></div>
+                <div class="action-item stop-btn"><button type="button" onclick="pauseLesson()" aria-label="Darsni to'xtatish"><span>⏸️</span> Darsni To'xtatish</button></div>
+            </div>
+            <button type="button" class="submit-btn" onclick="askAI()">AI Ustozga Savol Berish 🚀</button>
+            <input id="cameraInput" type="file" accept="image/*" capture="environment" style="display:none" onchange="handleCameraImage(event)">
+        </div>
+    </div>
+
+    <div class="bottom-bar" aria-label="Tezkor menyu">
+        <button type="button" onclick="openLayer2('dtm')"><span>🏛️</span>DTM</button>
+        <button type="button" onclick="openLayer2('ielts')"><span>🇬🇧</span>IELTS</button>
+        <button type="button" class="vip-open-btn" onclick="openVIPPanel()"><span>💎</span>VIP</button>
+        <button type="button" onclick="requestAdminAccess()"><span>🔐</span>Admin</button>
+        <button type="button" onclick="closeActivePanel()"><span>✕</span>Yopish</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    <script>
+        if (window.Swiper) {
+            new Swiper(".mySwiper", {
+                effect: "coverflow",
+                grabCursor: true,
+                centeredSlides: true,
+                slidesPerView: "auto",
+                coverflowEffect: { rotate: 5, stretch: -15, depth: 140, modifier: 1, slideShadows: false },
+                loop: true
+            });
+        } else {
+            console.warn('Swiper library did not load.');
+        }
+
+        // 100% XATOSIZ MATRITSA STRUKTURASI
         const dataMatrix = {
             dtm: { title: "DTM Fanlar Bo'limi", content: [ {icon:"🧮", text:"Matematika", id:"dtm_math"}, {icon:"📜", text:"Tarix", id:"dtm_history"}, {icon:"🇺🇿", text:"O'zbek Tili", id:"dtm_uz"}, {icon:"🇬🇧", text:"Ingliz Tili", id:"dtm_en"} ] },
             ielts: { title: "IELTS Imtihon Markazi", content: [ {icon:"🎧", text:"Listening Lab", id:"ielts_l"}, {icon:"📖", text:"Reading Passage", id:"ielts_r"}, {icon:"✍️", text:"Writing Task", id:"ielts_w"}, {icon:"🗣️", text:"Speaking Room", id:"ielts_s"} ] },
             cefr: { title: "CEFR Tizimi", content: [ {icon:"🅰️", text:"B1 Daraja", id:"cefr_b1"}, {icon:"🅱️", text:"B2 Daraja", id:"cefr_b2"}, {icon:"🆃", text:"C1 Daraja", id:"cefr_c1"} ] },
-            multilevel: { title: "Multi-Level Bo'limi", content: [ {icon:"📝", text:"Mock Test", id:"ml_mock"}, {icon:"🤖", text:"AI Xatolar Tahlili", id:"ml_ai"} ] },
-            sat: { title: "SAT International", content: [ {icon:"📐", text:"SAT Math Section", id:"sat_m"}, {icon:"📖", text:"SAT Verbal Section", id:"sat_v"} ] },
             piima: { title: "Agentlik Maktablari", content: [ {icon:"👑", text:"Prezident Maktabi", id:"p_school"}, {icon:"🧪", text:"Ijod Maktabi", id:"i_school"}, {icon:"💻", text:"Ixtisoslashtirilgan", id:"ix_school"} ] },
-[17.05.2026 16:17] Jahongir Nazarov Math: attest: { title: "O'qituvchilar Attestatsiyasi", content: [ {icon:"🧮", text:"Matematika & Info", id:"att_math"}, {icon:"🇺🇿", text:"O'zbek Tili & Adabiyot", id:"att_uz"} ] },
-            cert: { title: "Milliy Sertifikat", content: [ {icon:"🧮", text:"Matematika Sertifikati", id:"cert_math"}, {icon:"🧪", text:"Kimyo Sertifikati", id:"cert_chem"} ] },
-            method: { title: "Kreativ Metodika AI", content: [ {icon:"🧠", text:"Psixologik Analitika", id:"m_psy"}, {icon:"🎙️", text:"Ovozli Dars Metodi", id:"m_voice"} ] }
+            attest: { title: "O'qituvchilar Attestatsiyasi", content: [ {icon:"🧮", text:"Matematika & Info", id:"att_math"}, {icon:"🇺🇿", text:"O'zbek Tili & Adabiyot", id:"att_uz"} ] },
+            cert: { title: "Milliy Sertifikat", content: [ {icon:"🧮", text:"Matematika Sertifikati", id:"cert_math"}, {icon:"🧪", text:"Kimyo Sertifikati", id:"cert_chem"} ] }
         };
 
-        // AGENTLIK MAKTABLARI ICHIDAGI FANLAR (4-QATLAM ZANJIRI)
         const subSubMatrix = {
             p_school: [ {icon:"🧮", text:"Matematika"}, {icon:"🧠", text:"Tanqidiy Fikr"} ],
             i_school: [ {icon:"🇺🇿", text:"O'zbek tili"}, {icon:"📖", text:"Adabiyot"} ],
@@ -144,49 +252,264 @@
             ielts_w: [ {icon:"📊", text:"Task 1 (Report)"}, {icon:"📝", text:"Task 2 (Essay)"} ]
         };
 
-        // 2-QATLAMNI OCHISH
         function openLayer2(type) {
             const config = dataMatrix[type];
+            if (!config) {
+                console.warn(`openLayer2: type not found => ${type}`);
+                return;
+            }
             document.getElementById("layer2Title").innerText = config.title;
             const container = document.getElementById("layer2Grid"); container.innerHTML = "";
             
             config.content.forEach(item => {
                 const div = document.createElement('div'); div.className = 'grid-item';
-                div.innerHTML = <span>${item.icon}</span><p>${item.text}</p><small>Kirish</small>;
+                div.innerHTML = `<span>${item.icon}</span><p>${item.text}</p><small>Kirish</small>`;
                 div.onclick = () => routeLayer3(item.id, item.text);
                 container.appendChild(div);
             });
             document.getElementById("layer2Panel").classList.add("active");
+            document.getElementById("layer3Panel").classList.remove("active");
+            document.getElementById("vipPanel").classList.remove("active");
+            document.getElementById("adminPanel").classList.remove("active");
+            updateOverlayState();
         }
 
-        // ROUTER: ZARURAT BO'LSA 3-QATLAM ICHKI FANINI OCHISH, BO'LMASA TO'G'RI LABORATORIYANI YOQISH
         function routeLayer3(id, currentText) {
             const subContent = subSubMatrix[id];
             if (subContent) {
-                // Agar ichida yana ichki fani bo'lsa (Masalan Prezident maktabi ichida Matematika va Tanqidiy fikr)
-                document.getElementById("layer2Title").innerText = ${currentText} Fanlari;
+                document.getElementById("layer2Title").innerText = `${currentText} Fanlari`;
                 const container = document.getElementById("layer2Grid"); container.innerHTML = "";
                 subContent.forEach(item => {
                     const div = document.createElement('div'); div.className = 'grid-item';
-                    div.innerHTML = <span>${item.icon}</span><p>${item.text}</p><small>Laboratoriya</small>;
+                    div.innerHTML = `<span>${item.icon}</span><p>${item.text}</p><small>Laboratoriya</small>`;
                     div.onclick = () => openLayer3(item.text);
                     container.appendChild(div);
                 });
             } else {
-                // Ichki fan bo'lmasa to'g'ridan-to'g'ri AI oynasini ochish
                 openLayer3(currentText);
             }
         }
 
-        // 3-QATLAMNI OCHISH (ENG ICHKI MULTIMEDIA XONA)
         function openLayer3(subjectName) {
-            document.getElementById("layer3Title").innerText = ${subjectName} AI Portali;
-            document.getElementById("aiStatusName").innerText = Mr. Edward AI: ${subjectName} faollashtirildi;
+            document.getElementById("layer3Title").innerText = `${subjectName} AI Portali`;
+            document.getElementById("aiStatusName").innerText = `Mr. Edward AI: ${subjectName}`;
             document.getElementById("layer3Panel").classList.add("active");
+            document.getElementById("layer2Panel").classList.remove("active");
+            document.getElementById("vipPanel").classList.remove("active");
+            document.getElementById("adminPanel").classList.remove("active");
+            updateOverlayState();
         }
 
-        function closeLayer2() { document.getElementById("layer2Panel").classList.remove("active"); }
-        function closeLayer3() { document.getElementById("layer3Panel").classList.remove("active"); }
+        function closeLayer2() { document.getElementById("layer2Panel").classList.remove("active"); updateOverlayState(); }
+        function closeLayer3() { document.getElementById("layer3Panel").classList.remove("active"); updateOverlayState(); }
+        function closeVIPPanel() { document.getElementById("vipPanel").classList.remove("active"); updateOverlayState(); }
+        function closeAdminPanel() { document.getElementById("adminPanel").classList.remove("active"); updateOverlayState(); }
+
+        function closeActivePanel() {
+            document.getElementById("layer3Panel").classList.remove("active");
+            document.getElementById("layer2Panel").classList.remove("active");
+            document.getElementById("vipPanel").classList.remove("active");
+            document.getElementById("adminPanel").classList.remove("active");
+            updateOverlayState();
+        }
+
+        function showOverlay() {
+            document.getElementById('screenOverlay').classList.add('visible');
+            document.getElementById('screenOverlay').setAttribute('aria-hidden', 'false');
+        }
+
+        function hideOverlay() {
+            document.getElementById('screenOverlay').classList.remove('visible');
+            document.getElementById('screenOverlay').setAttribute('aria-hidden', 'true');
+        }
+
+        const featureState = {
+            voice: true,
+            camera: true,
+            chat: true,
+            vip: true
+        };
+
+        function updateFeatureUI() {
+            document.querySelectorAll('.voice-btn').forEach(btn => {
+                btn.disabled = !featureState.voice;
+                btn.style.opacity = featureState.voice ? '1' : '0.35';
+            });
+            document.querySelectorAll('.camera-btn').forEach(btn => {
+                btn.disabled = !featureState.camera;
+                btn.style.opacity = featureState.camera ? '1' : '0.35';
+            });
+            document.querySelectorAll('.chat-btn').forEach(btn => {
+                btn.disabled = !featureState.chat;
+                btn.style.opacity = featureState.chat ? '1' : '0.35';
+            });
+            document.querySelectorAll('.chat-input').forEach(input => {
+                input.disabled = !featureState.chat;
+                input.placeholder = featureState.chat ? input.getAttribute('data-placeholder') || input.placeholder : 'Chat funksiyasi admin tomonidan o‘chirildi...';
+            });
+            document.querySelectorAll('.vip-open-btn').forEach(btn => {
+                btn.disabled = !featureState.vip;
+                btn.style.opacity = featureState.vip ? '1' : '0.35';
+            });
+            document.getElementById('adminVoiceState').innerText = featureState.voice ? 'ON' : 'OFF';
+            document.getElementById('adminCameraState').innerText = featureState.camera ? 'ON' : 'OFF';
+            document.getElementById('adminChatState').innerText = featureState.chat ? 'ON' : 'OFF';
+            document.getElementById('adminVipState').innerText = featureState.vip ? 'ON' : 'OFF';
+        }
+
+        function askAI(panelId) {
+            if (!featureState.chat) {
+                alert('Chat funksiyasi admin tomonidan o‘chirildi.');
+                return;
+            }
+            const panel = panelId ? document.getElementById(panelId) : document.querySelector('.panel.active');
+            const textarea = panel ? panel.querySelector('.chat-input') : document.querySelector('.chat-input');
+            const prompt = textarea ? textarea.value.trim() : '';
+            if (!prompt) {
+                alert('Iltimos, savol yoki topshiriq yozing.');
+                return;
+            }
+            alert(`🚀 AI ga yuborildi: ${prompt}`);
+            if (textarea) textarea.value = '';
+        }
+
+        let adminMode = false;
+        const adminPassword = 'eduup2026';
+
+        function requestAdminAccess() {
+            if (adminMode) {
+                openAdminPanel();
+                return;
+            }
+            const secret = prompt('Admin parolini kiriting:');
+            if (secret === adminPassword) {
+                adminMode = true;
+                alert('✅ Admin rejimi faollashtirildi. Boshqaruv panelini ochish.');
+                openAdminPanel();
+            } else {
+                alert('❌ Parol noto‘g‘ri. Admin paneliga kirish rad etildi.');
+            }
+        }
+
+        function openAdminPanel() {
+            if (!adminMode) {
+                requestAdminAccess();
+                return;
+            }
+            document.getElementById('adminPanel').classList.add('active');
+            document.getElementById('layer2Panel').classList.remove('active');
+            document.getElementById('layer3Panel').classList.remove('active');
+            document.getElementById('vipPanel').classList.remove('active');
+            updateOverlayState();
+        }
+
+        function openVIPPanel() {
+            if (!featureState.vip) {
+                alert('VIP imkoniyat admin tomonidan o‘chirildi.');
+                return;
+            }
+            document.getElementById('vipPanel').classList.add('active');
+            document.getElementById('layer2Panel').classList.remove('active');
+            document.getElementById('layer3Panel').classList.remove('active');
+            document.getElementById('adminPanel').classList.remove('active');
+            updateOverlayState();
+        }
+
+        function toggleFeature(key) {
+            if (!featureState.hasOwnProperty(key)) return;
+            featureState[key] = !featureState[key];
+            updateFeatureUI();
+            alert(`${key.charAt(0).toUpperCase() + key.slice(1)} funksiyasi ${featureState[key] ? 'yoqildi' : 'o‘chirildi'}.`);
+        }
+
+        function updateOverlayState() {
+            const activePanels = ['layer2Panel', 'layer3Panel', 'vipPanel', 'adminPanel'];
+            const anyActive = activePanels.some(id => document.getElementById(id).classList.contains('active'));
+            if (anyActive) showOverlay(); else hideOverlay();
+        }
+
+        function resetAppForAdmin() {
+            closeActivePanel();
+            document.querySelectorAll('.chat-input').forEach(el => el.value = '');
+            alert('⚙️ Bot va mini app tozalandi. Tizim yangilandi.');
+        }
+
+        function sendVoice() {
+            alert('🎙️ Ovoz yozish boshlanmoqda... (mobil apparatlarda ishlaydi)');
+        }
+
+        function capturePhoto() {
+            document.getElementById('cameraInput').click();
+        }
+
+        function handleCameraImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            alert(`📸 Rasm tayyor: ${file.name}`);
+            event.target.value = '';
+        }
+
+        function pauseLesson() {
+            alert('⏸️ Dars to‘xtatildi. Qayta boshlash uchun qayta tugmani bosing.');
+        }
+
+        function addPanelSwipeActions(panelId) {
+            const panel = document.getElementById(panelId);
+            let startX = 0, startY = 0;
+            panel.addEventListener('touchstart', event => {
+                if (!event.touches || event.touches.length !== 1) return;
+                startX = event.touches[0].clientX;
+                startY = event.touches[0].clientY;
+            }, { passive: true });
+
+            panel.addEventListener('touchend', event => {
+                if (!event.changedTouches || event.changedTouches.length !== 1) return;
+                const dx = event.changedTouches[0].clientX - startX;
+                const dy = event.changedTouches[0].clientY - startY;
+                const absX = Math.abs(dx);
+                const absY = Math.abs(dy);
+
+                if (absY > absX && dy > 80) {
+                    if (panelId === 'layer3Panel') closeLayer3(); else closeLayer2();
+                } else if (absX > absY && dx < -80) {
+                    if (panelId === 'layer3Panel') closeLayer3(); else closeLayer2();
+                }
+            }, { passive: true });
+        }
+
+        function renderSubjectOverview() {
+            const container = document.getElementById('subjectOverviewGrid');
+            container.innerHTML = '';
+            Object.keys(dataMatrix).forEach(key => {
+                const category = dataMatrix[key];
+                category.content.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'grid-item';
+                    card.innerHTML = `<span>${item.icon}</span><p>${item.text}</p><small>${category.title}</small>`;
+                    card.onclick = () => routeLayer3(item.id, item.text);
+                    container.appendChild(card);
+                });
+            });
+        }
+
+        function initMobileEnhancements() {
+            renderSubjectOverview();
+            addPanelSwipeActions('layer2Panel');
+            addPanelSwipeActions('layer3Panel');
+            addPanelSwipeActions('vipPanel');
+            updateFeatureUI();
+
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape') {
+                    closeLayer3();
+                    closeLayer2();
+                    closeVIPPanel();
+                    closeAdminPanel();
+                }
+            });
+        }
+
+        initMobileEnhancements();
     </script>
 </body>
 </html>

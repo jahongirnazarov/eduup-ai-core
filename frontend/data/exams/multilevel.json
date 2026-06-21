@@ -1,0 +1,77 @@
+{
+  "standard": "Multilevel",
+  "duration": 1800,
+  "listening": {
+    "audioUrl": "https://cloudinary.com/your-audio/multilevel-listening.mp3",
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple-choice",
+        "question": "What is the main subject of the conversation?",
+        "options": ["Sports", "Science", "Music", "History"],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 2,
+        "type": "multiple-choice",
+        "question": "According to the speaker, what is the most important factor?",
+        "options": ["Time", "Money", "Effort", "Luck"],
+        "correctAnswer": 2,
+        "points": 1
+      }
+    ]
+  },
+  "reading": {
+    "passage": "The Importance of Continuous Learning\n\nIn today's rapidly changing world, continuous learning has become essential for personal and professional growth. The skills and knowledge that were valuable yesterday may become obsolete tomorrow. Therefore, individuals must embrace lifelong learning to remain competitive and relevant in their fields.\n\nContinuous learning takes many forms. It can involve formal education, such as taking courses or pursuing advanced degrees. However, it also includes informal learning through reading, online tutorials, workshops, and on-the-job training. The key is to maintain curiosity and actively seek opportunities to expand one's knowledge base.\n\nTechnology has made continuous learning more accessible than ever before. Online platforms offer courses from top universities and industry experts, often at little or no cost. These platforms allow learners to study at their own pace and according to their own schedules, making education more flexible and convenient.\n\nEmployers also recognize the value of continuous learning. Many companies now provide training programs and encourage employees to develop new skills. This not only benefits the employees but also helps organizations stay competitive in a rapidly evolving marketplace.\n\nUltimately, continuous learning is about more than just career advancement. It enriches life, broadens perspectives, and helps individuals adapt to change. By committing to lifelong learning, people can unlock their full potential and lead more fulfilling lives.",
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple-choice",
+        "question": "According to the passage, why has continuous learning become essential?",
+        "options": [
+          "Because it is required by law",
+          "Because skills can become obsolete quickly",
+          "Because employers demand it",
+          "Because it is fashionable"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 2,
+        "type": "multiple-choice",
+        "question": "What forms can continuous learning take according to the text?",
+        "options": [
+          "Only formal education",
+          "Only online courses",
+          "Both formal and informal learning",
+          "Only reading books"
+        ],
+        "correctAnswer": 2,
+        "points": 1
+      },
+      {
+        "id": 3,
+        "type": "multiple-choice",
+        "question": "How has technology affected continuous learning?",
+        "options": [
+          "It has made learning more difficult",
+          "It has made learning more accessible",
+          "It has eliminated the need for learning",
+          "It has increased the cost of education"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      }
+    ]
+  },
+  "writing": {
+    "prompt": "Write about the importance of learning a second language. Discuss the benefits and challenges of becoming bilingual. Include at least 200 words.",
+    "minWords": 200
+  },
+  "speaking": {
+    "prompt": "Describe a skill you would like to learn in the future. Explain why this skill is important to you and how you plan to learn it.",
+    "duration": 120
+  }
+}

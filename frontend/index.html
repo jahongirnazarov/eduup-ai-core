@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EduUpAI - Global 3D Exam & Learning Simulator</title>
+    <meta name="description" content="EduUpAI - Dunyo bo'yicha har bir fan va yo'nalishda (IELTS, SAT, Multilevel, DTM) xalqaro standartdagi 3D virtual imtihon simulyatori.">
+    <meta name="keywords" content="IELTS 3D test, Digital SAT Desmos, Multilevel DTM imtihon, PIIMA tayyorlov, EduUpAI, virtual o'qituvchi">
+    <meta property="og:title" content="EduUpAI - Global 3D Exam Preparation Platform">
+    <meta property="og:description" content="Harvard darajasidagi AI o'qituvchi Malika bilan xalqaro va milliy imtihonlarni 100% real muhitda topshiring.">
+    <meta property="og:image" content="https://flaticon.com">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%; height: 100%;
+            padding: 0; margin: 0;
+            overflow: hidden;
+            touch-action: none;
+        }
+        body { 
+            background-color: #050508; 
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        #canvas-container { 
+            width: 100vw; 
+            height: 100vh; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+        }
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a15, #050508);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+        #loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(0, 255, 204, 0.2);
+            border-top-color: #00ffcc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loading-text {
+            color: #00ffcc;
+            margin-top: 20px;
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+        #status-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(10, 10, 20, 0.85);
+            border: 1px solid #00ffcc;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 13px;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            max-width: 280px;
+        }
+        #status-panel h3 {
+            color: #00ffcc;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .status-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 12px;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background: #ff3366;
+        }
+        .status-dot.active {
+            background: #00ffcc;
+            box-shadow: 0 0 8px #00ffcc;
+        }
+        #ai-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(5, 5, 10, 0.9);
+            border: 1px solid #00ffcc;
+            padding: 15px 30px;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 15px;
+            z-index: 100;
+            text-align: center;
+            max-width: 80%;
+            backdrop-filter: blur(10px);
+        }
+        #audio-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+        .control-btn {
+            background: rgba(0, 255, 204, 0.2);
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+        .control-btn:hover {
+            background: rgba(0, 255, 204, 0.4);
+        }
+        #lesson-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(10, 10, 20, 0.9);
+            border: 1px solid #00ffcc;
+            padding: 20px;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 14px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            max-width: 320px;
+            display: none;
+        }
+        #lesson-panel.active {
+            display: block;
+        }
+        #lesson-panel h3 {
+            color: #00ffcc;
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .lesson-info {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+        }
+        .lesson-info p {
+            margin: 5px 0;
+            font-size: 12px;
+            color: #aaa;
+        }
+        .lesson-info strong {
+            color: #fff;
+        }
+        .lesson-progress {
+            margin-bottom: 15px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 255, 204, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #00ffcc;
+            transition: width 0.3s ease;
+        }
+        .lesson-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .lesson-btn {
+            flex: 1;
+            background: rgba(0, 255, 204, 0.15);
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        .lesson-btn:hover {
+            background: rgba(0, 255, 204, 0.3);
+        }
+        .lesson-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .lesson-section {
+            background: rgba(0, 255, 204, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid #00ffcc;
+        }
+        .lesson-section.active {
+            background: rgba(0, 255, 204, 0.15);
+            border-left-color: #00ff66;
+        }
+        .lesson-section h4 {
+            color: #00ffcc;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+        .lesson-section p {
+            font-size: 11px;
+            color: #ccc;
+            line-height: 1.4;
+        }
+        #lesson-selector {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+        }
+        #lesson-selector select {
+            background: rgba(10, 10, 20, 0.9);
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+        #lesson-selector select option {
+            background: #0a0a14;
+            color: #fff;
+        }
+        .hidden { display: none !important; }
+        .ui-overlay { pointer-events: auto; }
+        .interactive { pointer-events: auto; }
+    </style>
+    <!-- 0 UZS Client-Side PDF va Grafika Kutubxonalari -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">MALIKA 3D YUKLANMOQDA...</div>
+</div>
+
+<div id="canvas-container"></div>
+
+<!-- Video Teacher with Chroma Key -->
+<video id="teacher-video" style="display: none;" loop playsinline crossorigin="anonymous">
+    <source src="models/teacher_walk_write.mp4" type="video/mp4">
+</video>
+<canvas id="chroma-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50;"></canvas>
+
+<div id="status-panel">
+    <h3>MALIKA 3D CORE</h3>
+    <div class="status-item">
+        <span class="status-dot" id="model-dot"></span>
+        <span>3D Model: <span id="model-status">Kutilmoqda</span></span>
+    </div>
+    <div class="status-item">
+        <span class="status-dot" id="audio-dot"></span>
+        <span>Audio: <span id="audio-status">Kutilmoqda</span></span>
+    </div>
+    <div class="status-item">
+        <span class="status-dot" id="ai-dot"></span>
+        <span>AI Brain: <span id="ai-status">Kutilmoqda</span></span>
+    </div>
+    <div class="status-item">
+        <span class="status-dot" id="fps-dot"></span>
+        <span>FPS: <span id="fps-counter">0</span></span>
+    </div>
+</div>
+
+<div id="lesson-selector">
+    <select id="discipline-select" onchange="updateDiscipline()">
+        <option value="">Fan yo'nalishini tanlang...</option>
+        <option value="mathematics">📐 Matematika</option>
+        <option value="physics">⚛️ Fizika</option>
+        <option value="chemistry">🧪 Kimyo</option>
+        <option value="biology">🧬 Biologiya</option>
+        <option value="medicine">🏥 Tibbiyot</option>
+        <option value="engineering">⚙️ Muhandislik</option>
+        <option value="computer_science">💻 Kompyuter Fanlari</option>
+        <option value="humanities">📚 Gumanitar Fanlar</option>
+    </select>
+    <select id="lesson-select" style="margin-left: 10px;">
+        <option value="">Darsni tanlang...</option>
+        <option value="lesson-1-matematika.json">Matematika: Sonlar</option>
+        <option value="lesson-2-english.json">Ingliz Tili: Greetings</option>
+    </select>
+</div>
+
+<div id="audio-controls">
+    <button class="control-btn" id="start-audio-btn">Ovozni Faollashtirish</button>
+</div>
+
+<div id="lesson-panel">
+    <h3>Dars Pleyeri</h3>
+    <div class="lesson-info">
+        <p><strong>Sarlavha:</strong> <span id="lesson-title">-</span></p>
+        <p><strong>Fan:</strong> <span id="lesson-subject">-</span></p>
+        <p><strong>Daraja:</strong> <span id="lesson-level">-</span></p>
+        <p><strong>Davomiylik:</strong> <span id="lesson-duration">-</span></p>
+    </div>
+    <div class="lesson-progress">
+        <p><strong>Progress:</strong> <span id="lesson-progress-text">0/0</span></p>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+        </div>
+    </div>
+    <div id="lesson-sections"></div>
+    <div class="lesson-controls">
+        <button class="lesson-btn" id="prev-section-btn">◀ Oldingi</button>
+        <button class="lesson-btn" id="play-pause-btn">▶ Boshlash</button>
+        <button class="lesson-btn" id="next-section-btn">Keyingi ▶</button>
+    </div>
+</div>
+
+<div id="ai-panel">
+    Mening ismim Malika. Sizni eshityapman - suhbatni boshlash uchun "Ovozni Faollashtirish" tugmasini bosing. Darsni boshlash uchun yuqoridagi dars tanlagichdan darsni tanlang.
+</div>
+
+<!-- Gamification UI -->
+<div id="gamification-panel" class="absolute top-20 right-20 bg-slate-900/90 border border-slate-700 px-4 py-2 rounded-xl z-50 hidden">
+    <div class="flex items-center gap-4 text-xs">
+        <div class="text-amber-400 font-bold">🔥 <span id="user-streak">1</span> kun</div>
+        <div class="text-emerald-400 font-bold">⭐ <span id="user-xp">0</span> XP</div>
+    </div>
+</div>
+
+<!-- Proctoring Warning Banner -->
+<div id="proctor-warning-banner" class="fixed top-0 left-0 right-0 bg-rose-600 text-white text-center py-2 z-[200] hidden">
+    <span class="font-bold text-sm">⚠️ DIQQAT: Ekranga qarang! Aldash holati aniqlansa imtihoningiz bekor qilinadi.</span>
+</div>
+
+<!-- Voice Command Indicator -->
+<div id="voice-indicator" class="fixed bottom-4 left-4 bg-emerald-600/90 text-white px-3 py-1.5 rounded-full text-[11px] font-mono uppercase tracking-widest z-50 shadow-lg flex items-center gap-2 hidden">
+    <span class="w-2 h-2 bg-white rounded-full animate-ping"></span>
+    Ovozli boshqaruv faol...
+</div>
+
+<!-- 4 ta Ko'nikmali Imtihon Tizimi -->
+<div id="exam-simulator" class="ui-overlay fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-40 hidden flex-col p-4 md:p-6 text-slate-100 font-sans interactive">
+    
+    <!-- Yuqori panel: Imtihon va Sikl holati -->
+    <header class="flex justify-between items-center border-b border-slate-800 pb-4 mb-4">
+        <div class="flex items-center gap-3">
+            <span id="exam-badge" class="bg-blue-600 px-3 py-1 rounded-md text-xs font-bold uppercase">MULTILEVEL</span>
+            <h2 id="exam-cycle-title" class="text-base font-bold text-slate-300">Listening Section</h2>
+        </div>
+        <div class="flex items-center gap-4 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800">
+            <span id="exam-timer" class="text-lg font-mono font-bold text-amber-400">00:00</span>
+        </div>
+    </header>
+
+    <!-- Imtihon Standartiga Moslashuvchi Dinamik Asboblar Paneli -->
+    <div id="exam-tools-toolbar" class="flex flex-wrap items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800 mb-4 hidden">
+        <!-- SAT Standart Asboblari -->
+        <button id="toggle-desmos-btn" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition items-center gap-1 hidden cursor-pointer">
+            📊 Desmos Grafik Kalkulyator
+        </button>
+        <button id="tool-highlighter" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-medium transition items-center gap-1 hidden cursor-pointer">
+            🖍️ Matnni belgilash (Highlighter)
+        </button>
+        
+        <!-- IELTS Standart Asboblari -->
+        <button id="tool-notepad-btn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-medium transition items-center gap-1 hidden cursor-pointer">
+            📝 Shaxsiy Qaydlar (Notes)
+        </button>
+        
+        <!-- DTM va Attestatsiya uchun Ma'lumotnoma Formula Asboblari -->
+        <button id="tool-formulas-btn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-medium transition items-center gap-1 hidden cursor-pointer">
+            📐 Matematika/Fizika Formulalari
+        </button>
+    </div>
+
+    <!-- 4 TA SIKL UCHUN DINAMIK PANELLAR -->
+    <main class="flex-1 overflow-y-auto space-y-4">
+        
+        <!-- SIKL 1: LISTENING (Audio pleyer va savollar) -->
+        <div id="panel-listening" class="hidden flex-col gap-4 h-full">
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex items-center gap-4">
+                <span class="text-xl">🎧</span>
+                <div class="w-full">
+                    <p class="text-xs text-slate-400 mb-1">Imtihon audiosini tinglang (Faqat 1 marta qo'yiladi):</p>
+                    <audio id="exam-audio-player" src="" controls class="w-full accent-blue-500"></audio>
+                </div>
+            </div>
+            <div id="listening-questions-container" class="space-y-3"></div>
+        </div>
+
+        <!-- SIKL 2: READING (Matn va Savollar - Split screen) -->
+        <div id="panel-reading" class="hidden grid-cols-1 lg:grid-cols-12 gap-6 h-full">
+            <div id="reading-passage" class="lg:col-span-6 bg-slate-900/50 p-4 rounded-xl border border-slate-800 overflow-y-auto text-sm text-slate-300"></div>
+            <div id="reading-questions-container" class="lg:col-span-6 space-y-3 overflow-y-auto"></div>
+        </div>
+
+        <!-- SIKL 3: WRITING (Insho to'g'ridan-to'g'ri ekranga yoziladi) -->
+        <div id="panel-writing" class="hidden flex-col gap-3 h-full">
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                <h4 class="text-xs font-bold text-amber-400 uppercase mb-1">Writing Task Prompt:</h4>
+                <p id="writing-prompt" class="text-sm text-slate-300"></p>
+            </div>
+            <textarea id="writing-area" class="w-full flex-1 p-4 bg-slate-950 border border-slate-800 rounded-xl font-sans text-base text-slate-100 focus:outline-none focus:border-blue-500 resize-none" placeholder="Inshongizni shu yerga yozing..."></textarea>
+            <div class="text-right text-xs text-slate-400">So'zlar soni: <b id="writing-word-count" class="text-white">0</b></div>
+        </div>
+
+        <!-- SIKL 4: SPEAKING (Ovozni brauzer mikrofoni orqali yozib olish) -->
+        <div id="panel-speaking" class="hidden flex-col items-center justify-center gap-6 h-full text-center">
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-xl">
+                <span class="text-xs font-bold text-rose-500 uppercase tracking-widest">Speaking Part</span>
+                <h3 id="speaking-prompt" class="text-lg font-bold text-white mt-2 mb-4">Mavzu yuklanmoqda...</h3>
+                <p class="text-sm text-slate-400">Tugmani bosing va gapirishni boshlang. Platforma ovozingizni tahlil qiladi.</p>
+                <div id="speaking-live-transcript" class="mt-4 p-3 bg-slate-800 rounded-lg text-xs text-slate-300 min-h-[60px]"></div>
+            </div>
+            
+            <!-- Mikrofon tugmasi -->
+            <button id="mic-record-btn" class="w-20 h-20 bg-rose-600 hover:bg-rose-700 text-white rounded-full flex items-center justify-center shadow-lg transition-transform transform active:scale-95 cursor-pointer text-2xl">
+                🎙️
+            </button>
+            <div id="mic-status" class="text-xs text-slate-500 uppercase tracking-wider font-mono">Kutish rejimida...</div>
+        </div>
+
+    </main>
+
+    <!-- Navigatsiya va Topshirish -->
+    <footer class="flex justify-between items-center border-t border-slate-800 pt-4 mt-4">
+        <button id="prev-cycle-btn" class="bg-slate-800 px-4 py-2 rounded-xl text-sm font-medium">Orqaga</button>
+        <button id="finish-cycle-btn" class="bg-emerald-600 px-5 py-2 rounded-xl text-sm font-bold hidden">Siklni Yakunlash</button>
+        <button id="next-cycle-btn" class="bg-blue-600 px-4 py-2 rounded-xl text-sm font-medium">Keyingisi</button>
+    </footer>
+</div>
+
+<!-- IELTS uchun Shaxsiy Qaydnomalar (Notepad Pop-up) -->
+<div id="ielts-notepad-container" class="fixed bottom-20 left-4 w-80 h-40 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-50 hidden flex-col overflow-hidden interactive">
+    <div class="bg-slate-800 px-3 py-1.5 flex justify-between items-center border-b border-slate-700">
+        <span class="text-[11px] font-bold text-slate-300">IELTS EXAM NOTES</span>
+        <button onclick="document.getElementById('ielts-notepad-container').classList.add('hidden')" class="text-slate-400 hover:text-white text-xs">✕</button>
+    </div>
+    <textarea class="w-full flex-1 p-2 bg-slate-950 text-slate-200 text-xs focus:outline-none border-none resize-none" placeholder="Matn yuzasidan qaydlaringizni shu yerda yozib keting (Faqat sizga ko'rinadi)..."></textarea>
+</div>
+
+<!-- DTM/Attestatsiya uchun formulalar jadvali oynasi -->
+<div id="formulas-popup" class="fixed top-1/4 left-1/4 w-1/2 h-1/2 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl z-50 hidden flex-col overflow-hidden interactive">
+    <div class="bg-slate-800 px-4 py-2 flex justify-between items-center border-b border-slate-700">
+        <span class="text-xs font-bold text-blue-400">STANDART FORMULALAR VA JADVAL</span>
+        <button onclick="document.getElementById('formulas-popup').classList.add('hidden')" class="text-slate-400 hover:text-white text-sm font-bold">✕</button>
+    </div>
+    <div class="p-4 overflow-y-auto text-xs space-y-3 text-slate-300 font-mono">
+        <p class="text-amber-400 font-bold border-b border-slate-800 pb-1">Algebra:</p>
+        <p>• Kvadrat tenglama: ax² + bx + c = 0  =>  D = b² - 4ac</p>
+        <p>• Qisqa ko'paytirish: (a + b)² = a² + 2ab + b²</p>
+        <p class="text-amber-400 font-bold border-b border-slate-800 pb-1 pt-2">Fizika:</p>
+        <p>• Nyuton II qonuni: F = m * a</p>
+        <p>• Erkin tushish tezlanishi: g ≈ 9.8 m/s²</p>
+    </div>
+</div>
+
+<!-- Imtihon Natijalari Dashboard -->
+<div id="exam-result-dashboard" class="ui-overlay fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 hidden flex-col p-4 md:p-6 text-slate-100 font-sans interactive">
+    <div class="max-w-4xl mx-auto w-full space-y-6">
+        <header class="text-center">
+            <h2 class="text-2xl font-bold text-white mb-2">🎉 Imtihon Natijalari</h2>
+            <div id="final-score" class="text-4xl font-bold text-emerald-400 mb-2">0 Ball</div>
+            <p id="score-standard-detail" class="text-sm text-slate-400">Hisoblanmoqda...</p>
+        </header>
+
+        <!-- Savollar Xaritasi -->
+        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+            <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Savollar Xaritasi</h4>
+            <div id="questions-map-grid" class="grid grid-cols-10 gap-2"></div>
+        </div>
+
+        <!-- PDF Sertifikat Tugmasi -->
+        <div class="flex flex-wrap gap-3 justify-center">
+            <button id="download-cert-btn" class="bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-slate-950 px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg cursor-pointer">
+                🎓 Harvard Standard Sertifikatni Yuklab Olish (PDF)
+            </button>
+            <button id="ask-malika-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg cursor-pointer">
+                🤖 Malika bilan Xatolarni Tahlil Qilish
+            </button>
+        </div>
+
+        <!-- Analitika Grafiki -->
+        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
+            <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">📈 O'quvchining O'sish Dinamikasi (Haftalik Grafik)</h4>
+            <div class="w-full h-64">
+                <canvas id="analyticsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Yopish Tugmasi -->
+        <div class="text-center">
+            <button onclick="document.getElementById('exam-result-dashboard').classList.add('hidden')" class="bg-slate-800 hover:bg-slate-700 text-white px-6 py-2 rounded-xl text-sm font-medium transition">
+                Yopish
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy Policy Footer -->
+<footer class="absolute bottom-2 left-4 text-[10px] text-gray-500 interactive">
+    Saytdan foydalanish orqali siz <a href="#privacy" onclick="alert('EduUpAI maxfiylik kafolati: Kamera va mikrofon ma\'lumotlari faqat brauzeringiz ichida real vaqtda qayta ishlanadi (0 UZS Client-side) va hech qanday tashqi serverga yuborilmaydi.')" class="underline hover:text-white">Maxfiylik Siyosatiga</a> rozilik bildirasiz.
+</footer>
+
+<!-- Three.js and dependencies from CDN -->
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ============================================
+// MALIKA DUAL-PERSONALITY CHARACTER PROMPT
+// ============================================
+const MALIKA_PERSONALITY = {
+    name: "Malika",
+    role: "AI Virtual Educator",
+    personalities: {
+        mentor: {
+            tone: "warm, encouraging, patient",
+            style: "iboli, odobli (culturally refined, polite)",
+            approach: "Loving mentor who guides with empathy"
+        },
+        disciplinarian: {
+            tone: "strict, firm, demanding",
+            style: "qattiqqol ustoz (strict teacher)",
+            approach: "Enforces standards when students slack"
+        },
+        marketer: {
+            tone: "persuasive, energetic, visionary",
+            style: "zapusk master (product launch expert)",
+            approach: "Master of product launches and marketing"
+        }
+    },
+    system_prompt: `You are Malika, a world-class AI persona and Uzbek educator. 
+    You are culturally refined (iboli, odobli) and highly empathetic. 
+    You transform into a strict disciplinarian (qattiqqol ustoz) when needed, 
+    and operate as a master of product launches (zapusk) and marketing.
+    
+    CORE PRINCIPLES:
+    - Always speak in Uzbek with cultural respect
+    - Be encouraging but maintain high standards
+    - Switch to strict mode when students are not focused
+    - Use marketing expertise when explaining concepts
+    - Maintain professional yet warm demeanor
+    
+    CONTEXT: You are teaching in a 3D virtual classroom. Your avatar responds 
+    to voice commands and student questions. Adapt your teaching style based on 
+    student engagement levels.`
+};
+
+// ============================================
+// MULTI-DISCIPLINARY CULTURE MATRIX
+// ============================================
+const cultureMatrix = {
+    uzbekistan: {
+        name: "O'zbekiston",
+        language: "uz",
+        greeting: "Assalomu alaykum, aziz talaba! EduUpAI platformasiga xush kelibsiz.",
+        themeColor: "#00ffcc",
+        disciplines: {
+            mathematics: {
+                welcome: "Matematika - ilmlar malikasi! Keling, sonlar dunyosini birgalikda o'rganamiz.",
+                formulas: [
+                    "∫x²dx = x³/3 + C",
+                    "e^(iπ) + 1 = 0",
+                    "Σ(n=1 to ∞) 1/n² = π²/6"
+                ],
+                rules: "Pifagor teoremasi: a² + b² = c²",
+                expertTitle: "Matematika Ustoz"
+            },
+            physics: {
+                welcome: "Fizika - tabiat qonunlarini o'rganamiz! Keling, koinot sirlarini ochamiz.",
+                formulas: [
+                    "F = ma (Nyuton II qonuni)",
+                    "E = mc² (Eynshteyn)",
+                    "PV = nRT (Ideal gaz qonuni)"
+                ],
+                rules: "Energiya saqlanish qonuni: E_total = constant",
+                expertTitle: "Fizika Ustoz"
+            },
+            chemistry: {
+                welcome: "Kimyo - moddalar olami! Keling, elementlarning sirli dunyosini o'rganamiz.",
+                formulas: [
+                    "pH = -log[H+]",
+                    "K = [products]/[reactants]",
+                    "ΔG = ΔH - TΔS"
+                ],
+                rules: "Valentlik elektronlari qoidasi: 8 elektron qoidasi",
+                expertTitle: "Kimyo Ustoz"
+            },
+            biology: {
+                welcome: "Biologiya - hayot sirlari! Keling, tirik organizmlarni o'rganamiz.",
+                formulas: [
+                    "DNA: A-T, G-C",
+                    "ATP: Adenozin trifosfat",
+                    "Photosynthesis: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂"
+                ],
+                rules: "Evolyutsiya tabiiy tanlov orqali sodir bo'ladi",
+                expertTitle: "Biologiya Ustoz"
+            },
+            medicine: {
+                welcome: "Tibbiyot - inson salomatligi! Keling, tibbiyot asoslarini o'rganamiz.",
+                formulas: [
+                    "BMI = weight(kg)/height(m)²",
+                    "HR = 60-100 bpm",
+                    "BP = 120/80 mmHg (normal)"
+                ],
+                rules: "Gipokrat qasami: Birinchi - zarar bermaslik",
+                expertTitle: "Tibbiyot Ustoz"
+            },
+            engineering: {
+                welcome: "Muhandislik - texnika dunyosi! Keling, innovatsiyalarni yaratamiz.",
+                formulas: [
+                    "Stress = Force/Area",
+                    "Power = Work/Time",
+                    "Efficiency = Output/Input × 100%"
+                ],
+                rules: "Xavfsizlik koeffitsienti: SF = Ultimate/Allowable",
+                expertTitle: "Muhandislik Ustoz"
+            },
+            computer_science: {
+                welcome: "Kompyuter fanlari - kelajak texnologiyasi! Keling, kodlash dunyosini o'rganamiz.",
+                formulas: [
+                    "O(n log n) - Quick Sort",
+                    "Big O: O(1), O(n), O(n²)",
+                    "Binary: 1010 = 10 decimal"
+                ],
+                rules: "DRY principle: Don't Repeat Yourself",
+                expertTitle: "Kompyuter Fanlari Ustoz"
+            },
+            humanities: {
+                welcome: "Gumanitar fanlar - insoniyat merosi! Keling, madaniyat va tarixni o'rganamiz.",
+                formulas: [
+                    "Tarix: O'tmish - hozir - kelajak",
+                    "Falsafa: Cogito, ergo sum",
+                    "Adabiyot: She'riy tuzilish va ritm"
+                ],
+                rules: "Madaniyatlar o'zaro hurmat bilan yashaydi",
+                expertTitle: "Gumanitar Fanlar Ustoz"
+            }
+        }
+    },
+    usa: {
+        name: "United States",
+        language: "en",
+        greeting: "Welcome, dear student! Welcome to EduUpAI platform.",
+        themeColor: "#3b82f6",
+        disciplines: {
+            mathematics: {
+                welcome: "Mathematics - the queen of sciences! Let's explore the world of numbers together.",
+                formulas: [
+                    "∫x²dx = x³/3 + C",
+                    "e^(iπ) + 1 = 0",
+                    "Σ(n=1 to ∞) 1/n² = π²/6"
+                ],
+                rules: "Pythagorean theorem: a² + b² = c²",
+                expertTitle: "Mathematics Expert"
+            },
+            physics: {
+                welcome: "Physics - understanding nature's laws! Let's uncover the secrets of the universe.",
+                formulas: [
+                    "F = ma (Newton's 2nd Law)",
+                    "E = mc² (Einstein)",
+                    "PV = nRT (Ideal Gas Law)"
+                ],
+                rules: "Conservation of Energy: E_total = constant",
+                expertTitle: "Physics Expert"
+            },
+            chemistry: {
+                welcome: "Chemistry - the world of matter! Let's explore the mysterious realm of elements.",
+                formulas: [
+                    "pH = -log[H+]",
+                    "K = [products]/[reactants]",
+                    "ΔG = ΔH - TΔS"
+                ],
+                rules: "Octet rule: 8 electrons in valence shell",
+                expertTitle: "Chemistry Expert"
+            },
+            biology: {
+                welcome: "Biology - the secrets of life! Let's study living organisms.",
+                formulas: [
+                    "DNA: A-T, G-C",
+                    "ATP: Adenosine triphosphate",
+                    "Photosynthesis: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂"
+                ],
+                rules: "Evolution occurs through natural selection",
+                expertTitle: "Biology Expert"
+            },
+            medicine: {
+                welcome: "Medicine - human health! Let's learn medical fundamentals.",
+                formulas: [
+                    "BMI = weight(kg)/height(m)²",
+                    "HR = 60-100 bpm",
+                    "BP = 120/80 mmHg (normal)"
+                ],
+                rules: "Hippocratic Oath: First, do no harm",
+                expertTitle: "Medicine Expert"
+            },
+            engineering: {
+                welcome: "Engineering - the world of technology! Let's create innovations.",
+                formulas: [
+                    "Stress = Force/Area",
+                    "Power = Work/Time",
+                    "Efficiency = Output/Input × 100%"
+                ],
+                rules: "Safety Factor: SF = Ultimate/Allowable",
+                expertTitle: "Engineering Expert"
+            },
+            computer_science: {
+                welcome: "Computer Science - future technology! Let's learn the world of coding.",
+                formulas: [
+                    "O(n log n) - Quick Sort",
+                    "Big O: O(1), O(n), O(n²)",
+                    "Binary: 1010 = 10 decimal"
+                ],
+                rules: "DRY principle: Don't Repeat Yourself",
+                expertTitle: "Computer Science Expert"
+            },
+            humanities: {
+                welcome: "Humanities - humanity's heritage! Let's study culture and history.",
+                formulas: [
+                    "History: Past - Present - Future",
+                    "Philosophy: Cogito, ergo sum",
+                    "Literature: Poetic structure and rhythm"
+                ],
+                rules: "Cultures coexist with mutual respect",
+                expertTitle: "Humanities Expert"
+            }
+        }
+    },
+    russia: {
+        name: "Россия",
+        language: "ru",
+        greeting: "Добро пожаловать, дорогой студент! Добро пожаловать на платформу EduUpAI.",
+        themeColor: "#ef4444",
+        disciplines: {
+            mathematics: {
+                welcome: "Математика - королева наук! Давайте изучим мир чисел вместе.",
+                formulas: [
+                    "∫x²dx = x³/3 + C",
+                    "e^(iπ) + 1 = 0",
+                    "Σ(n=1 to ∞) 1/n² = π²/6"
+                ],
+                rules: "Теорема Пифагора: a² + b² = c²",
+                expertTitle: "Эксперт по математике"
+            },
+            physics: {
+                welcome: "Физика - понимание законов природы! Давайте откроем секреты вселенной.",
+                formulas: [
+                    "F = ma (Второй закон Ньютона)",
+                    "E = mc² (Эйнштейн)",
+                    "PV = nRT (Закон идеального газа)"
+                ],
+                rules: "Сохранение энергии: E_total = constant",
+                expertTitle: "Эксперт по физике"
+            },
+            chemistry: {
+                welcome: "Химия - мир материи! Давайте изучим таинственную область элементов.",
+                formulas: [
+                    "pH = -log[H+]",
+                    "K = [products]/[reactants]",
+                    "ΔG = ΔH - TΔS"
+                ],
+                rules: "Правило октета: 8 электронов на валентной оболочке",
+                expertTitle: "Эксперт по химии"
+            },
+            biology: {
+                welcome: "Биология - секреты жизни! Давайте изучим живые организмы.",
+                formulas: [
+                    "DNA: A-T, G-C",
+                    "ATP: Аденозинтрифосфат",
+                    "Фотосинтез: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂"
+                ],
+                rules: "Эволюция происходит через естественный отбор",
+                expertTitle: "Эксперт по биологии"
+            },
+            medicine: {
+                welcome: "Медицина - здоровье человека! Давайте изучим основы медицины.",
+                formulas: [
+                    "BMI = weight(kg)/height(m)²",
+                    "HR = 60-100 bpm",
+                    "BP = 120/80 mmHg (normal)"
+                ],
+                rules: "Клятва Гиппократа: Прежде всего, не навреди",
+                expertTitle: "Эксперт по медицине"
+            },
+            engineering: {
+                welcome: "Инженерия - мир технологий! Давайте создадим инновации.",
+                formulas: [
+                    "Stress = Force/Area",
+                    "Power = Work/Time",
+                    "Efficiency = Output/Input × 100%"
+                ],
+                rules: "Коэффициент безопасности: SF = Ultimate/Allowable",
+                expertTitle: "Эксперт по инженерии"
+            },
+            computer_science: {
+                welcome: "Информатика - технологии будущего! Давайте изучим мир программирования.",
+                formulas: [
+                    "O(n log n) - Quick Sort",
+                    "Big O: O(1), O(n), O(n²)",
+                    "Binary: 1010 = 10 decimal"
+                ],
+                rules: "Принцип DRY: Don't Repeat Yourself",
+                expertTitle: "Эксперт по информатике"
+            },
+            humanities: {
+                welcome: "Гуманитарные науки - наследие человечества! Давайте изучим культуру и историю.",
+                formulas: [
+                    "История: Прошлое - Настоящее - Будущее",
+                    "Философия: Cogito, ergo sum",
+                    "Литература: Поэтическая структура и ритм"
+                ],
+                rules: "Культуры сосуществуют с взаимным уважением",
+                expertTitle: "Эксперт по гуманитарным наукам"
+            }
+        }
+    },
+    china: {
+        name: "中国",
+        language: "zh",
+        greeting: "欢迎，亲爱的学生！欢迎来到EduUpAI平台。",
+        themeColor: "#f59e0b",
+        disciplines: {
+            mathematics: {
+                welcome: "数学 - 科学之母！让我们一起探索数字的世界。",
+                formulas: [
+                    "∫x²dx = x³/3 + C",
+                    "e^(iπ) + 1 = 0",
+                    "Σ(n=1 to ∞) 1/n² = π²/6"
+                ],
+                rules: "勾股定理: a² + b² = c²",
+                expertTitle: "数学专家"
+            },
+            physics: {
+                welcome: "物理 - 理解自然法则！让我们一起揭开宇宙的奥秘。",
+                formulas: [
+                    "F = ma (牛顿第二定律)",
+                    "E = mc² (爱因斯坦)",
+                    "PV = nRT (理想气体定律)"
+                ],
+                rules: "能量守恒: E_total = constant",
+                expertTitle: "物理专家"
+            },
+            chemistry: {
+                welcome: "化学 - 物质的世界！让我们一起探索元素的神秘领域。",
+                formulas: [
+                    "pH = -log[H+]",
+                    "K = [products]/[reactants]",
+                    "ΔG = ΔH - TΔS"
+                ],
+                rules: "八隅体规则: 价电子层8个电子",
+                expertTitle: "化学专家"
+            },
+            biology: {
+                welcome: "生物 - 生命的秘密！让我们一起研究生物体。",
+                formulas: [
+                    "DNA: A-T, G-C",
+                    "ATP: 三磷酸腺苷",
+                    "光合作用: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂"
+                ],
+                rules: "进化通过自然选择发生",
+                expertTitle: "生物专家"
+            },
+            medicine: {
+                welcome: "医学 - 人类健康！让我们一起学习医学基础。",
+                formulas: [
+                    "BMI = weight(kg)/height(m)²",
+                    "HR = 60-100 bpm",
+                    "BP = 120/80 mmHg (normal)"
+                ],
+                rules: "希波克拉底誓言: 首先，不造成伤害",
+                expertTitle: "医学专家"
+            },
+            engineering: {
+                welcome: "工程 - 技术的世界！让我们一起创造创新。",
+                formulas: [
+                    "Stress = Force/Area",
+                    "Power = Work/Time",
+                    "Efficiency = Output/Input × 100%"
+                ],
+                rules: "安全系数: SF = Ultimate/Allowable",
+                expertTitle: "工程专家"
+            },
+            computer_science: {
+                welcome: "计算机科学 - 未来技术！让我们一起学习编程的世界。",
+                formulas: [
+                    "O(n log n) - Quick Sort",
+                    "Big O: O(1), O(n), O(n²)",
+                    "Binary: 1010 = 10 decimal"
+                ],
+                rules: "DRY原则: 不要重复自己",
+                expertTitle: "计算机科学专家"
+            },
+            humanities: {
+                welcome: "人文科学 - 人类遗产！让我们一起研究文化和历史。",
+                formulas: [
+                    "历史: 过去 - 现在 - 未来",
+                    "哲学: 我思故我在",
+                    "文学: 诗歌结构和节奏"
+                ],
+                rules: "文化相互尊重共存",
+                expertTitle: "人文科学专家"
+            }
+        }
+    },
+    turkey: {
+        name: "Türkiye",
+        language: "tr",
+        greeting: "Hoş geldiniz, sevgili öğrenci! EduUpAI platformuna hoş geldiniz.",
+        themeColor: "#dc2626",
+        disciplines: {
+            mathematics: {
+                welcome: "Matematik - bilimlerin kraliçesi! Sayıların dünyasını birlikte kefedelim.",
+                formulas: [
+                    "∫x²dx = x³/3 + C",
+                    "e^(iπ) + 1 = 0",
+                    "Σ(n=1 to ∞) 1/n² = π²/6"
+                ],
+                rules: "Pisagor teoremi: a² + b² = c²",
+                expertTitle: "Matematik Uzmanı"
+            },
+            physics: {
+                welcome: "Fizik - doğa yasalarını anlamak! Evrenin sırlarını birlikte açalım.",
+                formulas: [
+                    "F = ma (Newton'un 2. Yasası)",
+                    "E = mc² (Einstein)",
+                    "PV = nRT (İdeal Gaz Yasası)"
+                ],
+                rules: "Enerji Korunumu: E_total = constant",
+                expertTitle: "Fizik Uzmanı"
+            },
+            chemistry: {
+                welcome: "Kimya - maddeler dünyası! Elementlerin gizemli dünyasını kefedelim.",
+                formulas: [
+                    "pH = -log[H+]",
+                    "K = [products]/[reactants]",
+                    "ΔG = ΔH - TΔS"
+                ],
+                rules: "Sekizlik kuralı: Değerlik kabuğunda 8 elektron",
+                expertTitle: "Kimya Uzmanı"
+            },
+            biology: {
+                welcome: "Biyoloji - hayatın sırları! Canlı organizmaları birlikte inceleyelim.",
+                formulas: [
+                    "DNA: A-T, G-C",
+                    "ATP: Adenozin trifosfat",
+                    "Fotosentez: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂"
+                ],
+                rules: "Evolüsyon doğal seçilim yoluyla gerçekleşir",
+                expertTitle: "Biyoloji Uzmanı"
+            },
+            medicine: {
+                welcome: "Tıp - insan sağlığı! Tıp temellerini birlikte öğrenelim.",
+                formulas: [
+                    "BMI = weight(kg)/height(m)²",
+                    "HR = 60-100 bpm",
+                    "BP = 120/80 mmHg (normal)"
+                ],
+                rules: "Hipokrat Yemini: Önce zarar verme",
+                expertTitle: "Tıp Uzmanı"
+            },
+            engineering: {
+                welcome: "Mühendislik - teknoloji dünyası! İnovasyonlar yaratalım.",
+                formulas: [
+                    "Stress = Force/Area",
+                    "Power = Work/Time",
+                    "Efficiency = Output/Input × 100%"
+                ],
+                rules: "Güvenlik Faktörü: SF = Ultimate/Allowable",
+                expertTitle: "Mühendislik Uzmanı"
+            },
+            computer_science: {
+                welcome: "Bilgisayar Bilimleri - gelecek teknolojisi! Kodlama dünyasını öğrenelim.",
+                formulas: [
+                    "O(n log n) - Quick Sort",
+                    "Big O: O(1), O(n), O(n²)",
+                    "Binary: 1010 = 10 decimal"
+                ],
+                rules: "DRY ilkesi: Kendini tekrar etme",
+                expertTitle: "Bilgisayar Bilimleri Uzmanı"
+            },
+            humanities: {
+                welcome: "Beşeri Bilimler - insanlık mirası! Kültürü ve tarihi inceleyelim.",
+                formulas: [
+                    "Tarih: Geçmiş - Şimdi - Gelecek",
+                    "Felsefe: Cogito, ergo sum",
+                    "Edebiyat: Şiirsel yapı ve ritim"
+                ],
+                rules: "Kültürler karşılıklı saygıyla bir arada yaşar",
+                expertTitle: "Beşeri Bilimler Uzmanı"
+            }
+        }
+    },
+    india: {
+        name: "भारत",
+        language: "hi",
+        greeting: "स्वागत है, प्रिय छात्र! EduUpAI प्लेटफॉर्म में आपका स्वागत है।",
+        themeColor: "#f97316",
+        disciplines: {
+            mathematics: {
+                welcome: "गणित - विज्ञानों की रानी! आइए संख्याओं की दुनिया का एक साथ अन्वेषण करें।",
+                formulas: [
+                    "∫x²dx = x³/3 + C",
+                    "e^(iπ) + 1 = 0",
+                    "Σ(n=1 to ∞) 1/n² = π²/6"
+                ],
+                rules: "पाइथागोरस प्रमेय: a² + b² = c²",
+                expertTitle: "गणित विशेषज्ञ"
+            },
+            physics: {
+                welcome: "भौतिकी - प्रकृति के नियमों को समझना! आइए ब्रह्मांड के रहस्यों को खोलें।",
+                formulas: [
+                    "F = ma (न्यूटन का दूसरा नियम)",
+                    "E = mc² (आइंस्टीन)",
+                    "PV = nRT (आदर्श गैस का नियम)"
+                ],
+                rules: "ऊर्जा संरक्षण: E_total = constant",
+                expertTitle: "भौतिकी विशेषज्ञ"
+            },
+            chemistry: {
+                welcome: "रसायन विज्ञान - पदार्थों की दुनिया! आइए तत्वों की रहस्यमय दुनिया का अन्वेषण करें।",
+                formulas: [
+                    "pH = -log[H+]",
+                    "K = [products]/[reactants]",
+                    "ΔG = ΔH - TΔS"
+                ],
+                rules: "अष्टक नियम: संयोजी कोश में 8 इलेक्ट्रॉन",
+                expertTitle: "रसायन विज्ञान विशेषज्ञ"
+            },
+            biology: {
+                welcome: "जीव विज्ञान - जीवन के रहस्य! आइए जीवित जीवों का अध्ययन करें।",
+                formulas: [
+                    "DNA: A-T, G-C",
+                    "ATP: एडेनोसाइन ट्राइफॉस्फेट",
+                    "प्रकाश संश्लेषण: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂"
+                ],
+                rules: "प्राकृतिक चयन के माध्यम से विकास होता है",
+                expertTitle: "जीव विज्ञान विशेषज्ञ"
+            },
+            medicine: {
+                welcome: "चिकित्सा - मानव स्वास्थ्य! आइए चिकित्सा की मूल बातें सीखें।",
+                formulas: [
+                    "BMI = weight(kg)/height(m)²",
+                    "HR = 60-100 bpm",
+                    "BP = 120/80 mmHg (normal)"
+                ],
+                rules: "हिप्पोक्रेटिस शपथ: पहले, हानि न करें",
+                expertTitle: "चिकित्सा विशेषज्ञ"
+            },
+            engineering: {
+                welcome: "इंजीनियरिंग - प्रौद्योगिकी की दुनिया! आइए नवाचार बनाएं।",
+                formulas: [
+                    "Stress = Force/Area",
+                    "Power = Work/Time",
+                    "Efficiency = Output/Input × 100%"
+                ],
+                rules: "सुरक्षा कारक: SF = Ultimate/Allowable",
+                expertTitle: "इंजीनियरिंग विशेषज्ञ"
+            },
+            computer_science: {
+                welcome: "कंप्यूटर विज्ञान - भविष्य की प्रौद्योगिकी! आइए कोडिंग की दुनिया सीखें।",
+                formulas: [
+                    "O(n log n) - Quick Sort",
+                    "Big O: O(1), O(n), O(n²)",
+                    "Binary: 1010 = 10 decimal"
+                ],
+                rules: "DRY सिद्धांत: खुद को दोहराएं नहीं",
+                expertTitle: "कंप्यूटर विज्ञान विशेषज्ञ"
+            },
+            humanities: {
+                welcome: "मानविकी - मानवता की विरासत! आइए संस्कृति और इतिहास का अध्ययन करें।",
+                formulas: [
+                    "इतिहास: अतीत - वर्तमान - भविष्य",
+                    "दर्शन: Cogito, ergo sum",
+                    "साहित्य: काव्य संरचना और लय"
+                ],
+                rules: "संस्कृतियां पारस्परिक सम्मान के साथ सह-अस्तित्व में रहती हैं",
+                expertTitle: "मानविकी विशेषज्ञ"
+            }
+        }
+    },
+    germany: {
+        name: "Deutschland",
+        language: "de",
+        greeting: "Willkommen, lieber Schüler! Willkommen auf der EduUpAI-Plattform.",
+        themeColor: "#22c55e",
+        disciplines: {
+            mathematics: {
+                welcome: "Mathematik - die Königin der Wissenschaften! Lassen Sie uns gemeinsam die Welt der Zahlen erkunden.",
+                formulas: [
+                    "∫x²dx = x³/3 + C",
+                    "e^(iπ) + 1 = 0",
+                    "Σ(n=1 to ∞) 1/n² = π²/6"
+                ],
+                rules: "Satz des Pythagoras: a² + b² = c²",
+                expertTitle: "Mathematik-Experte"
+            },
+            physics: {
+                welcome: "Physik - die Gesetze der Natur verstehen! Lassen Sie uns die Geheimnisse des Universums enthüllen.",
+                formulas: [
+                    "F = ma (Newtons 2. Gesetz)",
+                    "E = mc² (Einstein)",
+                    "PV = nRT (Ideales Gasgesetz)"
+                ],
+                rules: "Energieerhaltung: E_total = constant",
+                expertTitle: "Physik-Experte"
+            },
+            chemistry: {
+                welcome: "Chemie - die Welt der Materie! Lassen Sie uns die mysteriöse Welt der Elemente erkunden.",
+                formulas: [
+                    "pH = -log[H+]",
+                    "K = [products]/[reactants]",
+                    "ΔG = ΔH - TΔS"
+                ],
+                rules: "Oktettregel: 8 Elektronen in der Valenzschale",
+                expertTitle: "Chemie-Experte"
+            },
+            biology: {
+                welcome: "Biologie - die Geheimnisse des Lebens! Lassen Sie uns lebende Organismen studieren.",
+                formulas: [
+                    "DNA: A-T, G-C",
+                    "ATP: Adenosintriphosphat",
+                    "Photosynthese: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂"
+                ],
+                rules: "Evolution erfolgt durch natürliche Selektion",
+                expertTitle: "Biologie-Experte"
+            },
+            medicine: {
+                welcome: "Medizin - menschliche Gesundheit! Lassen Sie uns medizinische Grundlagen lernen.",
+                formulas: [
+                    "BMI = weight(kg)/height(m)²",
+                    "HR = 60-100 bpm",
+                    "BP = 120/80 mmHg (normal)"
+                ],
+                rules: "Hippokratischer Eid: Erstens, keinen Schaden anrichten",
+                expertTitle: "Medizin-Experte"
+            },
+            engineering: {
+                welcome: "Ingenieurwesen - die Welt der Technologie! Lassen Sie uns Innovationen schaffen.",
+                formulas: [
+                    "Stress = Force/Area",
+                    "Power = Work/Time",
+                    "Efficiency = Output/Input × 100%"
+                ],
+                rules: "Sicherheitsfaktor: SF = Ultimate/Allowable",
+                expertTitle: "Ingenieurwesen-Experte"
+            },
+            computer_science: {
+                welcome: "Informatik - Technologie der Zukunft! Lassen Sie uns die Welt des Programmierens lernen.",
+                formulas: [
+                    "O(n log n) - Quick Sort",
+                    "Big O: O(1), O(n), O(n²)",
+                    "Binary: 1010 = 10 decimal"
+                ],
+                rules: "DRY-Prinzip: Don't Repeat Yourself",
+                expertTitle: "Informatik-Experte"
+            },
+            humanities: {
+                welcome: "Geisteswissenschaften - das Erbe der Menschheit! Lassen Sie uns Kultur und Geschichte studieren.",
+                formulas: [
+                    "Geschichte: Vergangenheit - Gegenwart - Zukunft",
+                    "Philosophie: Cogito, ergo sum",
+                    "Literatur: Poetische Struktur und Rhythmus"
+                ],
+                rules: "Kulturen koexistieren mit gegenseitigem Respekt",
+                expertTitle: "Geisteswissenschaften-Experte"
+            }
+        }
+    },
+    france: {
+        name: "France",
+        language: "fr",
+        greeting: "Bienvenue, cher étudiant! Bienvenue sur la plateforme EduUpAI.",
+        themeColor: "#a855f7",
+        disciplines: {
+            mathematics: {
+                welcome: "Mathématiques - la reine des sciences! Explorons ensemble le monde des nombres.",
+                formulas: [
+                    "∫x²dx = x³/3 + C",
+                    "e^(iπ) + 1 = 0",
+                    "Σ(n=1 to ∞) 1/n² = π²/6"
+                ],
+                rules: "Théorème de Pythagore: a² + b² = c²",
+                expertTitle: "Expert en Mathématiques"
+            },
+            physics: {
+                welcome: "Physique - comprendre les lois de la nature! Dévoilons les secrets de l'univers.",
+                formulas: [
+                    "F = ma (2ème loi de Newton)",
+                    "E = mc² (Einstein)",
+                    "PV = nRT (Loi des gaz parfaits)"
+                ],
+                rules: "Conservation de l'énergie: E_total = constant",
+                expertTitle: "Expert en Physique"
+            },
+            chemistry: {
+                welcome: "Chimie - le monde de la matière! Explorons le monde mystérieux des éléments.",
+                formulas: [
+                    "pH = -log[H+]",
+                    "K = [products]/[reactants]",
+                    "ΔG = ΔH - TΔS"
+                ],
+                rules: "Règle de l'octet: 8 électrons dans la couche de valence",
+                expertTitle: "Expert en Chimie"
+            },
+            biology: {
+                welcome: "Biologie - les secrets de la vie! Étudions les organismes vivants.",
+                formulas: [
+                    "DNA: A-T, G-C",
+                    "ATP: Adénosine triphosphate",
+                    "Photosynthèse: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂"
+                ],
+                rules: "L'évolution se produit par sélection naturelle",
+                expertTitle: "Expert en Biologie"
+            },
+            medicine: {
+                welcome: "Médecine - santé humaine! Apprenons les bases médicales.",
+                formulas: [
+                    "BMI = weight(kg)/height(m)²",
+                    "HR = 60-100 bpm",
+                    "BP = 120/80 mmHg (normal)"
+                ],
+                rules: "Serment d'Hippocrate: D'abord, ne pas nuire",
+                expertTitle: "Expert en Médecine"
+            },
+            engineering: {
+                welcome: "Ingénierie - le monde de la technologie! Créons des innovations.",
+                formulas: [
+                    "Stress = Force/Area",
+                    "Power = Work/Time",
+                    "Efficiency = Output/Input × 100%"
+                ],
+                rules: "Facteur de sécurité: SF = Ultimate/Allowable",
+                expertTitle: "Expert en Ingénierie"
+            },
+            computer_science: {
+                welcome: "Informatique - technologie du futur! Apprenons le monde de la programmation.",
+                formulas: [
+                    "O(n log n) - Quick Sort",
+                    "Big O: O(1), O(n), O(n²)",
+                    "Binary: 1010 = 10 decimal"
+                ],
+                rules: "Principe DRY: Don't Repeat Yourself",
+                expertTitle: "Expert en Informatique"
+            },
+            humanities: {
+                welcome: "Sciences humaines - l'héritage de l'humanité! Étudions la culture et l'histoire.",
+                formulas: [
+                    "Histoire: Passé - Présent - Futur",
+                    "Philosophie: Cogito, ergo sum",
+                    "Littérature: Structure poétique et rythme"
+                ],
+                rules: "Les cultures coexistent avec respect mutuel",
+                expertTitle: "Expert en Sciences Humaines"
+            }
+        }
+    },
+    japan: {
+        name: "日本",
+        language: "ja",
+        greeting: "ようこそ、親愛なる学生！EduUpAIプラットフォームへようこそ。",
+        themeColor: "#ec4899",
+        disciplines: {
+            mathematics: {
+                welcome: "数学 - 科学の女王！一緒に数字の世界を探求しましょう。",
+                formulas: [
+                    "∫x²dx = x³/3 + C",
+                    "e^(iπ) + 1 = 0",
+                    "Σ(n=1 to ∞) 1/n² = π²/6"
+                ],
+                rules: "ピタゴラスの定理: a² + b² = c²",
+                expertTitle: "数学の専門家"
+            },
+            physics: {
+                welcome: "物理学 - 自然の法則を理解する！宇宙の秘密を一緒に明らかにしましょう。",
+                formulas: [
+                    "F = ma (ニュートンの第2法則)",
+                    "E = mc² (アインシュタイン)",
+                    "PV = nRT (理想気体の法則)"
+                ],
+                rules: "エネルギー保存: E_total = constant",
+                expertTitle: "物理学の専門家"
+            },
+            chemistry: {
+                welcome: "化学 - 物質の世界！元素の神秘的な世界を探求しましょう。",
+                formulas: [
+                    "pH = -log[H+]",
+                    "K = [products]/[reactants]",
+                    "ΔG = ΔH - TΔS"
+                ],
+                rules: "オクテット則: 価電子殻に8電子",
+                expertTitle: "化学の専門家"
+            },
+            biology: {
+                welcome: "生物学 - 生命の秘密！生物を一緒に研究しましょう。",
+                formulas: [
+                    "DNA: A-T, G-C",
+                    "ATP: アデノシン三リン酸",
+                    "光合成: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂"
+                ],
+                rules: "進化は自然選択を通じて起こる",
+                expertTitle: "生物学の専門家"
+            },
+            medicine: {
+                welcome: "医学 - 人間の健康！医学の基礎を学びましょう。",
+                formulas: [
+                    "BMI = weight(kg)/height(m)²",
+                    "HR = 60-100 bpm",
+                    "BP = 120/80 mmHg (normal)"
+                ],
+                rules: "ヒポクラテスの誓い: まず、害をなさないこと",
+                expertTitle: "医学の専門家"
+            },
+            engineering: {
+                welcome: "工学 - 技術の世界！イノベーションを作りましょう。",
+                formulas: [
+                    "Stress = Force/Area",
+                    "Power = Work/Time",
+                    "Efficiency = Output/Input × 100%"
+                ],
+                rules: "安全係数: SF = Ultimate/Allowable",
+                expertTitle: "工学の専門家"
+            },
+            computer_science: {
+                welcome: "コンピュータサイエンス - 未来の技術！プログラミングの世界を学びましょう。",
+                formulas: [
+                    "O(n log n) - Quick Sort",
+                    "Big O: O(1), O(n), O(n²)",
+                    "Binary: 1010 = 10 decimal"
+                ],
+                rules: "DRY原則: Don't Repeat Yourself",
+                expertTitle: "コンピュータサイエンスの専門家"
+            },
+            humanities: {
+                welcome: "人文科学 - 人類の遺産！文化と歴史を研究しましょう。",
+                formulas: [
+                    "歴史: 過去 - 現在 - 未来",
+                    "哲学: Cogito, ergo sum",
+                    "文学: 詩的構造とリズム"
+                ],
+                rules: "文化は相互尊重で共存する",
+                expertTitle: "人文科学の専門家"
+            }
+        }
+    }
+};
+
+// Global state for selected culture and discipline
+let selectedCulture = 'uzbekistan';
+let selectedDiscipline = null;
+
+// Function to update discipline
+function updateDiscipline() {
+    const disciplineSelect = document.getElementById('discipline-select');
+    selectedDiscipline = disciplineSelect.value;
+    
+    if (selectedDiscipline && cultureMatrix[selectedCulture]) {
+        const disciplineData = cultureMatrix[selectedCulture].disciplines[selectedDiscipline];
+        if (disciplineData && window.malika3D) {
+            window.malika3D.speak(disciplineData.welcome);
+            window.malika3D.aiPanel.innerText = `${disciplineData.expertTitle}: ${disciplineData.welcome}`;
+        }
+    }
+}
+
+// Function to adapt classroom to culture
+function adaptClassroomToCulture() {
+    const geoSelect = document.getElementById('geoSelect');
+    if (!geoSelect) return;
+    
+    selectedCulture = geoSelect.value;
+    
+    if (cultureMatrix[selectedCulture]) {
+        const culture = cultureMatrix[selectedCulture];
+        
+        // Update theme color
+        document.documentElement.style.setProperty('--theme-color', culture.themeColor);
+        
+        // Update greeting
+        if (window.malika3D) {
+            window.malika3D.speak(culture.greeting);
+            window.malika3D.aiPanel.innerText = culture.greeting;
+        }
+        
+        // Update discipline if selected
+        if (selectedDiscipline) {
+            updateDiscipline();
+        }
+    }
+}
+
+// ============================================
+// PERFORMANCE OPTIMIZATION CONFIG
+// ============================================
+const PERFORMANCE_CONFIG = {
+    maxPixelRatio: 2,
+    targetFPS: 60,
+    lowEndThreshold: 30,
+    thermalThrottleFPS: 24,
+    analyserFFTSize: 256,
+    morphUpdateInterval: 2, // Update morph targets every N frames
+    breathAnimationSpeed: 1.2
+};
+
+// ============================================
+// MALIKA 3D CORE ENGINE
+// ============================================
+class Malika3DEngine {
+    constructor() {
+        this.container = document.getElementById('canvas-container');
+        this.loadingOverlay = document.getElementById('loading-overlay');
+        
+        // Status elements
+        this.modelStatus = document.getElementById('model-status');
+        this.audioStatus = document.getElementById('audio-status');
+        this.aiStatus = document.getElementById('ai-status');
+        this.fpsCounter = document.getElementById('fps-counter');
+        this.aiPanel = document.getElementById('ai-panel');
+        
+        // Status dots
+        this.modelDot = document.getElementById('model-dot');
+        this.audioDot = document.getElementById('audio-dot');
+        this.aiDot = document.getElementById('ai-dot');
+        this.fpsDot = document.getElementById('fps-dot');
+        
+        // Three.js components
+        this.scene = null;
+        this.camera = null;
+        this.renderer = null;
+        this.controls = null;
+        this.clock = new THREE.Clock();
+        
+        // Avatar components
+        this.avatar = null;
+        this.mixer = null;
+        this.headMesh = null;
+        this.morphTargetDictionary = null;
+        
+        // Audio components
+        this.audioContext = null;
+        this.analyser = null;
+        this.dataArray = null;
+        this.audioSource = null;
+        this.isAudioActive = false;
+        
+        // Performance tracking
+        this.frameCount = 0;
+        this.lastFPSUpdate = 0;
+        this.currentFPS = 60;
+        this.frameSkipCounter = 0;
+        
+        // AI Brain (WebLLM/Transformers.js stub)
+        this.aiEngine = null;
+        this.isAIReady = false;
+        
+        this.init();
+    }
+    
+    async init() {
+        try {
+            this.initScene();
+            this.setupLighting();
+            this.setupRenderer();
+            await this.loadAvatar();
+            this.initAudio();
+            this.initAIBrain();
+            this.setupControls();
+            this.setupEventListeners();
+            this.animate();
+            
+            // Hide loading screen
+            setTimeout(() => {
+                this.loadingOverlay.classList.add('hidden');
+            }, 1000);
+            
+        } catch (error) {
+            console.error('Malika 3D initialization error:', error);
+            this.aiPanel.innerText = 'Xatolik yuz berdi. Sahifani qayta yuklang.';
+        }
+    }
+    
+    initScene() {
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0x050508);
+        this.scene.fog = new THREE.FogExp2(0x050508, 0.08);
+        
+        // Camera setup
+        this.camera = new THREE.PerspectiveCamera(
+            45,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            100
+        );
+        this.camera.position.set(0, 1.4, 3.0);
+        this.camera.lookAt(0, 1.2, 0);
+    }
+    
+    setupLighting() {
+        // Ambient light for base illumination
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        this.scene.add(ambientLight);
+        
+        // Key light (main illumination)
+        const keyLight = new THREE.DirectionalLight(0xfff5eb, 1.0);
+        keyLight.position.set(2, 3, 2);
+        this.scene.add(keyLight);
+        
+        // Fill light (soft fill from opposite side)
+        const fillLight = new THREE.DirectionalLight(0xbfd3ff, 0.4);
+        fillLight.position.set(-2, 1, 1);
+        this.scene.add(fillLight);
+        
+        // Rim light (backlight for contour)
+        const rimLight = new THREE.DirectionalLight(0xffffff, 0.6);
+        rimLight.position.set(0, 2, -2);
+        this.scene.add(rimLight);
+    }
+    
+    setupRenderer() {
+        this.renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: false,
+            powerPreference: "high-performance",
+            preserveDrawingBuffer: false
+        });
+        
+        // Performance optimization: Cap pixel ratio
+        const pixelRatio = Math.min(window.devicePixelRatio, PERFORMANCE_CONFIG.maxPixelRatio);
+        this.renderer.setPixelRatio(pixelRatio);
+        
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.0;
+        
+        // Disable shadow maps for performance on low-end devices
+        this.renderer.shadowMap.enabled = false;
+        
+        this.container.appendChild(this.renderer.domElement);
+    }
+    
+    async loadAvatar() {
+        this.modelStatus.innerText = 'Yuklanmoqda...';
+        
+        const loader = new GLTFLoader();
+        
+        try {
+            // Load malika.glb from local directory
+            const gltf = await loader.loadAsync('./malika.glb');
+            
+            this.avatar = gltf.scene;
+            this.avatar.position.set(0, 0, 0);
+            this.scene.add(this.avatar);
+            
+            // Setup animation mixer
+            this.mixer = new THREE.AnimationMixer(this.avatar);
+            
+            // Find and play idle animation
+            if (gltf.animations.length > 0) {
+                const idleClip = gltf.animations.find(anim => 
+                    anim.name.toLowerCase().includes('idle') || 
+                    anim.name.toLowerCase().includes('breath') ||
+                    anim.name.toLowerCase().includes('stand')
+                ) || gltf.animations[0];
+                
+                const idleAction = this.mixer.clipAction(idleClip);
+                idleAction.play();
+            }
+            
+            // Find head mesh with morph targets for lip-sync
+            this.avatar.traverse((child) => {
+                if (child.isMesh && child.morphTargetDictionary) {
+                    this.headMesh = child;
+                    this.morphTargetDictionary = child.morphTargetDictionary;
+                }
+            });
+            
+            this.modelStatus.innerText = 'Yuklandi ✓';
+            this.modelDot.classList.add('active');
+            
+        } catch (error) {
+            console.error('Avatar loading error:', error);
+            this.modelStatus.innerText = 'Xatolik';
+            
+            // Create fallback procedural avatar
+            this.createFallbackAvatar();
+        }
+    }
+    
+    createFallbackAvatar() {
+        // Create simple procedural avatar if model fails to load
+        this.avatar = new THREE.Group();
+        
+        // Body
+        const bodyGeo = new THREE.CylinderGeometry(0.15, 0.2, 1.0, 32);
+        const bodyMat = new THREE.MeshStandardMaterial({ color: 0x0044ff, roughness: 0.5 });
+        const body = new THREE.Mesh(bodyGeo, bodyMat);
+        body.position.y = 0.5;
+        this.avatar.add(body);
+        
+        // Head
+        const headGeo = new THREE.SphereGeometry(0.15, 32, 32);
+        const headMat = new THREE.MeshStandardMaterial({ color: 0xfadbc8, roughness: 0.4 });
+        this.headMesh = new THREE.Mesh(headGeo, headMat);
+        this.headMesh.position.y = 1.15;
+        this.avatar.add(this.headMesh);
+        
+        // Add morph targets for lip-sync simulation
+        this.headMesh.morphTargetDictionary = {
+            'jawOpen': 0,
+            'mouthSmile': 1
+        };
+        this.headMesh.morphTargetInfluences = [0, 0];
+        
+        this.scene.add(this.avatar);
+        this.modelStatus.innerText = 'Protsedural ✓';
+        this.modelDot.classList.add('active');
+    }
+    
+    initAudio() {
+        const startBtn = document.getElementById('start-audio-btn');
+        
+        startBtn.addEventListener('click', async () => {
+            try {
+                // Initialize AudioContext
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Create analyser
+                this.analyser = this.audioContext.createAnalyser();
+                this.analyser.fftSize = PERFORMANCE_CONFIG.analyserFFTSize;
+                this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+                
+                // Create audio element for TTS playback
+                this.audioElement = new Audio();
+                this.audioElement.crossOrigin = "anonymous";
+                
+                // Connect audio to analyser
+                const source = this.audioContext.createMediaElementSource(this.audioElement);
+                source.connect(this.analyser);
+                this.analyser.connect(this.audioContext.destination);
+                
+                this.isAudioActive = true;
+                this.audioStatus.innerText = 'Faol ✓';
+                this.audioDot.classList.add('active');
+                startBtn.style.display = 'none';
+                
+                this.aiPanel.innerText = 'Audio faollashtirildi. Endi suhbatlashishimiz mumkin!';
+                
+            } catch (error) {
+                console.error('Audio initialization error:', error);
+                this.audioStatus.innerText = 'Xatolik';
+            }
+        });
+    }
+    
+    initAIBrain() {
+        this.aiStatus.innerText = 'WebLLM tayyor...';
+        
+        // WebLLM/Transformers.js boilerplate configuration
+        // This is a stub - actual implementation would load quantized models
+        const AI_CONFIG = {
+            engine: 'webllm', // or 'transformers-js'
+            model: 'Llama-3-8B-Instruct-q4f16_1-MLC', // Quantized model
+            model_lib: 'https://huggingface.co/mlc-ai/Llama-3-8B-Instruct-q4f16_1-MLC',
+            personality: MALIKA_PERSONALITY,
+            max_tokens: 512,
+            temperature: 0.7
+        };
+        
+        // Simulate AI initialization
+        setTimeout(() => {
+            this.isAIReady = true;
+            this.aiStatus.innerText = 'Tayyor ✓';
+            this.aiDot.classList.add('active');
+            console.log('Malika AI Brain initialized with config:', AI_CONFIG);
+        }, 1500);
+    }
+    
+    setupControls() {
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.05;
+        this.controls.minDistance = 1.5;
+        this.controls.maxDistance = 5;
+        this.controls.maxPolarAngle = Math.PI / 2 + 0.2;
+        this.controls.target.set(0, 1.2, 0);
+    }
+    
+    setupEventListeners() {
+        window.addEventListener('resize', () => this.onWindowResize());
+        
+        // Thermal throttling detection
+        if ('performance' in window && 'onresourcetimingbufferfull' in window.performance) {
+            this.detectThermalThrottling();
+        }
+    }
+    
+    detectThermalThrottling() {
+        // Simple thermal throttling detection based on FPS drops
+        setInterval(() => {
+            if (this.currentFPS < PERFORMANCE_CONFIG.thermalThrottleFPS) {
+                console.warn('Thermal throttling detected, reducing quality');
+                this.renderer.setPixelRatio(1);
+                PERFORMANCE_CONFIG.morphUpdateInterval = 4;
+            }
+        }, 5000);
+    }
+    
+    updateLipSync() {
+        if (!this.isAudioActive || !this.analyser || !this.headMesh) return;
+        
+        // Skip frames for performance on low-end devices
+        this.frameSkipCounter++;
+        if (this.frameSkipCounter % PERFORMANCE_CONFIG.morphUpdateInterval !== 0) return;
+        
+        this.analyser.getByteFrequencyData(this.dataArray);
+        
+        // Calculate average volume
+        let totalVolume = 0;
+        for (let i = 0; i < this.dataArray.length; i++) {
+            totalVolume += this.dataArray[i];
+        }
+        const averageVolume = totalVolume / this.dataArray.length;
+        
+        // Map volume to morph targets
+        const jawOpenAmount = Math.min(averageVolume / 50, 1.0);
+        const smileAmount = Math.min(averageVolume / 80, 0.5);
+        
+        if (this.morphTargetDictionary) {
+            const jawIndex = this.morphTargetDictionary['jawOpen'];
+            const smileIndex = this.morphTargetDictionary['mouthSmile'];
+            
+            if (jawIndex !== undefined) {
+                // Smooth interpolation for natural movement
+                this.headMesh.morphTargetInfluences[jawIndex] = THREE.MathUtils.lerp(
+                    this.headMesh.morphTargetInfluences[jawIndex] || 0,
+                    jawOpenAmount,
+                    0.3
+                );
+            }
+            
+            if (smileIndex !== undefined) {
+                this.headMesh.morphTargetInfluences[smileIndex] = THREE.MathUtils.lerp(
+                    this.headMesh.morphTargetInfluences[smileIndex] || 0,
+                    smileAmount,
+                    0.2
+                );
+            }
+        }
+    }
+    
+    updateBreathingAnimation() {
+        if (!this.avatar) return;
+        
+        const time = this.clock.getElapsedTime();
+        
+        // Subtle breathing animation
+        const breathScale = Math.sin(time * PERFORMANCE_CONFIG.breathAnimationSpeed) * 0.008;
+        this.avatar.position.y = breathScale;
+        
+        // Slight head movement for liveliness
+        if (this.headMesh) {
+            this.headMesh.rotation.y = Math.sin(time * 0.5) * 0.03;
+        }
+    }
+    
+    updateFPS() {
+        this.frameCount++;
+        const now = performance.now();
+        
+        if (now - this.lastFPSUpdate >= 1000) {
+            this.currentFPS = this.frameCount;
+            this.frameCount = 0;
+            this.lastFPSUpdate = now;
+            
+            this.fpsCounter.innerText = this.currentFPS;
+            
+            // Update FPS dot color based on performance
+            if (this.currentFPS >= PERFORMANCE_CONFIG.targetFPS - 10) {
+                this.fpsDot.style.background = '#00ffcc';
+            } else if (this.currentFPS >= PERFORMANCE_CONFIG.lowEndThreshold) {
+                this.fpsDot.style.background = '#ffaa00';
+            } else {
+                this.fpsDot.style.background = '#ff3366';
+            }
+        }
+    }
+    
+    animate() {
+        requestAnimationFrame(() => this.animate());
+        
+        const delta = this.clock.getDelta();
+        
+        // Update animation mixer
+        if (this.mixer) {
+            this.mixer.update(delta);
+        }
+        
+        // Update controls
+        if (this.controls) {
+            this.controls.update();
+        }
+        
+        // Update lip-sync
+        this.updateLipSync();
+        
+        // Update breathing animation
+        this.updateBreathingAnimation();
+        
+        // Update FPS counter
+        this.updateFPS();
+        
+        // Render
+        this.renderer.render(this.scene, this.camera);
+    }
+    
+    onWindowResize() {
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+        
+        const pixelRatio = Math.min(window.devicePixelRatio, PERFORMANCE_CONFIG.maxPixelRatio);
+        this.renderer.setPixelRatio(pixelRatio);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    
+    // Public API for external control
+    speak(text) {
+        if (!this.isAudioActive) {
+            console.warn('Audio not active. Call startAudio() first.');
+            return;
+        }
+        
+        // Use Web Speech API for TTS
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'uz-UZ';
+            utterance.rate = 0.9;
+            utterance.pitch = 1.0;
+            
+            // Connect to audio analyser for lip-sync
+            utterance.onstart = () => {
+                this.aiPanel.innerText = text;
+            };
+            
+            window.speechSynthesis.speak(utterance);
+        } else {
+            // Fallback: just display text
+            this.aiPanel.innerText = text;
+        }
+    }
+    
+    setPersonality(mode) {
+        // Switch between mentor, disciplinarian, marketer modes
+        if (MALIKA_PERSONALITY.personalities[mode]) {
+            console.log('Switching to', mode, 'mode');
+            // Update visual cues, lighting, etc. based on personality
+        }
+    }
+}
+
+// ============================================
+// LESSON PLAYER SYSTEM
+// ============================================
+class LessonPlayer {
+    constructor(malika3D) {
+        this.malika3D = malika3D;
+        this.currentLesson = null;
+        this.currentSectionIndex = 0;
+        this.isPlaying = false;
+        this.isPaused = false;
+        
+        // UI elements
+        this.lessonSelect = document.getElementById('lesson-select');
+        this.lessonPanel = document.getElementById('lesson-panel');
+        this.lessonTitle = document.getElementById('lesson-title');
+        this.lessonSubject = document.getElementById('lesson-subject');
+        this.lessonLevel = document.getElementById('lesson-level');
+        this.lessonDuration = document.getElementById('lesson-duration');
+        this.lessonProgressText = document.getElementById('lesson-progress-text');
+        this.progressFill = document.getElementById('progress-fill');
+        this.lessonSectionsContainer = document.getElementById('lesson-sections');
+        this.prevBtn = document.getElementById('prev-section-btn');
+        this.playBtn = document.getElementById('play-pause-btn');
+        this.nextBtn = document.getElementById('next-section-btn');
+        
+        this.init();
+    }
+    
+    init() {
+        // Lesson selector
+        this.lessonSelect.addEventListener('change', (e) => {
+            if (e.target.value) {
+                this.loadLesson(e.target.value);
+            }
+        });
+        
+        // Navigation buttons
+        this.prevBtn.addEventListener('click', () => this.previousSection());
+        this.playBtn.addEventListener('click', () => this.togglePlayPause());
+        this.nextBtn.addEventListener('click', () => this.nextSection());
+        
+        // Load progress from localStorage
+        this.loadProgress();
+    }
+    
+    async loadLesson(lessonPath) {
+        try {
+            const response = await fetch(`./lessons/${lessonPath}`);
+            if (!response.ok) throw new Error('Lesson not found');
+            
+            this.currentLesson = await response.json();
+            this.currentSectionIndex = 0;
+            this.isPlaying = false;
+            this.isPaused = false;
+            
+            // Update UI
+            this.lessonPanel.classList.add('active');
+            this.lessonTitle.innerText = this.currentLesson.title;
+            this.lessonSubject.innerText = this.currentLesson.subject;
+            this.lessonLevel.innerText = this.currentLesson.level;
+            this.lessonDuration.innerText = `${this.currentLesson.duration_minutes} daqiqa`;
+            
+            // Set personality
+            if (this.currentLesson.personality) {
+                this.malika3D.setPersonality(this.currentLesson.personality);
+            }
+            
+            this.renderSections();
+            this.updateProgress();
+            this.updateButtons();
+            
+            // Auto-start first section
+            this.playSection(0);
+            
+        } catch (error) {
+            console.error('Error loading lesson:', error);
+            this.malika3D.aiPanel.innerText = 'Darsni yuklashda xatolik yuz berdi.';
+        }
+    }
+    
+    renderSections() {
+        this.lessonSectionsContainer.innerHTML = '';
+        
+        this.currentLesson.sections.forEach((section, index) => {
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'lesson-section';
+            sectionDiv.id = `section-${index}`;
+            
+            sectionDiv.innerHTML = `
+                <h4>${index + 1}. ${section.title}</h4>
+                <p>${section.type}</p>
+            `;
+            
+            this.lessonSectionsContainer.appendChild(sectionDiv);
+        });
+    }
+    
+    playSection(index) {
+        if (!this.currentLesson || index >= this.currentLesson.sections.length) return;
+        
+        this.currentSectionIndex = index;
+        const section = this.currentLesson.sections[index];
+        
+        // Highlight current section
+        document.querySelectorAll('.lesson-section').forEach((el, i) => {
+            el.classList.toggle('active', i === index);
+        });
+        
+        // Speak the content
+        const text = section.content.text;
+        this.malika3D.speak(text);
+        
+        // Update progress
+        this.updateProgress();
+        this.updateButtons();
+        
+        // Save progress
+        this.saveProgress();
+        
+        // Auto-advance to next section after speaking
+        if (this.isPlaying && !this.isPaused) {
+            setTimeout(() => {
+                if (this.currentSectionIndex < this.currentLesson.sections.length - 1) {
+                    this.nextSection();
+                } else {
+                    this.isPlaying = false;
+                    this.playBtn.innerText = '▶ Qayta Boshlash';
+                    this.malika3D.aiPanel.innerText = 'Dars tugadi! Bravissimo!';
+                }
+            }, this.getEstimatedSpeakingTime(text) * 1000);
+        }
+    }
+    
+    getEstimatedSpeakingTime(text) {
+        // Rough estimate: 150 words per minute
+        const words = text.split(/\s+/).length;
+        return (words / 150) * 60; // seconds
+    }
+    
+    previousSection() {
+        if (this.currentSectionIndex > 0) {
+            this.playSection(this.currentSectionIndex - 1);
+        }
+    }
+    
+    nextSection() {
+        if (this.currentLesson && this.currentSectionIndex < this.currentLesson.sections.length - 1) {
+            this.playSection(this.currentSectionIndex + 1);
+        }
+    }
+    
+    togglePlayPause() {
+        if (!this.currentLesson) return;
+        
+        if (this.isPlaying) {
+            this.isPaused = !this.isPaused;
+            this.playBtn.innerText = this.isPaused ? '▶ Davom Etirish' : '⏸ Pauza';
+        } else {
+            this.isPlaying = true;
+            this.isPaused = false;
+            this.playBtn.innerText = '⏸ Pauza';
+            this.playSection(0);
+        }
+    }
+    
+    updateProgress() {
+        if (!this.currentLesson) return;
+        
+        const current = this.currentSectionIndex + 1;
+        const total = this.currentLesson.sections.length;
+        const percentage = (current / total) * 100;
+        
+        this.lessonProgressText.innerText = `${current}/${total}`;
+        this.progressFill.style.width = `${percentage}%`;
+    }
+    
+    updateButtons() {
+        if (!this.currentLesson) return;
+        
+        this.prevBtn.disabled = this.currentSectionIndex === 0;
+        this.nextBtn.disabled = this.currentSectionIndex === this.currentLesson.sections.length - 1;
+    }
+    
+    saveProgress() {
+        if (!this.currentLesson) return;
+        
+        const progress = {
+            lessonId: this.currentLesson.id,
+            sectionIndex: this.currentSectionIndex,
+            timestamp: Date.now()
+        };
+        
+        localStorage.setItem('malika_lesson_progress', JSON.stringify(progress));
+    }
+    
+    loadProgress() {
+        try {
+            const saved = localStorage.getItem('malika_lesson_progress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                console.log('Loaded lesson progress:', progress);
+                // Could auto-resume lesson here
+            }
+        } catch (error) {
+            console.error('Error loading progress:', error);
+        }
+    }
+}
+
+// Initialize Malika 3D Engine
+window.addEventListener('DOMContentLoaded', () => {
+    window.malika3D = new Malika3DEngine();
+    
+    // Initialize Lesson Player
+    window.lessonPlayer = new LessonPlayer(window.malika3D);
+    
+    // Expose API for external control
+    window.MalikaAPI = {
+        speak: (text) => window.malika3D.speak(text),
+        setPersonality: (mode) => window.malika3D.setPersonality(mode),
+        loadLesson: (path) => window.lessonPlayer.loadLesson(path),
+        playSection: (index) => window.lessonPlayer.playSection(index)
+    };
+});
+</script>
+
+</body>
+</html>

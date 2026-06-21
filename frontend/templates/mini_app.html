@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EduUp AI Academy</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="/static/css/mini-app-lite.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 EduUp AI Academy</h1>
+            <p>AI-powered education platform</p>
+        </div>
+        
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+        </div>
+        
+        <div id="content" class="hidden">
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="courses-count">0</div>
+                    <div class="stat-label">Kurslar</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="progress-value">0%</div>
+                    <div class="stat-label">Progress</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">📚 Kurslar</div>
+                <div class="card-desc">IELTS, DTM, Matematika va boshqa kurslar</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">🎯 Imtihonlar</div>
+                <div class="card-desc">Online imtihonlar va natijalar</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">🤖 AI O'qituvchi</div>
+                <div class="card-desc">Shaxsiy AI o'qituvchi</div>
+            </div>
+            
+            <button class="btn" onclick="openCourses()">Kurslarni Ko'rish</button>
+            <button class="btn btn-secondary" onclick="openProfile()">Profil</button>
+        </div>
+    </div>
+    
+    <script src="/static/js/lazy-loader.js"></script>
+    <script src="/static/js/mini-app-lite.js"></script>
+    <script>
+        // Initialize Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        
+        // Enable theme integration
+        tg.ready();
+        tg.expand();
+        
+        // Simulate loading data
+        setTimeout(() => {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('content').classList.remove('hidden');
+            
+            // Animate stats
+            animateValue('courses-count', 0, 12, 1000);
+            animateValue('progress-value', 0, 75, 1000, '%');
+        }, 800);
+        
+        function animateValue(id, start, end, duration, suffix = '') {
+            const obj = document.getElementById(id);
+            const range = end - start;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const value = Math.floor(start + range * progress);
+                obj.textContent = value + suffix;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        function openCourses() {
+            tg.showAlert('Kurslar tez orada ochiladi!');
+        }
+        
+        function openProfile() {
+            tg.showAlert('Profil tez orada ochiladi!');
+        }
+        
+        // Handle back button
+        tg.BackButton.onClick(() => {
+            tg.close();
+        });
+    </script>
+</body>
+</html>
+</html>

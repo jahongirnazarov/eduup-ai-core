@@ -1,0 +1,90 @@
+{
+  "standard": "GRE",
+  "duration": 2700,
+  "listening": {
+    "audioUrl": "https://cloudinary.com/your-audio/gre-listening.mp3",
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple-choice",
+        "question": "What is the primary focus of the lecture?",
+        "options": ["Literature", "Psychology", "Economics", "Biology"],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 2,
+        "type": "multiple-choice",
+        "question": "According to the speaker, what method is most effective for research?",
+        "options": ["Qualitative analysis", "Quantitative analysis", "Mixed methods", "Observation only"],
+        "correctAnswer": 2,
+        "points": 1
+      }
+    ]
+  },
+  "reading": {
+    "passage": "The Cognitive Revolution and Its Impact on Psychology\n\nThe cognitive revolution of the 1950s and 1960s represented a fundamental shift in psychological research and theory. Moving away from the behaviorist focus on observable behavior and environmental conditioning, cognitive psychologists turned their attention to internal mental processes such as thinking, memory, and problem-solving.\n\nThis shift was influenced by several factors. The development of the computer provided a powerful metaphor for understanding mental processes. Just as computers process information through input, storage, and retrieval operations, cognitive psychologists proposed that the human mind similarly processes information. This information-processing approach led to new models of memory, attention, and language comprehension.\n\nLinguistics also played a crucial role in the cognitive revolution. Noam Chomsky's critique of behaviorist accounts of language acquisition demonstrated that behaviorist principles could not explain the rapid and creative nature of language learning in children. Chomsky argued for innate linguistic structures, suggesting that the human mind comes pre-wired with certain cognitive capabilities.\n\nThe cognitive revolution also benefited from advances in neuroscience. As researchers developed new techniques for studying brain function, they were able to link cognitive processes to specific neural mechanisms. This integration of psychology and neuroscience has continued to deepen our understanding of how the brain supports mental functions.\n\nOne of the most significant contributions of cognitive psychology has been the development of detailed models of memory. The multi-store model, proposed by Atkinson and Shiffrin, distinguished between sensory memory, short-term memory, and long-term memory, each with different characteristics and functions. Later models, such as Baddeley's working memory model, provided more nuanced accounts of how information is actively processed and manipulated.\n\nCognitive psychology has also made important contributions to our understanding of problem-solving and decision-making. Research in this area has identified various cognitive biases and heuristics that can lead to systematic errors in judgment. This work has practical applications in fields ranging from economics to medicine, where understanding these biases can improve decision-making processes.\n\nToday, cognitive psychology continues to evolve, incorporating insights from evolutionary psychology, artificial intelligence, and cultural psychology. The field has expanded to include the study of consciousness, emotion, and social cognition, demonstrating that the cognitive revolution opened doors to a rich and diverse exploration of the human mind.",
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple-choice",
+        "question": "According to the passage, what did behaviorists focus on?",
+        "options": [
+          "Internal mental processes",
+          "Observable behavior and environmental conditioning",
+          "Brain structure and function",
+          "Emotional development"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 2,
+        "type": "multiple-choice",
+        "question": "What metaphor did computers provide for understanding mental processes?",
+        "options": [
+          "A storage device",
+          "An information-processing system",
+          "A communication network",
+          "A calculation tool"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 3,
+        "type": "multiple-choice",
+        "question": "What was Chomsky's contribution to the cognitive revolution?",
+        "options": [
+          "He developed the multi-store model of memory",
+          "He critiqued behaviorist accounts of language acquisition",
+          "He invented cognitive behavioral therapy",
+          "He studied brain imaging techniques"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 4,
+        "type": "multiple-choice",
+        "question": "What practical applications does the passage mention for research on cognitive biases?",
+        "options": [
+          "Only in education",
+          "Only in psychology",
+          "In fields ranging from economics to medicine",
+          "Only in computer science"
+        ],
+        "correctAnswer": 2,
+        "points": 1
+      }
+    ]
+  },
+  "writing": {
+    "prompt": "Analyze the following issue: 'The best way to understand human behavior is to study the brain.' Discuss the extent to which you agree or disagree with this statement, providing specific examples and reasoning.",
+    "minWords": 300
+  },
+  "speaking": {
+    "prompt": "Describe a psychological concept that you find particularly interesting. Explain what it is, how it works, and why you think it is important for understanding human behavior.",
+    "duration": 120
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "name": "Malika 3D - EduUp Imperial",
+  "short_name": "Malika 3D",
+  "description": "AI-powered 3D education platform with 100% client-side inference. Zero server cost, WebGPU acceleration, and real-time lip-sync.",
+  "start_url": "/malika_3d.html",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#e94560",
+  "orientation": "any",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/static/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity", "ai"],
+  "screenshots": [
+    {
+      "src": "/static/assets/screenshot-mobile.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/static/assets/screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Malika 3D",
+      "short_name": "Malika",
+      "description": "Launch 3D AI tutor",
+      "url": "/malika_3d.html",
+      "icons": [
+        {
+          "src": "/static/assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "short_name": "Courses",
+      "description": "Browse available courses",
+      "url": "/courses",
+      "icons": [
+        {
+          "src": "/static/assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Exams",
+      "short_name": "Exams",
+      "description": "Take practice exams",
+      "url": "/exams",
+      "icons": [
+        {
+          "src": "/static/assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "file",
+          "accept": ["image/*", "audio/*", "video/*"]
+        }
+      ]
+    }
+  },
+  "features": [
+    "WebGPU acceleration",
+    "Client-side AI inference",
+    "Real-time lip-sync",
+    "Offline capability",
+    "Multi-language support"
+  ]
+}

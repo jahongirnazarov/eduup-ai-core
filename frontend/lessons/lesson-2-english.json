@@ -1,0 +1,82 @@
+{
+  "id": "lesson-2",
+  "title": "English Basics: Greetings",
+  "subject": "ingliz tili",
+  "level": "boshlang'ich",
+  "duration_minutes": 12,
+  "language": "en",
+  "description": "Basic English greetings and introductions",
+  "thumbnail": "",
+  "personality": "mentor",
+  "sections": [
+    {
+      "id": "section-1",
+      "title": "Introduction to Greetings",
+      "type": "intro",
+      "content": {
+        "text": "Hello! Today we will learn basic English greetings. Greetings are very important when meeting new people. Let's start with the most common ones.",
+        "avatar_emotion": "happy",
+        "animation": "wave"
+      }
+    },
+    {
+      "id": "section-2",
+      "title": "Hello and Hi",
+      "type": "concept",
+      "content": {
+        "text": "The most common greeting is 'Hello'. It's formal and polite. 'Hi' is more casual and used with friends. Both mean the same thing - a friendly greeting.",
+        "avatar_emotion": "focused",
+        "animation": "explain"
+      }
+    },
+    {
+      "id": "section-3",
+      "title": "Good Morning, Afternoon, Evening",
+      "type": "concept",
+      "content": {
+        "text": "We use time-specific greetings. 'Good morning' is used until noon. 'Good afternoon' is from noon until evening. 'Good evening' is used at night. These show respect and awareness of time.",
+        "avatar_emotion": "thoughtful",
+        "animation": "thinking"
+      }
+    },
+    {
+      "id": "section-4",
+      "title": "How Are You?",
+      "type": "practice",
+      "content": {
+        "text": "After greeting, people often ask 'How are you?'. Common responses are 'I'm fine, thank you' or 'I'm good'. This shows care for the other person's wellbeing.",
+        "avatar_emotion": "encouraging",
+        "animation": "clap"
+      }
+    },
+    {
+      "id": "section-5",
+      "title": "Practice Together",
+      "type": "practice",
+      "content": {
+        "text": "Let's practice together. Repeat after me: Hello. Hi. Good morning. Good afternoon. Good evening. How are you? Excellent! You're doing great!",
+        "avatar_emotion": "excited",
+        "animation": "point"
+      }
+    },
+    {
+      "id": "section-6",
+      "title": "Summary",
+      "type": "summary",
+      "content": {
+        "text": "Today we learned basic English greetings: Hello, Hi, Good morning, Good afternoon, Good evening, and How are you. Practice these every day. See you in the next lesson! Goodbye!",
+        "avatar_emotion": "proud",
+        "animation": "wave_goodbye"
+      }
+    }
+  ],
+  "prerequisites": [],
+  "skills_gained": ["greetings", "introductions", "basic_conversation"],
+  "order_in_curriculum": 1,
+  "metadata": {
+    "created_at": "2026-06-05",
+    "author": "MALIKA AI",
+    "version": "1.0",
+    "tags": ["ingliz tili", "greetings", "boshlang'ich"]
+  }
+}

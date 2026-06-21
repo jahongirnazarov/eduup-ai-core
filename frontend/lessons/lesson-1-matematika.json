@@ -1,0 +1,110 @@
+{
+  "id": "lesson-1",
+  "title": "Matematika Asoslari: Sonlar",
+  "subject": "matematika",
+  "level": "boshlang'ich",
+  "duration_minutes": 15,
+  "language": "uz",
+  "description": "Sonlar tushunchasi, natural sonlar va ularning xossalari",
+  "thumbnail": "",
+  "personality": "mentor",
+  "sections": [
+    {
+      "id": "section-1",
+      "title": "Kirish",
+      "type": "intro",
+      "content": {
+        "text": "Assalomu alaykum! Bugun biz matematikaning eng asosiy tushunchasi - sonlarni o'rganamiz. Sonlar bizning kundalik hayotimizda juda muhim. Keling, birga o'rganib chiqamiz!",
+        "avatar_emotion": "happy",
+        "animation": "wave"
+      }
+    },
+    {
+      "id": "section-2",
+      "title": "Natural Sonlar Nima?",
+      "type": "concept",
+      "content": {
+        "text": "Natural sonlar - bu 1, 2, 3, 4, 5 va hokazo sonlardir. Ular narsalarni sanash uchun ishlatiladi. Masalan, 3 ta olma, 5 ta kitob. Natural sonlar 0 dan boshlanmaydi, 1 dan boshlanadi.",
+        "avatar_emotion": "focused",
+        "animation": "explain",
+        "visual": {
+          "type": "number_line",
+          "numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        }
+      }
+    },
+    {
+      "id": "section-3",
+      "title": "Natural Sonlar Xossalari",
+      "type": "concept",
+      "content": {
+        "text": "Natural sonlarning bir nechta muhim xossalari bor. Birinchisi, ular ketma-ket keladi. Har bir keyingi son oldingisidan bitta katta. Ikkinchisi, ular cheksiz davom etadi. Har doim kattaroq son topish mumkin.",
+        "avatar_emotion": "thoughtful",
+        "animation": "thinking"
+      }
+    },
+    {
+      "id": "section-4",
+      "title": "Amaliyot: Sanash",
+      "type": "practice",
+      "content": {
+        "text": "Endi amaliyot qilamiz. E'tibor bering, men raqamlarni aytaman, siz ularni tasavvur qiling: Bir, ikki, uch, to'rt, besh. Ajoyib! Endi o'n gacha sanashni davom etamiz: Olti, yetti, sakkiz, to'qqiz, o'n. Bravissimo!",
+        "avatar_emotion": "encouraging",
+        "animation": "clap",
+        "interactive": {
+          "type": "counting",
+          "items": ["olma", "kitob", "qalam"]
+        }
+      }
+    },
+    {
+      "id": "section-5",
+      "title": "Misol: Qo'shish",
+      "type": "example",
+      "content": {
+        "text": "Keling, oddiy qo'shish misolini ko'ramiz. Agar bizda 3 ta olma bor va yana 2 ta olma qo'shsak, jami nechta olma bo'ladi? To'g'ri, 5 ta olma! Bu 3 plyus 2 teng 5 degani.",
+        "avatar_emotion": "excited",
+        "animation": "point",
+        "visual": {
+          "type": "equation",
+          "expression": "3 + 2 = 5"
+        }
+      }
+    },
+    {
+      "id": "section-6",
+      "title": "Test Savol",
+      "type": "quiz",
+      "content": {
+        "text": "Endi bilimlaringizni tekshiramiz. Savol: 5 dan keyingi natural son qaysi? A) 4, B) 6, C) 5. O'ylab ko'ring...",
+        "avatar_emotion": "curious",
+        "animation": "question",
+        "quiz": {
+          "question": "5 dan keyingi natural son qaysi?",
+          "options": ["4", "6", "5"],
+          "correct_answer": 1,
+          "explanation": "To'g'ri! 5 dan keyingi natural son 6. Har bir keyingi son oldingisidan bitta katta."
+        }
+      }
+    },
+    {
+      "id": "section-7",
+      "title": "Xulosa",
+      "type": "summary",
+      "content": {
+        "text": "Bugun biz natural sonlarni o'rgandik. Esingizda tuting: natural sonlar 1 dan boshlanadi, ketma-ket keladi, va cheksiz davom etadi. Ular narsalarni sanash uchun ishlatiladi. Keyingi darsda biz butun sonlarni o'rganamiz. Xayr!",
+        "avatar_emotion": "proud",
+        "animation": "wave_goodbye"
+      }
+    }
+  ],
+  "prerequisites": [],
+  "skills_gained": ["natural_sonlar", "sanash", "qoshish_asoslari"],
+  "order_in_curriculum": 1,
+  "metadata": {
+    "created_at": "2026-06-05",
+    "author": "MALIKA AI",
+    "version": "1.0",
+    "tags": ["matematika", "sonlar", "boshlang'ich"]
+  }
+}

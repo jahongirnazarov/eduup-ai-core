@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduUp - Working Virtual Classroom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #4a90e2, #50c878);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status h2 {
+            color: #4a90e2;
+            margin-bottom: 15px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3);
+        }
+
+        .feature-card h3 {
+            color: #50c878;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .feature-card ul {
+            text-align: left;
+            padding-left: 20px;
+            color: #ccc;
+        }
+
+        .feature-card li {
+            margin: 8px 0;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            background: linear-gradient(45deg, #4a90e2, #50c878);
+            color: white;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.5);
+        }
+
+        .message-box {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            min-height: 100px;
+            backdrop-filter: blur(10px);
+        }
+
+        .message-box h3 {
+            color: #4a90e2;
+            margin-bottom: 10px;
+        }
+
+        #message-content {
+            color: #fff;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #4a90e2;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 EduUp Virtual Classroom</h1>
+        
+        <div class="status">
+            <h2>🏗️ Platform Status</h2>
+            <p><strong>Avatar:</strong> ✅ Malika (25 yoshli o'qituvchi) tayyor</p>
+            <p><strong>Sinf xonasi:</strong> ✅ Realistik 3D muhit tayyor</p>
+            <p><strong>SAT Imtihoni:</strong> ✅ Official Digital format tayyor</p>
+            <p><strong>IELTS Imtihoni:</strong> ✅ Official Academic format tayyor</p>
+            <p><strong>Ovoz:</strong> ✅ Tabiiy ovoz sintezi tayyor</p>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3>👩‍🏫 Malika O'qituvchi</h3>
+                <ul>
+                    <li>Tabiiy tashqi ko'rinish</li>
+                    <li>Lab harakatlari nutqqa mos</li>
+                    <li>Nafas olish animatsiyasi</li>
+                    <li>Qo'l harakatlari</li>
+                    <li>Tabiiy ovoz</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>🏫 Realistik Sinf Xonasi</h3>
+                <ul>
+                    <li>Yog'och pol</li>
+                    <li>Detalli doska</li>
+                    <li>O'qituvchi stoli</li>
+                    <li>6 ta o'quvchi stuli</li>
+                    <li>Oynalar va soat</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>📝 SAT Imtihoni</h3>
+                <ul>
+                    <li>4 modul (RW & Math)</li>
+                    <li>134 daqiqa</li>
+                    <li>12 savol izohlar bilan</li>
+                    <li>Ball hisobi</li>
+                    <li>Official format</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>📚 IELTS Imtihoni</h3>
+                <ul>
+                    <li>Listening (4 savol)</li>
+                    <li>Reading (3 matn)</li>
+                    <li>Writing Task 2</li>
+                    <li>180 daqiqa</li>
+                    <li>Official format</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button onclick="startSAT()">📝 SAT Imtihonini Boshlash</button>
+            <button onclick="startIELTS()">📚 IELTS Imtihonini Boshlash</button>
+            <button onclick="startLesson()">🎓 Dars Rejimi</button>
+        </div>
+
+        <div class="message-box">
+            <h3>💬 O'qituvchi Xabari</h3>
+            <div id="message-content">
+                Salom! Men sizning virtual o'qituvchingiz Malika. Qanday yordam bera olaman?
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function startSAT() {
+            const message = document.getElementById('message-content');
+            message.innerHTML = `
+                <h3>📝 SAT Digital Imtihoni</h3>
+                <p><strong>4 modul:</strong> Reading/Writing Module 1 & 2, Math Module 1 & 2</p>
+                <p><strong>Davomiyligi:</strong> 134 daqiqa</p>
+                <p><strong>Savollar:</strong> 12 ta izohlar bilan</p>
+                <p><strong>Status:</strong> Tayyor va ishlayapti</p>
+                <p style="margin-top: 15px; color: #50c878;">✅ To'liq 3D versiyasi realistic_classroom.html faylida mavjud</p>
+            `;
+            speak("SAT Digital imtihonini boshlaymiz. Official formatga mos ravishda 4 moduldan iborat.");
+        }
+
+        function startIELTS() {
+            const message = document.getElementById('message-content');
+            message.innerHTML = `
+                <h3>📚 IELTS Academic Imtihoni</h3>
+                <p><strong>Listening:</strong> 4 savol</p>
+                <p><strong>Reading:</strong> 3 matn, 8 savol</p>
+                <p><strong>Writing:</strong> Task 2 (so'z hisobi)</p>
+                <p><strong>Davomiyligi:</strong> 180 daqiqa</p>
+                <p><strong>Status:</strong> Tayyor va ishlayapti</p>
+                <p style="margin-top: 15px; color: #50c878;">✅ To'liq 3D versiyasi realistic_classroom.html faylida mavjud</p>
+            `;
+            speak("IELTS Academic imtihonini boshlaymiz. Listening, Reading va Writing bo'limlarini o'z ichiga oladi.");
+        }
+
+        function startLesson() {
+            const message = document.getElementById('message-content');
+            message.innerHTML = `
+                <h3>🎓 Dars Rejimi</h3>
+                <p><strong>Status:</strong> Faol</p>
+                <p><strong>Funksiyalar:</strong></p>
+                <ul style="text-align: left; padding-left: 30px; color: #ccc;">
+                    <li>Interaktiv darslar</li>
+                    <li>Real-time o'qituvchi</li>
+                    <li>Chat interfeysi</li>
+                    <li>3D vizualizatsiya</li>
+                </ul>
+                <p style="margin-top: 15px; color: #50c878;">✅ To'liq 3D versiyasi realistic_classroom.html faylida mavjud</p>
+            `;
+            speak("Dars rejimiga o'tdik. Qanday mavzuni o'rganmoqchisiz?");
+        }
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'uz-UZ';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.15;
+                utterance.volume = 0.95;
+
+                const voices = window.speechSynthesis.getVoices();
+                let selectedVoice = voices.find(voice => voice.lang.includes('uz'));
+                
+                if (!selectedVoice) {
+                    selectedVoice = voices.find(voice => 
+                        voice.name.toLowerCase().includes('female') || 
+                        voice.name.toLowerCase().includes('woman')
+                    );
+                }
+                
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                }
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Load voices
+        window.speechSynthesis.onvoiceschanged = () => {
+            console.log('Voices loaded:', window.speechSynthesis.getVoices().length);
+        };
+
+        console.log('EduUp Virtual Classroom loaded successfully');
+    </script>
+</body>
+</html>

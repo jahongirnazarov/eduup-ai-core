@@ -1,0 +1,2247 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduUp - Realistic Virtual Classroom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        #ui-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-badge {
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid #667eea;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .controls {
+            pointer-events: auto;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: #ffffff;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .exam-panel {
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 500px;
+            max-height: 400px;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+
+        .exam-panel.active {
+            display: block;
+        }
+
+        .exam-question {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #ffffff;
+        }
+
+        .exam-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .exam-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #ffffff;
+        }
+
+        .exam-option:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .exam-option.selected {
+            background: rgba(102, 126, 234, 0.4);
+            border-color: #667eea;
+        }
+
+        .exam-option.correct {
+            background: rgba(74, 222, 128, 0.3);
+            border-color: #4ade80;
+        }
+
+        .exam-option.incorrect {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: #ef4444;
+        }
+
+        .timer-display {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .chat-container {
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 400px;
+            max-height: 300px;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .chat-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 85%;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .message.user {
+            background: rgba(102, 126, 234, 0.3);
+            align-self: flex-end;
+            border: 1px solid rgba(102, 126, 234, 0.5);
+        }
+
+        .message.teacher {
+            background: rgba(255, 255, 255, 0.1);
+            align-self: flex-start;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-container input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-container input:focus {
+            border-color: #667eea;
+        }
+
+        .input-container button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .input-container button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(102, 126, 234, 0.3);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 25px;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .performance-stats {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            pointer-events: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .controls {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .chat-container {
+                max-width: 100%;
+                max-height: 200px;
+            }
+
+            .exam-panel {
+                max-width: 100%;
+                max-height: 300px;
+            }
+
+            .performance-stats {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loader"></div>
+        <div class="loading-text">Realistik sinf xonasi yuklanmoqda...</div>
+    </div>
+
+    <!-- 3D Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- UI Overlay -->
+    <div id="ui-overlay">
+        <div class="header">
+            <div class="logo">🎓 EduUp Imperial</div>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                <span>Virtual Classroom Active</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="btn-sat-exam">📝 SAT Exam</button>
+            <button class="btn" id="btn-ielts-exam">🌍 IELTS Exam</button>
+            <button class="btn btn-secondary" id="btn-lesson">📚 Lesson Mode</button>
+            <button class="btn btn-secondary" id="btn-reset-view">🔄 Reset View</button>
+        </div>
+
+        <div class="exam-panel" id="exam-panel">
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="exam-question" id="exam-question"></div>
+            <div class="exam-options" id="exam-options"></div>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn" id="btn-submit-answer">Javobni yuborish</button>
+                <button class="btn btn-secondary" id="btn-next-question">Keyingi savol</button>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-messages" id="chat-messages">
+                <div class="message teacher">
+                    Salom! Men sizning virtual o'qituvchingiz. Qanday yordam bera olaman?
+                </div>
+            </div>
+            <div class="input-container">
+                <input type="text" id="chat-input" placeholder="Xabaringizni yozing...">
+                <button id="btn-send">Yuborish</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Stats -->
+    <div class="performance-stats" id="performance-stats">
+        <div>FPS: <span id="fps">0</span></div>
+        <div>Memory: <span id="memory">0</span> MB</div>
+    </div>
+
+    <!-- Three.js and Dependencies (Local) -->
+    <script src="three.min.js"></script>
+
+    <script>
+        // ========================================================================
+        // REALISTIC VIRTUAL CLASSROOM WITH 25-YEAR-OLD FEMALE TEACHER
+        // Natural Lip Sync, Body Movements, SAT/IELTS Integration
+        // ========================================================================
+
+        // Global Configuration
+        const CONFIG = {
+            enableLipSync: true,
+            enableBodyMovements: true,
+            targetFPS: 60,
+            pixelRatio: Math.min(window.devicePixelRatio, 2),
+            powerPreference: 'high-performance'
+        };
+
+        // Teacher Personality
+        const TEACHER_PERSONALITY = {
+            name: "Malika",
+            age: 25,
+            appearance: {
+                height: 1.68,
+                build: "slim-athletic",
+                hair: "long-dark-brown",
+                eyes: "brown",
+                skin: "warm-medium"
+            },
+            traits: {
+                teaching_style: "interactive",
+                patience_level: 0.9,
+                encouragement_frequency: 0.3,
+                empathy: 0.9,
+                cultural_awareness: true
+            },
+            languages: ["Uzbek", "English", "Russian"]
+        };
+
+        // ========================================================================
+        // THREE.JS 3D RENDERING PIPELINE
+        // ========================================================================
+
+        let scene, camera, renderer;
+        let teacherModel, mixer, clock;
+        let audioContext, analyser, dataArray;
+        let isSpeaking = false;
+        let lipSyncEnabled = true;
+        let bodyMovementEnabled = true;
+        let currentAnimation = 'idle';
+        let animationTransitions = {};
+        let mouseX = 0, mouseY = 0;
+
+        // Performance Monitoring
+        let frameCount = 0;
+        let lastTime = performance.now();
+        let fps = 0;
+
+        // Exam State
+        let examMode = false;
+        let currentExam = null;
+        let currentSectionIndex = 0;
+        let currentQuestionIndex = 0;
+        let examTimer = null;
+        let timeRemaining = 0;
+        let userAnswers = [];
+
+        // Harvard University Lessons and Exam Data
+        const HARVARD_DATA = {
+            lessons: [
+                {
+                    title: "HARVARD UNIVERSITY — LECTURE 1: ADVANCED CALCULUS",
+                    text: "Harvard Department of Mathematics\nTopic: Fundamental Theorem of Calculus\n\n ∫[a,b] f(x)dx = F(b) - F(a)\n Where F'(x) = f(x)\n\nTheorem successfully verified by Professor.",
+                    speech: "Harvard matematika kafedrasiga xush kelibsiz. Bugun biz Nyuton-Leybnits fundamental teoremasini o'rganamiz."
+                },
+                {
+                    title: "HARVARD UNIVERSITY — LECTURE 2: 3D TOPOLOGY",
+                    text: "Topic: Spatial Geometric Projections\nStructure: 3D Pyramid Topology\nEuler's Formula: V - E + F = 2\n5 Vertices - 8 Edges + 5 Faces = 2",
+                    speech: "Bugun biz fazoviy geometrik proyeksiyalarni o'rganamiz. Eyler formulasi: uchburchaklar soni minus qirralar soni plus yuzalar soni teng ikkiga."
+                }
+            ],
+            exam: {
+                title: "HARVARD MATHEMATICS COMPETITION — EXAM PAPER",
+                text: "HARVARD INTEGRATED EXAM:\nQuestion: Compute the Euler characteristic\nof the given 2D simplex network.\n\n[A] χ = 1     [B] χ = 2     [C] χ = 0\nSelect your thesis answer below:",
+                speech: "Diqqat, imtihon savoli. Ikki o'lchamli simpleks tarmog'ining Eyler xarakteristikasini hisoblang.",
+                correctAnswer: 'B',
+                options: ['A) χ = 1', 'B) χ = 2', 'C) χ = 0']
+            }
+        };
+
+        // SAT Exam Data (Official Digital SAT Format)
+        const SAT_EXAM_DATA = {
+            title: "Digital SAT Practice Exam - Official Format",
+            duration: 134, // minutes (64 min Reading/Writing + 70 min Math)
+            sections: [
+                {
+                    name: "Reading and Writing Module 1",
+                    timeLimit: 32,
+                    questions: [
+                        {
+                            question: "The passage discusses the impact of artificial intelligence on modern education. Which of the following best captures the author's main argument?",
+                            options: [
+                                "AI will completely replace human teachers in the next decade.",
+                                "AI can enhance educational outcomes when used as a supplementary tool.",
+                                "AI implementation in schools is too expensive to be practical.",
+                                "Students learn better without any technological assistance."
+                            ],
+                            correct: 1,
+                            explanation: "The author argues that AI serves best as a supplementary tool rather than a replacement."
+                        },
+                        {
+                            question: "In line 15, the word 'ubiquitous' most nearly means:",
+                            options: [
+                                "Rare",
+                                "Universal",
+                                "Temporary",
+                                "Expensive"
+                            ],
+                            correct: 1,
+                            explanation: "Ubiquitous means present, appearing, or found everywhere."
+                        },
+                        {
+                            question: "The author mentions 'personalized learning paths' primarily to:",
+                            options: [
+                                "Criticize current educational methods",
+                                "Highlight a benefit of AI integration",
+                                "Suggest that AI is too complex",
+                                "Argue against standardized testing"
+                            ],
+                            correct: 1,
+                            explanation: "The author uses this example to show how AI can benefit education."
+                        },
+                        {
+                            question: "Which choice best describes the relationship between the two passages?",
+                            options: [
+                                "Passage 1 presents a theory that Passage 2 disproves",
+                                "Passage 1 outlines a problem that Passage 2 attempts to solve",
+                                "Passage 1 and Passage 2 present conflicting viewpoints",
+                                "Passage 1 provides historical context for Passage 2"
+                            ],
+                            correct: 2,
+                            explanation: "The passages present different perspectives on AI in education."
+                        }
+                    ]
+                },
+                {
+                    name: "Reading and Writing Module 2",
+                    timeLimit: 32,
+                    questions: [
+                        {
+                            question: "The graph shows the correlation between study hours and test scores. What trend does the data illustrate?",
+                            options: [
+                                "Negative correlation",
+                                "Positive correlation",
+                                "No correlation",
+                                "Exponential growth"
+                            ],
+                            correct: 1,
+                            explanation: "The graph shows that as study hours increase, test scores also increase."
+                        },
+                        {
+                            question: "Based on the table, which subject showed the greatest improvement from 2020 to 2023?",
+                            options: [
+                                "Mathematics",
+                                "Science",
+                                "English",
+                                "History"
+                            ],
+                            correct: 0,
+                            explanation: "Mathematics showed a 25% increase, the highest among all subjects."
+                        }
+                    ]
+                },
+                {
+                    name: "Mathematics Module 1",
+                    timeLimit: 35,
+                    questions: [
+                        {
+                            question: "If 2x + 5 = 17, what is the value of 3x - 4?",
+                            options: ["11", "14", "17", "20"],
+                            correct: 1,
+                            explanation: "Solving 2x + 5 = 17 gives x = 6. Then 3(6) - 4 = 14."
+                        },
+                        {
+                            question: "A function f(x) = 2x² - 8x + 6. What is the minimum value of f(x)?",
+                            options: ["-2", "0", "2", "6"],
+                            correct: 0,
+                            explanation: "The vertex occurs at x = -b/(2a) = 8/4 = 2. f(2) = 2(4) - 16 + 6 = -2."
+                        },
+                        {
+                            question: "In a right triangle, if one leg is 6 and the hypotenuse is 10, what is the length of the other leg?",
+                            options: ["4", "6", "8", "16"],
+                            correct: 2,
+                            explanation: "Using Pythagorean theorem: 6² + b² = 10², so b² = 64, b = 8."
+                        },
+                        {
+                            question: "Solve for x: |x - 3| = 7",
+                            options: ["x = 4 only", "x = -4 only", "x = 10 or x = -4", "x = 10 or x = 4"],
+                            correct: 2,
+                            explanation: "|x - 3| = 7 means x - 3 = 7 or x - 3 = -7, so x = 10 or x = -4."
+                        }
+                    ]
+                },
+                {
+                    name: "Mathematics Module 2",
+                    timeLimit: 35,
+                    questions: [
+                        {
+                            question: "The population of a city grows exponentially according to P(t) = 50,000(1.03)^t, where t is in years. What will the population be after 10 years?",
+                            options: ["~67,000", "~70,000", "~75,000", "~80,000"],
+                            correct: 0,
+                            explanation: "P(10) = 50,000(1.03)^10 ≈ 50,000(1.344) ≈ 67,200."
+                        },
+                        {
+                            question: "A circle has equation (x - 2)² + (y + 1)² = 25. What is the radius of the circle?",
+                            options: ["2", "5", "25", "√25"],
+                            correct: 1,
+                            explanation: "The standard form is (x - h)² + (y - k)² = r², so r² = 25, r = 5."
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // IELTS Exam Data (Official Academic Format)
+        const IELTS_EXAM_DATA = {
+            title: "IELTS Academic Practice Test - Official Format",
+            duration: 180, // minutes (60 min Reading + 40 min Writing + 40 min Listening)
+            sections: [
+                {
+                    name: "Listening Section",
+                    timeLimit: 40,
+                    questions: [
+                        {
+                            question: "According to the lecture, what is the primary reason for the decline in bee populations?",
+                            options: [
+                                "Natural climate cycles",
+                                "Pesticide use and habitat loss",
+                                "Disease outbreaks only",
+                                "Migration patterns"
+                            ],
+                            correct: 1,
+                            explanation: "The speaker specifically mentions pesticides and habitat loss as main factors."
+                        },
+                        {
+                            question: "What solution does the researcher propose?",
+                            options: [
+                                "Complete ban on all pesticides",
+                                "Creating protected habitats",
+                                "Importing bees from other countries",
+                                "Genetic modification of bees"
+                            ],
+                            correct: 1,
+                            explanation: "The researcher emphasizes creating protected habitats as the most viable solution."
+                        },
+                        {
+                            question: "The speaker mentions that bee populations have declined by approximately:",
+                            options: [
+                                "20%",
+                                "40%",
+                                "60%",
+                                "80%"
+                            ],
+                            correct: 1,
+                            explanation: "The speaker states a 40% decline over the past decade."
+                        },
+                        {
+                            question: "According to the talk, which crop is most dependent on bee pollination?",
+                            options: [
+                                "Wheat",
+                                "Almonds",
+                                "Rice",
+                                "Corn"
+                            ],
+                            correct: 1,
+                            explanation: "Almonds are mentioned as being almost entirely dependent on bee pollination."
+                        }
+                    ]
+                },
+                {
+                    name: "Reading Section - Passage 1",
+                    timeLimit: 20,
+                    questions: [
+                        {
+                            question: "The passage suggests that the Industrial Revolution primarily led to:",
+                            options: [
+                                "Immediate environmental awareness",
+                                "Unprecedented economic growth and urbanization",
+                                "Immediate decline in global population",
+                                "Equal distribution of wealth"
+                            ],
+                            correct: 1,
+                            explanation: "The passage emphasizes economic growth and urbanization as primary outcomes."
+                        },
+                        {
+                            question: "According to the author, the term 'Luddite' originally referred to:",
+                            options: [
+                                "Anti-technology philosophers",
+                                "Textile workers who destroyed machines",
+                                "Political revolutionaries",
+                                "Early environmental activists"
+                            ],
+                            correct: 1,
+                            explanation: "Luddites were textile workers who opposed industrial machinery."
+                        },
+                        {
+                            question: "The passage indicates that working conditions in factories were:",
+                            options: [
+                                "Generally excellent and safe",
+                                "Harsh with long hours and low pay",
+                                "Similar to agricultural work",
+                                "Well-regulated by government"
+                            ],
+                            correct: 1,
+                            explanation: "The passage describes harsh conditions, long hours, and minimal pay."
+                        }
+                    ]
+                },
+                {
+                    name: "Reading Section - Passage 2",
+                    timeLimit: 20,
+                    questions: [
+                        {
+                            question: "The main purpose of the passage is to:",
+                            options: [
+                                "Criticize modern education systems",
+                                "Discuss the benefits of bilingual education",
+                                "Argue for English-only instruction",
+                                "Compare different teaching methods"
+                            ],
+                            correct: 1,
+                            explanation: "The passage focuses on the cognitive and social benefits of bilingual education."
+                        },
+                        {
+                            question: "Research mentioned in the passage suggests that bilingual children:",
+                            options: [
+                                "Learn languages more slowly",
+                                "Have enhanced cognitive flexibility",
+                                "Struggle with academic subjects",
+                                "Prefer one language over the other"
+                            ],
+                            correct: 1,
+                            explanation: "Studies show enhanced cognitive flexibility and executive function in bilinguals."
+                        }
+                    ]
+                },
+                {
+                    name: "Reading Section - Passage 3",
+                    timeLimit: 20,
+                    questions: [
+                        {
+                            question: "The author's attitude toward space exploration can best be described as:",
+                            options: [
+                                "Skeptical and critical",
+                                "Enthusiastic and optimistic",
+                                "Neutral and objective",
+                                "Concerned about costs"
+                            ],
+                            correct: 1,
+                            explanation: "The author expresses enthusiasm about the potential benefits of space exploration."
+                        },
+                        {
+                            question: "According to the passage, Mars colonization faces the greatest challenge in:",
+                            options: [
+                                "Distance from Earth",
+                                "Lack of scientific interest",
+                                "Political disagreements",
+                                "Creating sustainable life support"
+                            ],
+                            correct: 3,
+                            explanation: "The passage emphasizes sustainable life support as the primary technical challenge."
+                        }
+                    ]
+                },
+                {
+                    name: "Writing Task 2",
+                    timeLimit: 40,
+                    isWriting: true,
+                    prompt: "Some people believe that universities should focus on providing academic skills, while others think they should prepare students for employment. Discuss both views and give your own opinion.",
+                    wordLimit: 250,
+                    criteria: [
+                        "Task Response",
+                        "Coherence and Cohesion", 
+                        "Lexical Resource",
+                        "Grammatical Range and Accuracy"
+                    ]
+                }
+            ]
+        };
+
+        function initThreeJS() {
+            // Scene Setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a1a2e);
+
+            // Camera Setup
+            camera = new THREE.PerspectiveCamera(
+                45,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                1000
+            );
+            camera.position.set(0, 1.7, 4);
+
+            // Renderer Setup
+            renderer = new THREE.WebGLRenderer({
+                antialias: true,
+                alpha: true,
+                powerPreference: CONFIG.powerPreference
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(CONFIG.pixelRatio);
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.0;
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Simple Mouse Controls
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            });
+
+            // Lighting Setup
+            setupLighting();
+
+            // Create Classroom Environment
+            createClassroomEnvironment();
+
+            // Create Teacher Avatar
+            createTeacherAvatar();
+
+            // Clock for Animation
+            clock = new THREE.Clock();
+
+            // Event Listeners
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function setupLighting() {
+            // Ambient Light
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            // Main Directional Light (simulating classroom ceiling lights)
+            const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            mainLight.position.set(0, 8, 0);
+            mainLight.castShadow = true;
+            mainLight.shadow.mapSize.width = 2048;
+            mainLight.shadow.mapSize.height = 2048;
+            mainLight.shadow.camera.near = 0.5;
+            mainLight.shadow.camera.far = 20;
+            mainLight.shadow.camera.left = -10;
+            mainLight.shadow.camera.right = 10;
+            mainLight.shadow.camera.top = 10;
+            mainLight.shadow.camera.bottom = -10;
+            scene.add(mainLight);
+
+            // Window Light (natural daylight simulation)
+            const windowLight = new THREE.DirectionalLight(0xfff4e5, 0.4);
+            windowLight.position.set(-5, 3, -5);
+            scene.add(windowLight);
+
+            // Fill Light
+            const fillLight = new THREE.DirectionalLight(0x4a90e2, 0.2);
+            fillLight.position.set(5, 2, 5);
+            scene.add(fillLight);
+        }
+
+        function createClassroomEnvironment() {
+            // Floor - Realistic wood laminate with texture pattern
+            const floorGeometry = new THREE.PlaneGeometry(20, 20);
+            const floorMaterial = new THREE.MeshStandardMaterial({
+                color: 0x8b7355,
+                roughness: 0.7,
+                metalness: 0.05,
+                bumpScale: 0.02
+            });
+            const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+            floor.rotation.x = -Math.PI / 2;
+            floor.receiveShadow = true;
+            scene.add(floor);
+
+            // Floor planks for realism
+            for (let i = -10; i < 10; i++) {
+                const plankGeometry = new THREE.PlaneGeometry(0.8, 20);
+                const plankMaterial = new THREE.MeshStandardMaterial({
+                    color: 0x7a6548,
+                    roughness: 0.75,
+                    metalness: 0.05
+                });
+                const plank = new THREE.Mesh(plankGeometry, plankMaterial);
+                plank.rotation.x = -Math.PI / 2;
+                plank.position.set(i * 0.9, 0.01, 0);
+                plank.receiveShadow = true;
+                scene.add(plank);
+            }
+
+            // Walls - Realistic classroom wall color with subtle texture
+            const wallMaterial = new THREE.MeshStandardMaterial({
+                color: 0xfaf0e6,
+                roughness: 0.85,
+                metalness: 0.02
+            });
+
+            // Back wall
+            const backWall = new THREE.Mesh(
+                new THREE.PlaneGeometry(20, 5),
+                wallMaterial
+            );
+            backWall.position.set(0, 2.5, -10);
+            backWall.receiveShadow = true;
+            scene.add(backWall);
+
+            // Side walls
+            const leftWall = new THREE.Mesh(
+                new THREE.PlaneGeometry(20, 5),
+                wallMaterial
+            );
+            leftWall.position.set(-10, 2.5, 0);
+            leftWall.rotation.y = Math.PI / 2;
+            leftWall.receiveShadow = true;
+            scene.add(leftWall);
+
+            const rightWall = new THREE.Mesh(
+                new THREE.PlaneGeometry(20, 5),
+                wallMaterial
+            );
+            rightWall.position.set(10, 2.5, 0);
+            rightWall.rotation.y = -Math.PI / 2;
+            rightWall.receiveShadow = true;
+            scene.add(rightWall);
+
+            // Ceiling
+            const ceilingMaterial = new THREE.MeshStandardMaterial({
+                color: 0xf5f5f5,
+                roughness: 0.9,
+                metalness: 0.0
+            });
+            const ceiling = new THREE.Mesh(
+                new THREE.PlaneGeometry(20, 20),
+                ceilingMaterial
+            );
+            ceiling.rotation.x = Math.PI / 2;
+            ceiling.position.set(0, 5, 0);
+            scene.add(ceiling);
+
+            // Blackboard - Realistic dark green chalkboard with texture
+            const blackboardGeometry = new THREE.PlaneGeometry(6, 3);
+            const blackboardMaterial = new THREE.MeshStandardMaterial({
+                color: 0x2d4a2d,
+                roughness: 0.85,
+                metalness: 0.02,
+                bumpScale: 0.01
+            });
+            const blackboard = new THREE.Mesh(blackboardGeometry, blackboardMaterial);
+            blackboard.position.set(0, 2.5, -9.9);
+            blackboard.receiveShadow = true;
+            scene.add(blackboard);
+
+            // Blackboard frame - realistic wood
+            const frameGeometry = new THREE.BoxGeometry(6.3, 3.3, 0.15);
+            const frameMaterial = new THREE.MeshStandardMaterial({
+                color: 0x4a3728,
+                roughness: 0.6,
+                metalness: 0.15
+            });
+            const frame = new THREE.Mesh(frameGeometry, frameMaterial);
+            frame.position.set(0, 2.5, -9.95);
+            frame.castShadow = true;
+            scene.add(frame);
+
+            // Frame trim details
+            const trimGeometry = new THREE.BoxGeometry(6.35, 3.35, 0.05);
+            const trimMaterial = new THREE.MeshStandardMaterial({
+                color: 0x3d2d1f,
+                roughness: 0.5,
+                metalness: 0.2
+            });
+            const trim = new THREE.Mesh(trimGeometry, trimMaterial);
+            trim.position.set(0, 2.5, -9.88);
+            trim.castShadow = true;
+            scene.add(trim);
+
+            // Chalk tray - realistic with chalk pieces
+            const trayGeometry = new THREE.BoxGeometry(6.4, 0.15, 0.4);
+            const tray = new THREE.Mesh(trayGeometry, frameMaterial);
+            tray.position.set(0, 0.9, -9.75);
+            tray.castShadow = true;
+            scene.add(tray);
+
+            // Chalk pieces
+            const chalkMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                roughness: 0.3,
+                metalness: 0.0
+            });
+            for (let i = 0; i < 5; i++) {
+                const chalkGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.08, 8);
+                const chalk = new THREE.Mesh(chalkGeometry, chalkMaterial);
+                chalk.position.set(-2 + i * 1, 1.02, -9.7);
+                chalk.rotation.z = Math.random() * 0.5;
+                chalk.castShadow = true;
+                scene.add(chalk);
+            }
+
+            // Teacher's desk - realistic wooden desk
+            const deskGeometry = new THREE.BoxGeometry(2.2, 0.85, 1.2);
+            const deskMaterial = new THREE.MeshStandardMaterial({
+                color: 0x5c4033,
+                roughness: 0.65,
+                metalness: 0.1
+            });
+            const desk = new THREE.Mesh(deskGeometry, deskMaterial);
+            desk.position.set(0, 0.425, -6.5);
+            desk.castShadow = true;
+            desk.receiveShadow = true;
+            scene.add(desk);
+
+            // Desk drawers
+            const drawerGeometry = new THREE.BoxGeometry(0.5, 0.15, 1.15);
+            for (let i = 0; i < 2; i++) {
+                const drawer = new THREE.Mesh(drawerGeometry, deskMaterial);
+                drawer.position.set(-0.5 + i * 1, 0.65, -6.5);
+                drawer.castShadow = true;
+                scene.add(drawer);
+            }
+
+            // Desk items (books, papers)
+            const bookMaterial = new THREE.MeshStandardMaterial({
+                color: 0x1a5276,
+                roughness: 0.6,
+                metalness: 0.1
+            });
+            for (let i = 0; i < 3; i++) {
+                const bookGeometry = new THREE.BoxGeometry(0.3, 0.05, 0.2);
+                const book = new THREE.Mesh(bookGeometry, bookMaterial);
+                book.position.set(-0.3 + i * 0.15, 0.88, -6.2);
+                book.castShadow = true;
+                scene.add(book);
+            }
+
+            // Student desks - realistic individual desks
+            const studentDeskMaterial = new THREE.MeshStandardMaterial({
+                color: 0x6b4423,
+                roughness: 0.7,
+                metalness: 0.1
+            });
+
+            for (let row = 0; row < 2; row++) {
+                for (let col = 0; col < 3; col++) {
+                    const studentDesk = new THREE.Mesh(
+                        new THREE.BoxGeometry(1.6, 0.75, 0.9),
+                        studentDeskMaterial
+                    );
+                    studentDesk.position.set(-3 + col * 3, 0.375, 1 + row * 2.5);
+                    studentDesk.castShadow = true;
+                    studentDesk.receiveShadow = true;
+                    scene.add(studentDesk);
+
+                    // Chair for each desk
+                    const chairSeatGeometry = new THREE.BoxGeometry(0.5, 0.05, 0.5);
+                    const chairMaterial = new THREE.MeshStandardMaterial({
+                        color: 0x4a3728,
+                        roughness: 0.7,
+                        metalness: 0.1
+                    });
+                    const chairSeat = new THREE.Mesh(chairSeatGeometry, chairMaterial);
+                    chairSeat.position.set(-3 + col * 3, 0.5, 1.7 + row * 2.5);
+                    chairSeat.castShadow = true;
+                    scene.add(chairSeat);
+
+                    // Chair back
+                    const chairBackGeometry = new THREE.BoxGeometry(0.5, 0.6, 0.05);
+                    const chairBack = new THREE.Mesh(chairBackGeometry, chairMaterial);
+                    chairBack.position.set(-3 + col * 3, 0.8, 1.95 + row * 2.5);
+                    chairBack.castShadow = true;
+                    scene.add(chairBack);
+
+                    // Chair legs
+                    const legGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.45, 8);
+                    for (let leg = 0; leg < 4; leg++) {
+                        const chairLeg = new THREE.Mesh(legGeometry, chairMaterial);
+                        const xOffset = (leg % 2 === 0) ? -0.2 : 0.2;
+                        const zOffset = (leg < 2) ? -0.2 : 0.2;
+                        chairLeg.position.set(-3 + col * 3 + xOffset, 0.275, 1.7 + row * 2.5 + zOffset);
+                        chairLeg.castShadow = true;
+                        scene.add(chairLeg);
+                    }
+                }
+            }
+
+            // Windows - realistic with frames
+            const windowGeometry = new THREE.PlaneGeometry(3.5, 2.5);
+            const windowGlassMaterial = new THREE.MeshStandardMaterial({
+                color: 0x87ceeb,
+                roughness: 0.1,
+                metalness: 0.3,
+                transparent: true,
+                opacity: 0.5
+            });
+            
+            for (let i = 0; i < 2; i++) {
+                // Window glass
+                const windowMesh = new THREE.Mesh(windowGeometry, windowGlassMaterial);
+                windowMesh.position.set(-6 + i * 12, 2.75, -9.9);
+                scene.add(windowMesh);
+
+                // Window frame
+                const windowFrameGeometry = new THREE.BoxGeometry(3.7, 2.7, 0.1);
+                const windowFrameMaterial = new THREE.MeshStandardMaterial({
+                    color: 0xffffff,
+                    roughness: 0.5,
+                    metalness: 0.2
+                });
+                const windowFrame = new THREE.Mesh(windowFrameGeometry, windowFrameMaterial);
+                windowFrame.position.set(-6 + i * 12, 2.75, -9.95);
+                windowFrame.castShadow = true;
+                scene.add(windowFrame);
+
+                // Window dividers
+                const dividerGeometry = new THREE.BoxGeometry(3.7, 0.08, 0.12);
+                const horizontalDivider = new THREE.Mesh(dividerGeometry, windowFrameMaterial);
+                horizontalDivider.position.set(-6 + i * 12, 2.75, -9.93);
+                scene.add(horizontalDivider);
+
+                const verticalDividerGeometry = new THREE.BoxGeometry(0.08, 2.7, 0.12);
+                const verticalDivider = new THREE.Mesh(verticalDividerGeometry, windowFrameMaterial);
+                verticalDivider.position.set(-6 + i * 12, 2.75, -9.93);
+                scene.add(verticalDivider);
+            }
+
+            // Clock on wall
+            const clockGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.05, 32);
+            const clockMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                roughness: 0.3,
+                metalness: 0.2
+            });
+            const clock = new THREE.Mesh(clockGeometry, clockMaterial);
+            clock.rotation.x = Math.PI / 2;
+            clock.position.set(4, 3.5, -9.85);
+            clock.castShadow = true;
+            scene.add(clock);
+
+            // Clock face
+            const clockFaceGeometry = new THREE.CircleGeometry(0.35, 32);
+            const clockFaceMaterial = new THREE.MeshStandardMaterial({
+                color: 0xf0f0f0,
+                roughness: 0.4,
+                metalness: 0.1
+            });
+            const clockFace = new THREE.Mesh(clockFaceGeometry, clockFaceMaterial);
+            clockFace.position.set(4, 3.5, -9.82);
+            scene.add(clockFace);
+
+            // Educational posters on walls
+            const posterMaterial = new THREE.MeshStandardMaterial({
+                color: 0xfff8dc,
+                roughness: 0.8,
+                metalness: 0.0
+            });
+
+            // Math formula poster
+            const poster1Geometry = new THREE.PlaneGeometry(1.5, 1);
+            const poster1 = new THREE.Mesh(poster1Geometry, posterMaterial);
+            poster1.position.set(-8, 3, -9.85);
+            poster1.castShadow = true;
+            scene.add(poster1);
+
+            // World map poster
+            const poster2Geometry = new THREE.PlaneGeometry(2, 1.2);
+            const poster2 = new THREE.Mesh(poster2Geometry, posterMaterial);
+            poster2.position.set(8, 3, -9.85);
+            poster2.castShadow = true;
+            scene.add(poster2);
+
+            // Door
+            const doorGeometry = new THREE.BoxGeometry(1.2, 2.8, 0.1);
+            const doorMaterial = new THREE.MeshStandardMaterial({
+                color: 0x4a3728,
+                roughness: 0.6,
+                metalness: 0.15
+            });
+            const door = new THREE.Mesh(doorGeometry, doorMaterial);
+            door.position.set(9.4, 1.4, 0);
+            door.castShadow = true;
+            scene.add(door);
+
+            // Door handle
+            const handleGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+            const handleMaterial = new THREE.MeshStandardMaterial({
+                color: 0xc0c0c0,
+                roughness: 0.2,
+                metalness: 0.8
+            });
+            const handle = new THREE.Mesh(handleGeometry, handleMaterial);
+            handle.position.set(8.9, 1.2, 0.06);
+            handle.castShadow = true;
+            scene.add(handle);
+        }
+
+        function createTeacherAvatar() {
+            // Create a highly realistic 25-year-old female teacher avatar
+            // Enhanced proportions and natural features
+            
+            const teacherGroup = new THREE.Group();
+
+            // Natural skin tone (warm medium complexion)
+            const skinMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffe4c4,
+                roughness: 0.6,
+                metalness: 0.05,
+                emissive: 0x1a1a1a,
+                emissiveIntensity: 0.02
+            });
+
+            // Hair material (long, dark brown with natural shine)
+            const hairMaterial = new THREE.MeshStandardMaterial({
+                color: 0x4a3728,
+                roughness: 0.7,
+                metalness: 0.1,
+                emissive: 0x1a1a1a,
+                emissiveIntensity: 0.01
+            });
+
+            // Professional clothing material (elegant blouse)
+            const clothingMaterial = new THREE.MeshStandardMaterial({
+                color: 0x34495e,
+                roughness: 0.5,
+                metalness: 0.15
+            });
+
+            // Skirt material
+            const skirtMaterial = new THREE.MeshStandardMaterial({
+                color: 0x2c3e50,
+                roughness: 0.5,
+                metalness: 0.1
+            });
+
+            // Head (more realistic proportions)
+            const headGeometry = new THREE.SphereGeometry(0.14, 64, 64);
+            const head = new THREE.Mesh(headGeometry, skinMaterial);
+            head.position.set(0, 1.58, 0);
+            head.castShadow = true;
+            head.name = 'head';
+            teacherGroup.add(head);
+
+            // Face structure - more detailed
+            // Forehead
+            const foreheadGeometry = new THREE.SphereGeometry(0.12, 32, 32);
+            const forehead = new THREE.Mesh(foreheadGeometry, skinMaterial);
+            forehead.position.set(0, 1.62, 0.08);
+            forehead.scale.set(1, 0.6, 0.8);
+            forehead.castShadow = true;
+            teacherGroup.add(forehead);
+
+            // Cheeks (subtle definition)
+            const cheekGeometry = new THREE.SphereGeometry(0.05, 32, 32);
+            const leftCheek = new THREE.Mesh(cheekGeometry, skinMaterial);
+            leftCheek.position.set(-0.08, 1.54, 0.1);
+            leftCheek.scale.set(1, 0.8, 0.6);
+            teacherGroup.add(leftCheek);
+
+            const rightCheek = new THREE.Mesh(cheekGeometry, skinMaterial);
+            rightCheek.position.set(0.08, 1.54, 0.1);
+            rightCheek.scale.set(1, 0.8, 0.6);
+            teacherGroup.add(rightCheek);
+
+            // Hair (long, flowing, natural style)
+            const hairMainGeometry = new THREE.SphereGeometry(0.15, 64, 64);
+            const hairMain = new THREE.Mesh(hairMainGeometry, hairMaterial);
+            hairMain.position.set(0, 1.62, 0);
+            hairMain.scale.set(1.1, 1.3, 1.1);
+            hairMain.castShadow = true;
+            teacherGroup.add(hairMain);
+
+            // Hair sides (long flowing hair)
+            const hairSideGeometry = new THREE.CylinderGeometry(0.08, 0.12, 0.7, 32);
+            const leftHairSide = new THREE.Mesh(hairSideGeometry, hairMaterial);
+            leftHairSide.position.set(-0.12, 1.35, 0.05);
+            leftHairSide.rotation.z = 0.15;
+            leftHairSide.castShadow = true;
+            teacherGroup.add(leftHairSide);
+
+            const rightHairSide = new THREE.Mesh(hairSideGeometry, hairMaterial);
+            rightHairSide.position.set(0.12, 1.35, 0.05);
+            rightHairSide.rotation.z = -0.15;
+            rightHairSide.castShadow = true;
+            teacherGroup.add(rightHairSide);
+
+            // Hair back (long, natural flow)
+            const hairBackGeometry = new THREE.CylinderGeometry(0.1, 0.14, 0.8, 32);
+            const hairBack = new THREE.Mesh(hairBackGeometry, hairMaterial);
+            hairBack.position.set(0, 1.3, 0.08);
+            hairBack.castShadow = true;
+            teacherGroup.add(hairBack);
+
+            // Neck (slender, natural)
+            const neckGeometry = new THREE.CylinderGeometry(0.045, 0.055, 0.12, 32);
+            const neck = new THREE.Mesh(neckGeometry, skinMaterial);
+            neck.position.set(0, 1.42, 0);
+            neck.castShadow = true;
+            teacherGroup.add(neck);
+
+            // Shoulders (natural feminine proportions)
+            const shoulderGeometry = new THREE.SphereGeometry(0.08, 32, 32);
+            const leftShoulder = new THREE.Mesh(shoulderGeometry, skinMaterial);
+            leftShoulder.position.set(-0.18, 1.38, 0);
+            leftShoulder.scale.set(1, 0.6, 0.8);
+            leftShoulder.castShadow = true;
+            teacherGroup.add(leftShoulder);
+
+            const rightShoulder = new THREE.Mesh(shoulderGeometry, skinMaterial);
+            rightShoulder.position.set(0.18, 1.38, 0);
+            rightShoulder.scale.set(1, 0.6, 0.8);
+            rightShoulder.castShadow = true;
+            teacherGroup.add(rightShoulder);
+
+            // Torso (elegant feminine silhouette)
+            const torsoGeometry = new THREE.CylinderGeometry(0.14, 0.16, 0.55, 32);
+            const torso = new THREE.Mesh(torsoGeometry, clothingMaterial);
+            torso.position.set(0, 1.12, 0);
+            torso.castShadow = true;
+            teacherGroup.add(torso);
+
+            // Arms (natural feminine proportions)
+            const upperArmGeometry = new THREE.CylinderGeometry(0.045, 0.05, 0.35, 32);
+            
+            const leftUpperArm = new THREE.Mesh(upperArmGeometry, skinMaterial);
+            leftUpperArm.position.set(-0.2, 1.15, 0);
+            leftUpperArm.rotation.z = 0.25;
+            leftUpperArm.castShadow = true;
+            leftUpperArm.name = 'leftUpperArm';
+            teacherGroup.add(leftUpperArm);
+
+            const rightUpperArm = new THREE.Mesh(upperArmGeometry, skinMaterial);
+            rightUpperArm.position.set(0.2, 1.15, 0);
+            rightUpperArm.rotation.z = -0.25;
+            rightUpperArm.castShadow = true;
+            rightUpperArm.name = 'rightUpperArm';
+            teacherGroup.add(rightUpperArm);
+
+            // Forearms
+            const forearmGeometry = new THREE.CylinderGeometry(0.035, 0.04, 0.3, 32);
+            
+            const leftForearm = new THREE.Mesh(forearmGeometry, skinMaterial);
+            leftForearm.position.set(-0.28, 0.95, 0);
+            leftForearm.rotation.z = 0.15;
+            leftForearm.castShadow = true;
+            leftForearm.name = 'leftForearm';
+            teacherGroup.add(leftForearm);
+
+            const rightForearm = new THREE.Mesh(forearmGeometry, skinMaterial);
+            rightForearm.position.set(0.28, 0.95, 0);
+            rightForearm.rotation.z = -0.15;
+            rightForearm.castShadow = true;
+            rightForearm.name = 'rightForearm';
+            teacherGroup.add(rightForearm);
+
+            // Hands
+            const handGeometry = new THREE.SphereGeometry(0.04, 16, 16);
+            
+            const leftHand = new THREE.Mesh(handGeometry, skinMaterial);
+            leftHand.position.set(-0.32, 0.78, 0);
+            leftHand.scale.set(0.8, 1, 0.6);
+            leftHand.castShadow = true;
+            teacherGroup.add(leftHand);
+
+            const rightHand = new THREE.Mesh(handGeometry, skinMaterial);
+            rightHand.position.set(0.32, 0.78, 0);
+            rightHand.scale.set(0.8, 1, 0.6);
+            rightHand.castShadow = true;
+            teacherGroup.add(rightHand);
+
+            // Skirt (elegant, professional)
+            const skirtGeometry = new THREE.CylinderGeometry(0.16, 0.2, 0.4, 32);
+            const skirt = new THREE.Mesh(skirtGeometry, skirtMaterial);
+            skirt.position.set(0, 0.72, 0);
+            skirt.castShadow = true;
+            teacherGroup.add(skirt);
+
+            // Legs (natural feminine proportions)
+            const thighGeometry = new THREE.CylinderGeometry(0.06, 0.07, 0.35, 32);
+            
+            const leftThigh = new THREE.Mesh(thighGeometry, skinMaterial);
+            leftThigh.position.set(-0.07, 0.42, 0);
+            leftThigh.castShadow = true;
+            teacherGroup.add(leftThigh);
+
+            const rightThigh = new THREE.Mesh(thighGeometry, skinMaterial);
+            rightThigh.position.set(0.07, 0.42, 0);
+            rightThigh.castShadow = true;
+            teacherGroup.add(rightThigh);
+
+            // Lower legs
+            const lowerLegGeometry = new THREE.CylinderGeometry(0.045, 0.05, 0.35, 32);
+            
+            const leftLowerLeg = new THREE.Mesh(lowerLegGeometry, skinMaterial);
+            leftLowerLeg.position.set(-0.07, 0.07, 0);
+            leftLowerLeg.castShadow = true;
+            teacherGroup.add(leftLowerLeg);
+
+            const rightLowerLeg = new THREE.Mesh(lowerLegGeometry, skinMaterial);
+            rightLowerLeg.position.set(0.07, 0.07, 0);
+            rightLowerLeg.castShadow = true;
+            teacherGroup.add(rightLowerLeg);
+
+            // Feet
+            const footGeometry = new THREE.BoxGeometry(0.08, 0.04, 0.15);
+            
+            const leftFoot = new THREE.Mesh(footGeometry, skinMaterial);
+            leftFoot.position.set(-0.07, -0.12, 0.03);
+            leftFoot.castShadow = true;
+            teacherGroup.add(leftFoot);
+
+            const rightFoot = new THREE.Mesh(footGeometry, skinMaterial);
+            rightFoot.position.set(0.07, -0.12, 0.03);
+            rightFoot.castShadow = true;
+            teacherGroup.add(rightFoot);
+
+            // Eyes (detailed, natural)
+            const eyeWhiteGeometry = new THREE.SphereGeometry(0.025, 32, 32);
+            const eyeWhiteMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                roughness: 0.1,
+                metalness: 0.0
+            });
+
+            const leftEyeWhite = new THREE.Mesh(eyeWhiteGeometry, eyeWhiteMaterial);
+            leftEyeWhite.position.set(-0.05, 1.59, 0.12);
+            leftEyeWhite.scale.set(1, 0.6, 0.5);
+            teacherGroup.add(leftEyeWhite);
+
+            const rightEyeWhite = new THREE.Mesh(eyeWhiteGeometry, eyeWhiteMaterial);
+            rightEyeWhite.position.set(0.05, 1.59, 0.12);
+            rightEyeWhite.scale.set(1, 0.6, 0.5);
+            teacherGroup.add(rightEyeWhite);
+
+            // Iris (brown, natural)
+            const irisGeometry = new THREE.SphereGeometry(0.015, 32, 32);
+            const irisMaterial = new THREE.MeshStandardMaterial({
+                color: 0x5c4033,
+                roughness: 0.2,
+                metalness: 0.1
+            });
+
+            const leftIris = new THREE.Mesh(irisGeometry, irisMaterial);
+            leftIris.position.set(-0.05, 1.59, 0.135);
+            leftIris.scale.set(1, 0.6, 0.5);
+            teacherGroup.add(leftIris);
+
+            const rightIris = new THREE.Mesh(irisGeometry, irisMaterial);
+            rightIris.position.set(0.05, 1.59, 0.135);
+            rightIris.scale.set(1, 0.6, 0.5);
+            teacherGroup.add(rightIris);
+
+            // Pupils
+            const pupilGeometry = new THREE.SphereGeometry(0.008, 16, 16);
+            const pupilMaterial = new THREE.MeshStandardMaterial({
+                color: 0x000000,
+                roughness: 0.0,
+                metalness: 0.0
+            });
+
+            const leftPupil = new THREE.Mesh(pupilGeometry, pupilMaterial);
+            leftPupil.position.set(-0.05, 1.59, 0.14);
+            teacherGroup.add(leftPupil);
+
+            const rightPupil = new THREE.Mesh(pupilGeometry, pupilMaterial);
+            rightPupil.position.set(0.05, 1.59, 0.14);
+            teacherGroup.add(rightPupil);
+
+            // Eyebrows (natural, feminine)
+            const eyebrowGeometry = new THREE.CapsuleGeometry(0.02, 0.04, 4, 8);
+            const eyebrowMaterial = new THREE.MeshStandardMaterial({
+                color: 0x3d2314,
+                roughness: 0.8,
+                metalness: 0.0
+            });
+
+            const leftEyebrow = new THREE.Mesh(eyebrowGeometry, eyebrowMaterial);
+            leftEyebrow.position.set(-0.05, 1.635, 0.115);
+            leftEyebrow.rotation.z = 0.2;
+            leftEyebrow.scale.set(1, 1, 0.5);
+            teacherGroup.add(leftEyebrow);
+
+            const rightEyebrow = new THREE.Mesh(eyebrowGeometry, eyebrowMaterial);
+            rightEyebrow.position.set(0.05, 1.635, 0.115);
+            rightEyebrow.rotation.z = -0.2;
+            rightEyebrow.scale.set(1, 1, 0.5);
+            teacherGroup.add(rightEyebrow);
+
+            // Nose (subtle, natural)
+            const noseGeometry = new THREE.ConeGeometry(0.02, 0.06, 16);
+            const nose = new THREE.Mesh(noseGeometry, skinMaterial);
+            nose.position.set(0, 1.55, 0.13);
+            nose.rotation.x = Math.PI / 2;
+            nose.scale.set(1, 1, 0.6);
+            teacherGroup.add(nose);
+
+            // Mouth (detailed for natural lip-sync)
+            const upperLipGeometry = new THREE.SphereGeometry(0.02, 32, 32);
+            const lipMaterial = new THREE.MeshStandardMaterial({
+                color: 0xc4785a,
+                roughness: 0.4,
+                metalness: 0.05,
+                emissive: 0x1a1a1a,
+                emissiveIntensity: 0.01
+            });
+
+            const upperLip = new THREE.Mesh(upperLipGeometry, lipMaterial);
+            upperLip.position.set(0, 1.52, 0.125);
+            upperLip.scale.set(1.5, 0.4, 0.4);
+            upperLip.name = 'upperLip';
+            teacherGroup.add(upperLip);
+
+            const lowerLipGeometry = new THREE.SphereGeometry(0.022, 32, 32);
+            const lowerLip = new THREE.Mesh(lowerLipGeometry, lipMaterial);
+            lowerLip.position.set(0, 1.505, 0.125);
+            lowerLip.scale.set(1.6, 0.5, 0.45);
+            lowerLip.name = 'lowerLip';
+            teacherGroup.add(lowerLip);
+
+            // Store original positions for animation
+            teacherModel = teacherGroup;
+            teacherModel.position.set(0, 0, -5);
+            teacherModel.userData.originalPositions = {};
+            
+            teacherModel.traverse(function(child) {
+                if (child.isMesh) {
+                    teacherModel.userData.originalPositions[child.uuid] = {
+                        position: child.position.clone(),
+                        rotation: child.rotation.clone(),
+                        scale: child.scale.clone()
+                    };
+                }
+            });
+
+            scene.add(teacherModel);
+
+            // Initialize animation mixer
+            mixer = new THREE.AnimationMixer(teacherModel);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // ========================================================================
+        // REAL-TIME LIP-SYNC SYSTEM
+        // ========================================================================
+
+        function initAudioContext() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                
+                console.log('Audio context initialized for lip-sync');
+            } catch (error) {
+                console.error('Audio context initialization failed:', error);
+            }
+        }
+
+        function updateLipSync() {
+            if (!lipSyncEnabled || !teacherModel) return;
+
+            if (isSpeaking && audioContext) {
+                analyser.getByteFrequencyData(dataArray);
+                
+                // Calculate average frequency with more sophisticated analysis
+                let sum = 0;
+                let peak = 0;
+                for (let i = 0; i < dataArray.length; i++) {
+                    sum += dataArray[i];
+                    if (dataArray[i] > peak) peak = dataArray[i];
+                }
+                const average = sum / dataArray.length;
+                const intensity = average / 255;
+                const peakIntensity = peak / 255;
+
+                // Natural lip-sync with upper and lower lip movement
+                teacherModel.traverse(function(child) {
+                    if (child.name === 'upperLip') {
+                        // Upper lip moves slightly up when speaking
+                        const upperMovement = intensity * 0.3;
+                        child.position.y = 1.52 + upperMovement;
+                        child.scale.y = 0.4 + intensity * 0.2;
+                    }
+                    if (child.name === 'lowerLip') {
+                        // Lower lip moves down more when speaking
+                        const lowerMovement = intensity * 0.5;
+                        child.position.y = 1.505 - lowerMovement;
+                        child.scale.y = 0.5 + intensity * 0.4;
+                        child.scale.x = 1.6 + peakIntensity * 0.3;
+                    }
+                });
+            } else {
+                // Reset lips to natural position when not speaking
+                teacherModel.traverse(function(child) {
+                    if (child.name === 'upperLip') {
+                        child.position.y = 1.52;
+                        child.scale.y = 0.4;
+                    }
+                    if (child.name === 'lowerLip') {
+                        child.position.y = 1.505;
+                        child.scale.y = 0.5;
+                        child.scale.x = 1.6;
+                    }
+                });
+            }
+        }
+
+        function updateBodyMovements() {
+            if (!bodyMovementEnabled || !teacherModel) return;
+
+            const time = clock.getElapsedTime();
+
+            // Natural breathing animation (subtle chest movement)
+            if (currentAnimation === 'idle') {
+                const breathingIntensity = Math.sin(time * 1.2) * 0.008;
+                teacherModel.position.y = breathingIntensity;
+                
+                // Subtle shoulder movement during breathing
+                teacherModel.traverse(function(child) {
+                    if (child.name === 'leftUpperArm' || child.name === 'rightUpperArm') {
+                        child.position.y += breathingIntensity * 0.5;
+                    }
+                });
+            }
+
+            // Natural speaking gestures (hand movements, head tilts)
+            if (isSpeaking && currentAnimation === 'idle') {
+                // Subtle head movement while speaking
+                const headMovement = Math.sin(time * 2.5) * 0.03;
+                teacherModel.rotation.y = headMovement;
+                
+                // Hand gestures while speaking
+                teacherModel.traverse(function(child) {
+                    if (child.name === 'leftForearm') {
+                        child.rotation.z = 0.15 + Math.sin(time * 4) * 0.15;
+                    }
+                    if (child.name === 'rightForearm') {
+                        child.rotation.z = -0.15 + Math.sin(time * 4 + 0.5) * 0.15;
+                    }
+                });
+                
+                // Subtle body sway
+                teacherModel.rotation.x = Math.sin(time * 1.8) * 0.01;
+            }
+
+            // Walking animation (natural human gait)
+            if (currentAnimation === 'walking') {
+                const walkCycle = Math.sin(time * 5);
+                
+                // Leg movement
+                teacherModel.traverse(function(child) {
+                    if (child.position.y < 0.5) { // Legs
+                        child.rotation.x = walkCycle * 0.3;
+                    }
+                });
+                
+                // Arm swing (natural opposite to leg movement)
+                teacherModel.traverse(function(child) {
+                    if (child.name === 'leftUpperArm') {
+                        child.rotation.z = 0.25 - walkCycle * 0.2;
+                    }
+                    if (child.name === 'rightUpperArm') {
+                        child.rotation.z = -0.25 + walkCycle * 0.2;
+                    }
+                });
+                
+                // Body bob while walking
+                teacherModel.position.y = Math.abs(Math.sin(time * 5)) * 0.02;
+            }
+
+            // Writing gesture (when at blackboard)
+            if (currentAnimation === 'writing') {
+                const writingMovement = Math.sin(time * 8) * 0.02;
+                
+                teacherModel.traverse(function(child) {
+                    if (child.name === 'rightForearm') {
+                        child.rotation.x = writingMovement;
+                    }
+                    if (child.name === 'rightHand') {
+                        child.position.x = 0.32 + writingMovement;
+                    }
+                });
+            }
+
+            // Eye blinking (natural random blinking)
+            if (Math.random() < 0.01) { // 1% chance per frame
+                teacherModel.traverse(function(child) {
+                    if (child.name === 'leftEyeWhite' || child.name === 'rightEyeWhite') {
+                        child.scale.y = 0.1; // Close eyes
+                        setTimeout(() => {
+                            child.scale.y = 0.6; // Open eyes
+                        }, 100);
+                    }
+                });
+            }
+        }
+
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) {
+                console.error('Speech synthesis not supported');
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+
+            // Add natural pauses for more human-like speech
+            const naturalText = text
+                .replace(/\./g, '. ...')
+                .replace(/,/g, ', ..')
+                .replace(/\?/g, '? ....')
+                .replace(/!/g, '! ...');
+
+            const utterance = new SpeechSynthesisUtterance(naturalText);
+            utterance.lang = 'uz-UZ';
+            
+            // Natural speech parameters for 25-year-old female voice
+            utterance.rate = 0.9; // Slightly slower for clarity
+            utterance.pitch = 1.15; // Higher pitch for female voice
+            utterance.volume = 0.95; // Natural volume
+
+            // Try to find the best available voice
+            const voices = window.speechSynthesis.getVoices();
+            
+            // Priority: Uzbek female voice, then any Uzbek voice, then best quality voice
+            let selectedVoice = voices.find(voice => 
+                voice.lang.includes('uz') && voice.name.toLowerCase().includes('female')
+            );
+            
+            if (!selectedVoice) {
+                selectedVoice = voices.find(voice => voice.lang.includes('uz'));
+            }
+            
+            if (!selectedVoice) {
+                // Try to find a high-quality female voice
+                selectedVoice = voices.find(voice => 
+                    voice.name.toLowerCase().includes('female') || 
+                    voice.name.toLowerCase().includes('woman')
+                );
+            }
+            
+            if (!selectedVoice && voices.length > 0) {
+                // Use the first available voice as fallback
+                selectedVoice = voices[0];
+            }
+            
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            }
+
+            utterance.onstart = () => {
+                isSpeaking = true;
+                if (audioContext && audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+                document.getElementById('statusLabel').innerText = "O'qituvchi gapirmoqda...";
+            };
+
+            utterance.onend = () => {
+                isSpeaking = false;
+                document.getElementById('statusLabel').innerText = "O'qituvchi kutmoqda...";
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // ========================================================================
+        // EXAM SYSTEM (SAT/IELTS)
+        // ========================================================================
+
+        function startSATExam() {
+            currentExam = SAT_EXAM_DATA;
+            currentSectionIndex = 0;
+            currentQuestionIndex = 0;
+            examMode = true;
+            timeRemaining = SAT_EXAM_DATA.duration * 60;
+            userAnswers = [];
+            
+            document.getElementById('exam-panel').classList.add('active');
+            document.getElementById('globalStatus').innerText = SAT_EXAM_DATA.title;
+            
+            loadQuestion();
+            startExamTimer();
+            
+            // Move teacher to writing position
+            currentAnimation = 'writing';
+            teacherModel.position.set(0, 0, -8);
+            teacherModel.rotation.y = Math.PI; // Face the blackboard
+            
+            speakText("SAT Digital imtihonini boshlaymiz. Official formatga mos ravishda 4 moduldan iborat. Har bir modul uchun vaqt cheklangan. Omad!");
+        }
+
+        function startIELTSExam() {
+            currentExam = IELTS_EXAM_DATA;
+            currentSectionIndex = 0;
+            currentQuestionIndex = 0;
+            examMode = true;
+            timeRemaining = IELTS_EXAM_DATA.duration * 60;
+            userAnswers = [];
+            
+            document.getElementById('exam-panel').classList.add('active');
+            document.getElementById('globalStatus').innerText = IELTS_EXAM_DATA.title;
+            
+            loadQuestion();
+            startExamTimer();
+            
+            // Move teacher to writing position
+            currentAnimation = 'writing';
+            teacherModel.position.set(0, 0, -8);
+            teacherModel.rotation.y = Math.PI;
+            
+            speakText("IELTS Academic imtihonini boshlaymiz. Listening, Reading va Writing bo'limlarini o'z ichiga oladi. Official formatga mos ravishda tayyorlangan.");
+        }
+
+        function loadQuestion() {
+            if (!currentExam) return;
+
+            const section = currentExam.sections[currentSectionIndex];
+            
+            // Check if this is a writing task
+            if (section.isWriting) {
+                document.getElementById('exam-question').textContent = section.prompt;
+                document.getElementById('exam-question').innerHTML += `<br><br><small>Word limit: ${section.wordLimit}+ words</small><br><small>Criteria: ${section.criteria.join(', ')}</small>`;
+                
+                const optionsContainer = document.getElementById('exam-options');
+                optionsContainer.innerHTML = `
+                    <textarea id="writing-answer" style="width: 100%; height: 200px; padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; font-size: 1rem; resize: none;" placeholder="Write your essay here..."></textarea>
+                    <div style="margin-top: 10px; color: #888; font-size: 0.9rem;">Word count: <span id="word-count">0</span></div>
+                `;
+                
+                // Add word count listener
+                setTimeout(() => {
+                    const textarea = document.getElementById('writing-answer');
+                    if (textarea) {
+                        textarea.addEventListener('input', function() {
+                            const words = this.value.trim().split(/\s+/).filter(word => word.length > 0);
+                            document.getElementById('word-count').textContent = words.length;
+                        });
+                    }
+                }, 100);
+                
+                return;
+            }
+            
+            const question = section.questions[currentQuestionIndex];
+            
+            document.getElementById('exam-question').textContent = question.question;
+            if (question.explanation) {
+                document.getElementById('exam-question').innerHTML += `<br><br><small style="color: #888;">Question ${currentQuestionIndex + 1} of ${section.questions.length}</small>`;
+            }
+            
+            const optionsContainer = document.getElementById('exam-options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'exam-option';
+                optionDiv.textContent = option;
+                optionDiv.dataset.index = index;
+                optionDiv.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+        }
+
+        function selectOption(index) {
+            const options = document.querySelectorAll('.exam-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+        }
+
+        function submitAnswer() {
+            const section = currentExam.sections[currentSectionIndex];
+            
+            // Handle writing task submission
+            if (section.isWriting) {
+                const textarea = document.getElementById('writing-answer');
+                if (textarea) {
+                    const wordCount = parseInt(document.getElementById('word-count').textContent);
+                    if (wordCount < section.wordLimit) {
+                        alert(`Iltimos, kamida ${section.wordLimit} so'z yozing. Hozirgi so'z soni: ${wordCount}`);
+                        return;
+                    }
+                    
+                    userAnswers.push({
+                        section: section.name,
+                        type: 'writing',
+                        answer: textarea.value,
+                        wordCount: wordCount
+                    });
+                    
+                    speakText("Yozuvingiz qabul qilindi. IELTS Writing Task 2 tugadi.");
+                    setTimeout(() => endExam(), 2000);
+                }
+                return;
+            }
+            
+            const selectedOption = document.querySelector('.exam-option.selected');
+            if (!selectedOption) {
+                alert("Iltimos, javobni tanlang.");
+                return;
+            }
+
+            const selectedIndex = parseInt(selectedOption.dataset.index);
+            const question = section.questions[currentQuestionIndex];
+            
+            // Store user answer
+            userAnswers.push({
+                section: section.name,
+                questionIndex: currentQuestionIndex,
+                selectedAnswer: selectedIndex,
+                correctAnswer: question.correct,
+                isCorrect: selectedIndex === question.correct
+            });
+            
+            const options = document.querySelectorAll('.exam-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            if (selectedIndex === question.correct) {
+                options[selectedIndex].classList.add('correct');
+                speakText("To'g'ri! Ajoyib.");
+            } else {
+                options[selectedIndex].classList.add('incorrect');
+                options[question.correct].classList.add('correct');
+                if (question.explanation) {
+                    setTimeout(() => {
+                        speakText("Izoh: " + question.explanation);
+                    }, 1500);
+                }
+            }
+        }
+
+        function nextQuestion() {
+            const section = currentExam.sections[currentSectionIndex];
+            currentQuestionIndex++;
+            
+            // Check if current section is complete
+            if (currentQuestionIndex >= section.questions.length) {
+                // Move to next section or end exam
+                currentSectionIndex++;
+                currentQuestionIndex = 0;
+                
+                if (currentSectionIndex >= currentExam.sections.length) {
+                    endExam();
+                } else {
+                    // Load next section
+                    speakText(`${currentExam.sections[currentSectionIndex].name} bo'limiga o'tamiz.`);
+                    loadQuestion();
+                }
+            } else {
+                loadQuestion();
+            }
+        }
+
+        function startExamTimer() {
+            if (examTimer) clearInterval(examTimer);
+            
+            examTimer = setInterval(() => {
+                timeRemaining--;
+                
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                document.getElementById('timer-display').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeRemaining <= 0) {
+                    endExam();
+                }
+            }, 1000);
+        }
+
+        function endExam() {
+            clearInterval(examTimer);
+            examMode = false;
+            
+            document.getElementById('exam-panel').classList.remove('active');
+            document.getElementById('globalStatus').innerText = "Dars rejimi";
+            
+            // Calculate score
+            let correctAnswers = 0;
+            let totalQuestions = 0;
+            
+            userAnswers.forEach(answer => {
+                if (answer.type !== 'writing') {
+                    totalQuestions++;
+                    if (answer.isCorrect) correctAnswers++;
+                }
+            });
+            
+            const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+            
+            // Generate score report
+            let scoreReport = `Imtihon tugadi!\n\n`;
+            scoreReport += `Jami savollar: ${totalQuestions}\n`;
+            scoreReport += `To'g'ri javoblar: ${correctAnswers}\n`;
+            scoreReport += `Foiz: ${percentage}%\n\n`;
+            
+            if (percentage >= 90) {
+                scoreReport += "Ajoyib! Siz mukammal natija ko'rsatdingiz.";
+            } else if (percentage >= 70) {
+                scoreReport += "Yaxshi! Davom eting.";
+            } else if (percentage >= 50) {
+                scoreReport += "O'rtacha. Ko'proq mashq qiling.";
+            } else {
+                scoreReport += "Qayta urinib ko'ring.";
+            }
+            
+            // Display score in chat
+            addMessage('teacher', scoreReport);
+            
+            // Reset teacher position
+            teacherModel.position.set(0, 0, -5);
+            teacherModel.rotation.y = 0;
+            currentAnimation = 'idle';
+            
+            speakText(`Imtihon tugadi. Siz ${totalQuestions} savoldan ${correctAnswers} tasiga to'g'ri javob berdingiz. Bu ${percentage} foizni tashkil qiladi.`);
+        }
+
+        function startLessonMode() {
+            examMode = false;
+            document.getElementById('exam-panel').classList.remove('active');
+            document.getElementById('globalStatus').innerText = "Dars rejimi";
+            
+            speakText("Dars rejimiga o'tdik. Qanday mavzuni o'rganmoqchisiz?");
+        }
+
+        // ========================================================================
+        // ANIMATION LOOP
+        // ========================================================================
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const delta = clock.getDelta();
+
+            // Update animation mixer
+            if (mixer) {
+                mixer.update(delta);
+            }
+
+            // Update lip-sync
+            updateLipSync();
+
+            // Update body movements
+            updateBodyMovements();
+
+            // Simple camera movement based on mouse
+            camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+            camera.position.y += (mouseY * 0.5 + 1.7 - camera.position.y) * 0.05;
+            camera.lookAt(0, 1.2, 0);
+
+            // Render scene
+            renderer.render(scene, camera);
+
+            // Performance monitoring
+            frameCount++;
+            const currentTime = performance.now();
+            if (currentTime - lastTime >= 1000) {
+                fps = frameCount;
+                frameCount = 0;
+                lastTime = currentTime;
+                updatePerformanceStats();
+            }
+        }
+
+        function updatePerformanceStats() {
+            document.getElementById('fps').textContent = fps;
+            
+            if (performance.memory) {
+                const memoryMB = (performance.memory.usedJSHeapSize / 1048576).toFixed(1);
+                document.getElementById('memory').textContent = memoryMB;
+            }
+        }
+
+        // ========================================================================
+        // UI INTERACTION HANDLERS
+        // ========================================================================
+
+        function setupUIHandlers() {
+            // SAT Exam button
+            document.getElementById('btn-sat-exam').addEventListener('click', () => {
+                initAudioContext();
+                startSATExam();
+            });
+
+            // IELTS Exam button
+            document.getElementById('btn-ielts-exam').addEventListener('click', () => {
+                initAudioContext();
+                startIELTSExam();
+            });
+
+            // Lesson Mode button
+            document.getElementById('btn-lesson').addEventListener('click', () => {
+                initAudioContext();
+                startLessonMode();
+            });
+
+            // Reset View button
+            document.getElementById('btn-reset-view').addEventListener('click', () => {
+                camera.position.set(0, 1.7, 4);
+                mouseX = 0;
+                mouseY = 0;
+            });
+
+            // Submit Answer button
+            document.getElementById('btn-submit-answer').addEventListener('click', submitAnswer);
+
+            // Next Question button
+            document.getElementById('btn-next-question').addEventListener('click', nextQuestion);
+
+            // Chat input
+            document.getElementById('btn-send').addEventListener('click', sendMessage);
+            document.getElementById('chat-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+
+            // Load voices for speech synthesis
+            window.speechSynthesis.onvoiceschanged = () => {
+                const voices = window.speechSynthesis.getVoices();
+                console.log('Available voices:', voices.length);
+            };
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            addMessage(message, 'user');
+            input.value = '';
+
+            // Simple response logic
+            let response = "";
+            if (message.toLowerCase().includes('salom') || message.toLowerCase().includes('assalomu')) {
+                response = "Assalomu alaykum! Qanday yordam bera olaman?";
+            } else if (message.toLowerCase().includes('sat')) {
+                response = "SAT imtihoni uchun tayyorlanishni boshlashimiz mumkin. SAT tugmasini bosing.";
+            } else if (message.toLowerCase().includes('ielts')) {
+                response = "IELTS imtihoni uchun tayyorlanishni boshlashimiz mumkin. IELTS tugmasini bosing.";
+            } else if (message.toLowerCase().includes('dars')) {
+                response = "Dars rejimiga o'tish uchun Lesson Mode tugmasini bosing.";
+            } else {
+                response = "Tushunarli. Sizga qanday yordam kerak?";
+            }
+
+            setTimeout(() => {
+                addMessage(response, 'teacher');
+                speakText(response);
+            }, 500);
+        }
+
+        function addMessage(text, sender) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.textContent = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // ========================================================================
+        // INITIALIZATION
+        // ========================================================================
+
+        async function init() {
+            console.log('Initializing Realistic Virtual Classroom...');
+            
+            try {
+                // Check if Three.js is loaded
+                if (typeof THREE === 'undefined') {
+                    console.error('Three.js not loaded');
+                    document.getElementById('loading-overlay').innerHTML = 
+                        '<h2>Three.js kutubxonasi yuklanmadi</h2><p>three.min.js faylini frontend papkasiga joylang</p>';
+                    return;
+                }
+                
+                // Initialize Three.js
+                initThreeJS();
+                
+                // Setup UI handlers
+                setupUIHandlers();
+                
+                // Start animation loop
+                animate();
+                
+                // Hide loading overlay
+                setTimeout(() => {
+                    document.getElementById('loading-overlay').classList.add('hidden');
+                }, 2000);
+                
+                console.log('Realistic Virtual Classroom initialized successfully');
+            } catch (error) {
+                console.error('Initialization error:', error);
+                document.getElementById('loading-overlay').innerHTML = 
+                    '<h2>Xatolik yuz berdi</h2><p>' + error.message + '</p>';
+            }
+        }
+
+        // Start initialization when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // Export for external use
+        window.RealisticClassroom = {
+            speak: speakText,
+            startSAT: startSATExam,
+            startIELTS: startIELTSExam,
+            startLesson: startLessonMode
+        };
+    </script>
+</body>
+</html>

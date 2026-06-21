@@ -1,0 +1,72 @@
+{
+  "standard": "DTM",
+  "duration": 2700,
+  "listening": {
+    "audioUrl": "https://cloudinary.com/your-audio/dtm-listening.mp3",
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple-choice",
+        "question": "Matematika fanida qaysi asosiy tushuncha muhokama qilinmoqda?",
+        "options": ["Algebra", "Geometriya", "Funksiyalar", "Barchasi to'g'ri"],
+        "correctAnswer": 3,
+        "points": 1
+      },
+      {
+        "id": 2,
+        "type": "multiple-choice",
+        "question": "Kvadrat tenglamaning diskriminanti nima?",
+        "options": ["D = a + b + c", "D = b² - 4ac", "D = a² + b²", "D = 4ac"],
+        "correctAnswer": 1,
+        "points": 1
+      }
+    ]
+  },
+  "reading": {
+    "passage": "O'zbekiston Ta'lim Tizimi va Zamonaviy Yondashuvlar\n\nO'zbekistonda ta'lim tizimi so'nggi yillarda katta o'zgarishlarni boshdan kechirmoqda. 2017 yildan boshlab mamlakatda ta'lim islohotlari boshlandi, ularning asosiy maqsadi - ta'lim sifatini oshirish va zamonaviy texnologiyalarni joriy etish.\n\nBoshlang'ich ta'limda yangi o'qitish metodikasi joriy etildi. Endi bolalar o'qishni o'rganishdan oldin o'yinlar orqali bilim olishadi. Bu yondashuv bolalarning ijodiy qobiliyatlarini rivojlantirishga yordam beradi.\n\nO'rta ta'limda matematika va tabiiy fanlarga e'tibor kuchaytirildi. Maktablarda zamonaviy laboratoriyalar va kompyuter sinflari tashkil etildi. O'qituvchilar uchun malaka oshirish kurslari tashkil etilmoqda.\n\nYuqori ta'lim muassasalarida xalqaro standartlarga moslashtirish ishlari olib borilmoqda. O'zbekistonning yetakchi universitetlari dunyo reytinglarida o'rin egallashga qadam qo'ydi. Talabalar uchun xalqaro almashinuv dasturlari kengaytirildi.\n\nTa'limda raqamlashtirish jarayoni ham faol olib borilmoqda. Maktablarda elektron jurnallar, onlayn darslar va interaktiv o'quv platformalari joriy etilmoqda. Bu o'quvchilarga bilim olishda qulaylik yaratadi va o'qituvchilarning ish samaradorligini oshiradi.",
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple-choice",
+        "question": "Matnda qachon ta'lim islohotlari boshlanganligi aytilgan?",
+        "options": ["2015 yilda", "2017 yilda", "2020 yilda", "2022 yilda"],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 2,
+        "type": "multiple-choice",
+        "question": "Boshlang'ich ta'limda qanday yangi yondashuv joriy etildi?",
+        "options": [
+          "Qattiq intizom",
+          "O'yinlar orqali bilim olish",
+          "Faqat kitob o'qish",
+          "Uy vazifasini ko'paytirish"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 3,
+        "type": "multiple-choice",
+        "question": "O'rta ta'limda qaysi fanlarga e'tibor kuchaytirildi?",
+        "options": [
+          "Tarix va adabiyot",
+          "Matematika va tabiiy fanlar",
+          "Chet tili va sport",
+          "Ijtimoiy fanlar"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      }
+    ]
+  },
+  "writing": {
+    "prompt": "O'zbekistonda ta'lim tizimidagi o'zgarishlarni tahlil qiling. Ushbu o'zgarishlarning ijobiy va salbiy tomonlarini ko'rsating. Kamida 250 so'zdan iborat insha yozing.",
+    "minWords": 250
+  },
+  "speaking": {
+    "prompt": "Sizning fikringizga ko'ra, zamonaviy ta'lim tizimining eng muhim jihati nima? Nega? 2-3 daqiqa davomida gapiring.",
+    "duration": 180
+  }
+}

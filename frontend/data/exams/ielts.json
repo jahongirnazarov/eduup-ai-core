@@ -1,0 +1,106 @@
+{
+  "standard": "IELTS",
+  "duration": 1800,
+  "listening": {
+    "audioUrl": "https://cloudinary.com/your-audio/ielts-listening.mp3",
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple-choice",
+        "question": "What is the main topic of the lecture?",
+        "options": ["Climate change", "Renewable energy", "Ocean pollution", "Urban planning"],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 2,
+        "type": "multiple-choice",
+        "question": "According to the speaker, what percentage of energy comes from solar power?",
+        "options": ["10%", "25%", "40%", "55%"],
+        "correctAnswer": 2,
+        "points": 1
+      },
+      {
+        "id": 3,
+        "type": "multiple-choice",
+        "question": "What challenge does the speaker mention?",
+        "options": ["Cost", "Storage", "Both A and B", "Neither A nor B"],
+        "correctAnswer": 2,
+        "points": 1
+      },
+      {
+        "id": 4,
+        "type": "multiple-choice",
+        "question": "When does the speaker predict solar energy will become dominant?",
+        "options": ["2025", "2030", "2035", "2040"],
+        "correctAnswer": 2,
+        "points": 1
+      }
+    ]
+  },
+  "reading": {
+    "passage": "The Impact of Artificial Intelligence on Modern Education\n\nArtificial Intelligence (AI) has revolutionized numerous sectors, and education is no exception. Over the past decade, educational institutions worldwide have increasingly integrated AI technologies to enhance learning experiences, personalize instruction, and improve administrative efficiency.\n\nOne of the most significant benefits of AI in education is its ability to provide personalized learning experiences. Traditional classroom settings often struggle to accommodate diverse learning styles and paces. However, AI-powered adaptive learning systems can analyze individual student performance in real-time and adjust content difficulty accordingly. This ensures that each student receives instruction tailored to their specific needs, maximizing learning outcomes.\n\nMoreover, AI has transformed assessment methods. Automated grading systems can evaluate assignments and tests with remarkable accuracy, providing instant feedback to students. This not only saves educators valuable time but also enables students to identify and address their weaknesses promptly. Additionally, AI can detect patterns in student performance that might indicate learning disabilities or other challenges, allowing for early intervention.\n\nHowever, the integration of AI in education is not without challenges. Privacy concerns regarding student data collection and storage remain a significant issue. Educational institutions must ensure that AI systems comply with data protection regulations and maintain transparency about how student information is used. Furthermore, there is a risk that over-reliance on AI could diminish the human element of teaching, which is crucial for student motivation and emotional support.\n\nDespite these challenges, the future of AI in education looks promising. As technology continues to advance, we can expect even more sophisticated AI tools that will further enhance educational experiences. The key lies in finding the right balance between technological innovation and human interaction in the learning process.",
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple-choice",
+        "question": "According to the passage, what is one major benefit of AI in education?",
+        "options": [
+          "Reduced costs for schools",
+          "Personalized learning experiences",
+          "Elimination of teachers",
+          "Faster internet connections"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 2,
+        "type": "multiple-choice",
+        "question": "How does AI help with assessment according to the text?",
+        "options": [
+          "It replaces all human graders",
+          "It provides instant feedback",
+          "It only grades multiple-choice questions",
+          "It increases test difficulty"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 3,
+        "type": "multiple-choice",
+        "question": "What challenge does the passage mention regarding AI in education?",
+        "options": [
+          "High implementation costs",
+          "Privacy concerns about student data",
+          "Lack of student interest",
+          "Technical difficulties"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 4,
+        "type": "multiple-choice",
+        "question": "What does the author suggest about the future of AI in education?",
+        "options": [
+          "It will completely replace teachers",
+          "It will be abandoned due to challenges",
+          "It will continue to advance and enhance education",
+          "It will only be used in universities"
+        ],
+        "correctAnswer": 2,
+        "points": 1
+      }
+    ]
+  },
+  "writing": {
+    "prompt": "Some people believe that artificial intelligence will replace teachers in the future. To what extent do you agree or disagree with this view? Write an essay of at least 250 words.",
+    "minWords": 250
+  },
+  "speaking": {
+    "prompt": "Describe a teacher who has influenced you. You should say:\n- Who this teacher is\n- What subject they taught\n- How they influenced you\n- And explain why you remember them.",
+    "duration": 120
+  }
+}

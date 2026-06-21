@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eduupai AI — Virtual Professor</title>
+    <style>
+        body { 
+            margin: 0; background: #030712; 
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; 
+            height: 100vh; font-family: sans-serif; color: white; 
+        }
+        #app-viewport { 
+            position: relative; box-shadow: 0 30px 70px rgba(0,0,0,0.85); 
+            border-radius: 20px; overflow: hidden; border: 4px solid #2563eb; 
+        }
+        canvas { display: block; }
+        .ui-overlay {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 10px; background: rgba(15, 23, 42, 0.85);
+            padding: 12px 24px; border-radius: 30px; backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        button { 
+            padding: 10px 20px; font-weight: 600; font-size: 13px; border: none; 
+            color: white; border-radius: 20px; cursor: pointer; transition: 0.2s;
+            background: #3b82f6;
+        }
+        button:hover { background: #1d4ed8; transform: translateY(-1px); }
+        .btn-talk { background: #10b981; }
+        .btn-talk:hover { background: #059669; }
+    </style>
+</head>
+<body>
+
+<div style="font-size: 22px; font-weight: 700; margin-bottom: 15px; color: #3b82f6; letter-spacing: -0.5px;">
+    Eduupai — Virtual Professor
+</div>
+
+<div id="app-viewport">
+    <canvas id="eduupaiCanvas" width="1000" height="560"></canvas>
+    
+    <div class="ui-overlay">
+        <button onclick="triggerBehavior('explain')">🏫 Tushuntirish</button>
+        <button onclick="triggerBehavior('think')">🤔 O'ylanish</button>
+        <button onclick="triggerBehavior('happy')">🌟 Rag'batlantirish</button>
+        <button onclick="triggerBehavior('sad')">⚠️ Xato</button>
+        <button class="btn-talk" onclick="activateVocalStream()">🔊 Gapirtirish</button>
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById('eduupaiCanvas');
+const ctx = canvas.getContext('2d');
+
+// --- DATABASE: EDUUPAI SYSTEM CONTEXT ---
+const database = {
+    explain: {
+        title: "EDUUPAI ACADEMY — ADVANCED AI LECTURE",
+        rawText: "Mavzu: Neyron Tarmoqlar va AI Algoritmlari\n\nFormula: Y = σ(∑(W_i * X_i) + b)\nBu yerda:\n W = Og'irlik koeffitsiyenti (Weights)\n X = Kiruvchi signal (Inputs)\n b = Biroz siljish (Bias)\n σ = Aktivatsiya funksiyasi (Sigmoid)",
+        speech: "EduUpAI platformasiga xush kelibsiz. Bugun sun'iy intellekt darsida neyron tarmoqlarining matematik asosini o'rganamiz. Formula v_i ko'paytirilgan iks_i qo'shilgan b ko'rinishida hisoblanadi.",
+        emotion: 'explain'
+    },
+    happy: {
+        title: "EDUUPAI EVALUATION — SUCCESS",
+        rawText: "✅ MUKAMMAL NATIJA! JAVOB TO'G'RI!\n\nAI Modeli javobingizni 100% to'g'ri deb baholadi.\nTizim tomonidan keyingi master-klass darsi\navtomatik tarzda blokdan ochildi.",
+        speech: "Ajoyib! EduUpAI algoritmlari javobingizni mukammal deb baholadi. Neyron tarmoqlarni juda yaxshi tushunibsiz, barakalla!",
+        emotion: 'happy'
+    },
+    think: {
+        title: "EDUUPAI CHALLENGE — CRITICAL THINKING",
+        rawText: "Mantiqiy Algoritm Masalasi:\nBerilgan neyron tarmog'ida og'irlik (W)\nqiymati oshsa, chiquvchi natija (Y)\nqanday o'zgaradi?\n\nGrafik mantiqni diqqat bilan o'ylang.",
+        speech: "Keling, ushbu intellektual masalani EduUpAI tizimida birgalikda tahlil qilib, chuqur o'ylab ko'ramiz.",
+        emotion: 'think'
+    },
+    sad: {
+        title: "EDUUPAI EVALUATION — ERROR DETECTED",
+        rawText: "❌ DIQQAT: ALGORITMDA XATOLIK\n\nKiritilgan qiymat neyron tarmoq balansi\nbilan mos kelmadi.\n\nYordam: Aktivatsiya funksiyasi qiymatlarini\nqaytadan tekshirib ko'ring.",
+        speech: "Afsuski, kiritilgan algoritmda xatolik aniqlandi. Umidsizlikka tushmang, qiymatlarni tekshirib, qaytadan urinib ko'ring.",
+        emotion: 'sad'
+    }
+};
+
+// --- INITIAL STATE ---
+let currentState = 'explain';
+let boardString = database.explain.rawText;
+let printedString = "";
+let typeIndex = 0;
+let lastTypeTimestamp = Date.now();
+
+// --- BIOLOGICAL TWIN CONFIGURATION (EDUUPAI DIGITAL TWIN) ---
+let twin = {
+    x: 200,
+    y: 340,
+    emotion: 'explain',
+    isTalking: false,
+    mouthScale: 0,
+    eyeBlink: false,
+    gazeX: 0,
+    gazeY: 0,
+    walkX: -150,
+    targetWalkX: 200,
+    movementState: 'entry'
+};
+
+const vocalSynth = window.speechSynthesis;
+let speechTrack = new SpeechSynthesisUtterance();
+
+function triggerBehavior(stateKey) {
+    currentState = stateKey;
+    twin.emotion = database[stateKey].emotion;
+    boardString = database[stateKey].rawText;
+    printedString = "";
+    typeIndex = 0;
+    lastTypeTimestamp = Date.now();
+    vocalSynth.cancel();
+    twin.isTalking = false;
+}
+
+function activateVocalStream() {
+    vocalSynth.cancel(); 
+    twin.isTalking = true;
+    
+    speechTrack.text = database[currentState].speech;
+    speechTrack.lang = 'uz-UZ';
+    speechTrack.rate = 0.95;
+    speechTrack.pitch = 1.1;
+    
+    vocalSynth.speak(speechTrack);
+    
+    speechTrack.onend = () => { twin.isTalking = false; };
+}
+
+// --- RENDERING PIPELINE ---
+function renderFrame() {
+    const time = Date.now();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 1. ENVIRONMENT ART (EduUpAI Premium To'q kosmik interer foni)
+    let wallGrad = ctx.createLinearGradient(0, 0, 0, 440);
+    wallGrad.addColorStop(0, '#0b0f19');
+    wallGrad.addColorStop(1, '#030712');
+    ctx.fillStyle = wallGrad;
+    ctx.fillRect(0, 0, canvas.width, 440);
+
+    let floorGrad = ctx.createLinearGradient(0, 440, 0, canvas.height);
+    floorGrad.addColorStop(0, '#01040a');
+    floorGrad.addColorStop(1, '#000000');
+    ctx.fillStyle = floorGrad;
+    ctx.fillRect(0, 440, canvas.width, canvas.height - 440);
+
+    // 2. INTERACTIVE SMART BOARD (Neon binafsha effektli raqamli doska)
+    ctx.fillStyle = '#090d16';
+    ctx.fillRect(440, 40, 560, 320);
+    
+    ctx.strokeStyle = '#6366f1';
+    ctx.lineWidth = 4;
+    ctx.shadowColor = '#6366f1';
+    ctx.shadowBlur = 15;
+    ctx.strokeRect(440, 40, 560, 320);
+    ctx.shadowBlur = 0;
+
+    // 3. TYPEWRITER EFFECT
+    if (time - lastTypeTimestamp > 40 && typeIndex < boardString.length) {
+        printedString += boardString[typeIndex];
+        typeIndex++;
+        lastTypeTimestamp = time;
+    }
+    
+    ctx.fillStyle = '#f3f4f6';
+    ctx.font = '500 19px "Courier New", monospace';
+    let lines = printedString.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+        ctx.fillText(lines[i], 470, 95 + (i * 32));
+    }
+
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = 'bold 13px sans-serif';
+    ctx.fillText(database[currentState].title, 445, 30);
+
+    // --- 4. TWIN PHYSICS & ANIMATIONS ---
+    if (twin.movementState === 'entry') {
+        twin.walkX += 4;
+        if (twin.walkX >= twin.targetWalkX) twin.movementState = 'standing';
+    }
+    
+    let breathY = Math.sin(time * 0.0025) * 2.5;
+    let swayX = Math.cos(time * 0.001) * 1.5;
+
+    ctx.save();
+    ctx.translate(twin.walkX + swayX, twin.y);
+
+    // A. HAIR LAYER (To'q jigarrang volumetrik sochlar)
+    ctx.fillStyle = '#221510';
+    ctx.beginPath();
+    ctx.ellipse(0, -65 + breathY, 38, 48, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillRect(-38, -65 + breathY, 76, 120);
+
+    // B. EDUUPAI CORPORATE UNIFORM (Zamonaviy brend kostyumi)
+    let jacketGrad = ctx.createLinearGradient(-50, 40, 50, 200);
+    jacketGrad.addColorStop(0, '#312e81');
+    jacketGrad.addColorStop(1, '#1e1b4b');
+    ctx.fillStyle = jacketGrad;
+    ctx.beginPath();
+    ctx.moveTo(-32, 45 + breathY);
+    ctx.bezierCurveTo(-55, 65, -62, 140, -55, 230);
+    ctx.lineTo(55, 230);
+    ctx.bezierCurveTo(62, 140, 55, 65, 32, 45 + breathY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Ichki oq ko'ylak yoqalari
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(-16, 45 + breathY);
+    ctx.lineTo(0, 85 + breathY);
+    ctx.lineTo(16, 45 + breathY);
+    ctx.closePath();
+    ctx.fill();
+
+    // EduUpAI logotipi
+    ctx.fillStyle = '#818cf8';
+    ctx.beginPath();
+    ctx.moveTo(-6, 58 + breathY);
+    ctx.lineTo(6, 58 + breathY);
+    ctx.lineTo(8, 110 + breathY);
+    ctx.lineTo(0, 125 + breathY);
+    ctx.lineTo(-8, 110 + breathY);
+    ctx.closePath();
+    ctx.fill();
+
+    // C. SKIN COMPLEXION
+    let skinGrad = ctx.createRadialGradient(0, -30 + breathY, 5, 0, -30 + breathY, 35);
+    skinGrad.addColorStop(0, '#ffebd4');
+    skinGrad.addColorStop(1, '#fcd34d');
+    ctx.fillStyle = skinGrad;
+    ctx.beginPath();
+    ctx.arc(0, -30 + breathY, 32, 0, Math.PI * 2);
+    ctx.fill();
+
+    // D. FRONT HAIR FRINGE
+    ctx.fillStyle = '#1c100b';
+    ctx.beginPath();
+    ctx.arc(0, -42 + breathY, 34, Math.PI, 0);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-34, -42 + breathY);
+    ctx.bezierCurveTo(-38, 0, -26, 15, -24, 30 + breathY);
+    ctx.lineTo(-34, 30);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(34, -42 + breathY);
+    ctx.bezierCurveTo(38, 0, 26, 15, 24, 30 + breathY);
+    ctx.lineTo(34, 30);
+    ctx.closePath();
+    ctx.fill();
+
+    // E. REALISTIC EYES & GAZE
+    if (time % 3500 < 150) twin.eyeBlink = true; else twin.eyeBlink = false;
+    if (twin.emotion === 'explain' || twin.emotion === 'think') {
+        twin.gazeX = 3; twin.gazeY = -1;
+    } else {
+        twin.gazeX = 0; twin.gazeY = 0;
+    }
+    
+    function drawEye(offsetX) {
+        ctx.save();
+        ctx.translate(offsetX, -35 + breathY);
+        if (twin.eyeBlink) {
+            ctx.strokeStyle = '#27272a';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(-7, 0);
+            ctx.lineTo(7, 0);
+            ctx.stroke();
+        } else {
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 8, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#4c2a15';
+            ctx.beginPath();
+            ctx.arc(twin.gazeX, twin.gazeY, 3.8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#09090b';
+            ctx.beginPath();
+            ctx.arc(twin.gazeX, twin.gazeY, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.beginPath();
+            ctx.arc(twin.gazeX - 1.2, twin.gazeY - 1.2, 1, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.restore();
+    }
+    drawEye(-13);
+    drawEye(13);
+
+    // F. EMOTIONS & LIP-SYNC
+    ctx.strokeStyle = '#27272a';
+    ctx.lineWidth = 1.8;
+    if (twin.emotion === 'happy') {
+        ctx.beginPath();
+        ctx.arc(-13, -44 + breathY, 5, Math.PI, 0);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(13, -44 + breathY, 5, Math.PI, 0);
+        ctx.stroke();
+        ctx.fillStyle = '#f43f5e';
+        ctx.beginPath();
+        ctx.arc(0, -15 + breathY, 9, 0, Math.PI);
+        ctx.fill();
+        ctx.strokeStyle = '#e11d48';
+        ctx.stroke();
+    }
+    else if (twin.emotion === 'think') {
+        ctx.beginPath();
+        ctx.moveTo(-18, -43 + breathY);
+        ctx.lineTo(-8, -40 + breathY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(18, -43 + breathY);
+        ctx.lineTo(8, -40 + breathY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(-7, -14 + breathY);
+        ctx.lineTo(7, -14 + breathY);
+        ctx.stroke();
+    }
+    else if (twin.emotion === 'sad') {
+        ctx.beginPath();
+        ctx.moveTo(-17, -40 + breathY);
+        ctx.lineTo(-9, -43 + breathY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(17, -40 + breathY);
+        ctx.lineTo(9, -43 + breathY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(0, -10 + breathY, 6, Math.PI, 0);
+        ctx.stroke();
+    }
+    else {
+        ctx.beginPath();
+        ctx.moveTo(-17, -42 + breathY);
+        ctx.lineTo(-9, -42 + breathY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(17, -42 + breathY);
+        ctx.lineTo(9, -42 + breathY);
+        ctx.stroke();
+        if (twin.isTalking) {
+            twin.mouthScale = 3 + Math.abs(Math.sin(time * 0.016)) * 7;
+            ctx.fillStyle = '#7f1d1d';
+            ctx.beginPath();
+            ctx.ellipse(0, -14 + breathY, 5, twin.mouthScale / 2, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#27272a';
+            ctx.stroke();
+        } else {
+            ctx.beginPath();
+            ctx.arc(0, -18 + breathY, 6, 0, Math.PI);
+            ctx.stroke();
+        }
+    }
+
+    // G. HANDS KINEMATICS
+    ctx.strokeStyle = '#ffebd4';
+    ctx.lineWidth = 7.5;
+    ctx.lineCap = 'round';
+    
+    ctx.beginPath();
+    ctx.moveTo(-36, 60 + breathY);
+    if (twin.emotion === 'happy') {
+        ctx.lineTo(-55, 30);
+        ctx.lineTo(-65, -5);
+    } else {
+        ctx.lineTo(-50, 110 + breathY);
+        ctx.lineTo(-44, 150 + breathY);
+    }
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(36, 60 + breathY);
+    if (twin.emotion === 'explain') {
+        let reach = Math.sin(time * 0.003) * 6;
+        ctx.lineTo(60, 45 + breathY);
+        ctx.lineTo(85 + reach, 20 + reach);
+    } else if (twin.emotion === 'think') {
+        ctx.lineTo(20, 35);
+        ctx.lineTo(5, -10 + breathY);
+    } else if (twin.emotion === 'happy') {
+        ctx.lineTo(55, 30);
+        ctx.lineTo(65, -5);
+    } else {
+        ctx.lineTo(52, 110 + breathY);
+        ctx.lineTo(46, 150 + breathY);
+    }
+    ctx.stroke();
+
+    ctx.restore();
+
+    // 5. FOREGROUND (Premium AI kafedra paneli)
+    let deskGrad = ctx.createLinearGradient(0, 480, 0, canvas.height);
+    deskGrad.addColorStop(0, '#1f2937');
+    deskGrad.addColorStop(1, '#111827');
+    ctx.fillStyle = deskGrad;
+    ctx.fillRect(40, 480, 320, 100);
+    ctx.strokeStyle = '#374151';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(40, 480, 320, 100);
+
+    requestAnimationFrame(renderFrame);
+}
+
+renderFrame();
+</script>
+</body>
+</html>

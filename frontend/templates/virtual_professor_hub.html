@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduUpAI — Virtual Professor Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0a15 0%, #050508 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: #fff;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00ffcc, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle {
+            text-align: center;
+            color: #9ca3af;
+            margin-bottom: 50px;
+            font-size: 18px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .card {
+            background: rgba(20, 20, 35, 0.8);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #00ffcc;
+            box-shadow: 0 20px 40px rgba(0, 255, 204, 0.15);
+        }
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .card h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #00ffcc;
+        }
+        .card p {
+            color: #9ca3af;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .card-features {
+            list-style: none;
+            margin-top: 15px;
+        }
+        .card-features li {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        .card-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00ffcc;
+        }
+        .launch-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: linear-gradient(90deg, #00ffcc, #3b82f6);
+            border: none;
+            border-radius: 25px;
+            color: #0a0a15;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .launch-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 255, 204, 0.3);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .back-link:hover {
+            color: #00ffcc;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin: 40px 0;
+            padding: 30px;
+            background: rgba(20, 20, 35, 0.5);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 204, 0.1);
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #00ffcc;
+        }
+        .stat-label {
+            color: #9ca3af;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Asosiy sahifaga qaytish</a>
+        
+        <h1>🎓 Virtual Professor Hub</h1>
+        <p class="subtitle">EduUpAI platformasining ilg'or AI o'qituvchilari bilan tanishing</p>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">3</div>
+                <div class="stat-label">AI Professor</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Real-time Animation</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">∞</div>
+                <div class="stat-label">Emotion States</div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card" onclick="window.location.href='/virtual-professor'">
+                <div class="card-icon">🤖</div>
+                <h2>EduUpAI Virtual Professor</h2>
+                <p>Advanced AI digital twin with speech synthesis and emotion states. The most sophisticated virtual teaching assistant.</p>
+                <ul class="card-features">
+                    <li>Real-time speech synthesis (Uzbek)</li>
+                    <li>4 emotion states (explain, happy, think, sad)</li>
+                    <li>Lip-sync animation</li>
+                    <li>Natural breathing effects</li>
+                    <li>Smart board integration</li>
+                </ul>
+                <a href="/virtual-professor" class="launch-btn">Launch →</a>
+            </div>
+
+            <div class="card" onclick="window.location.href='/harvard-math-professor'">
+                <div class="card-icon">📐</div>
+                <h2>Harvard Math Professor</h2>
+                <p>2D girl professor model specialized for mathematics education with Harvard-style teaching methods.</p>
+                <ul class="card-features">
+                    <li>Harvard Crimson theme</li>
+                    <li>Mathematical formula display</li>
+                    <li>3 teaching modes</li>
+                    <li>Gesture animations</li>
+                    <li>Classic academic style</li>
+                </ul>
+                <a href="/harvard-math-professor" class="launch-btn">Launch →</a>
+            </div>
+
+            <div class="card" onclick="window.location.href='/beauty-modifier-professor'">
+                <div class="card-icon">✨</div>
+                <h2>Beauty Modifier Professor</h2>
+                <p>Natural feature customization with eye and hair color options. Personalize your virtual professor experience.</p>
+                <ul class="card-features">
+                    <li>Eye color customization</li>
+                    <li>Hair color options</li>
+                    <li>Natural appearance</li>
+                    <li>Real-time preview</li>
+                    <li>Multiple color presets</li>
+                </ul>
+                <a href="/beauty-modifier-professor" class="launch-btn">Launch →</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add subtle animation to cards
+        document.querySelectorAll('.card').forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+    </script>
+</body>
+</html>

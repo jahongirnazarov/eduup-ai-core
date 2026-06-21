@@ -1,0 +1,567 @@
+{
+  "lessons": [
+    {
+      "id": 1,
+      "title": "Matematika - Algebra",
+      "subject": "mathematics",
+      "level": "beginner",
+      "duration": 15,
+      "content": "Algebra - matematikaning eng muhim bo'limlaridan biri. Unda sonlar va belgilar yordamida tenglamalar yechiladi. Algebra o'quvchilarga mantiqiy fikrlashni o'rgatadi va real hayotdagi muammolarni yechishga yordam beradi. Tenglamalar, o'zgaruvchilar va funksiyalar - algebraning asosiy tushunchalari.",
+      "exam": {
+        "title": "Algebra Imtihoni",
+        "questions": [
+          {
+            "id": 1,
+            "question": "2x + 5 = 15 tenglamani yeching.",
+            "options": ["x = 5", "x = 10", "x = 3", "x = 7"],
+            "correctAnswer": 0,
+            "explanation": "2x = 15 - 5, 2x = 10, x = 5"
+          },
+          {
+            "id": 2,
+            "question": "x² - 9 = 0 tenglamani yeching.",
+            "options": ["x = 3", "x = -3", "x = 3 va x = -3", "x = 0"],
+            "correctAnswer": 2,
+            "explanation": "x² = 9, x = ±3"
+          },
+          {
+            "id": 3,
+            "question": "3x - 7 = 14 tenglamada x ning qiymatini toping.",
+            "options": ["x = 5", "x = 7", "x = 3", "x = 21"],
+            "correctAnswer": 1,
+            "explanation": "3x = 14 + 7, 3x = 21, x = 7"
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Fizika - Mexanika",
+      "subject": "physics",
+      "level": "intermediate",
+      "duration": 20,
+      "content": "Mexanika - fizikaning jismlarning harakatini o'rganadigan bo'limi. Nyuton qonunlari mexanikaning asosini tashkil qiladi. Birinchi qonun: Tashqi kuch ta'sir qilmasa, jism tinch turadi yoki bir xil tezlik bilan harakat qiladi. Ikkinchi qonun: Kuch jismning massasi va tezlanishiga teng. Uchinchi qonun: Har bir ta'sir qiluvchi kuchga teng va qarama-qarshi yo'nalishda reaksiya kuchi mavjud.",
+      "exam": {
+        "title": "Mexanika Imtihoni",
+        "questions": [
+          {
+            "id": 1,
+            "question": "Nyutonning birinchi qonuni nima haqida?",
+            "options": ["Kuch va tezlanish", "Tinchlik va bir xil harakat", "Reaksiya kuchi", "Gravitatsiya"],
+            "correctAnswer": 1,
+            "explanation": "Birinchi qonun inersiya qonuni deb ham yuritiladi."
+          },
+          {
+            "id": 2,
+            "question": "F = m * a formulasi qaysi qonunga tegishli?",
+            "options": ["Birinchi qonun", "Ikkinchi qonun", "Uchinchi qonun", "Gravitatsiya qonuni"],
+            "correctAnswer": 1,
+            "explanation": "Bu Nyutonning ikkinchi qonuni."
+          },
+          {
+            "id": 3,
+            "question": "Agar 10 kg massali jismga 20 N kuch ta'sir etsa, tezlanish qancha bo'ladi?",
+            "options": ["2 m/s²", "20 m/s²", "200 m/s²", "0.5 m/s²"],
+            "correctAnswer": 0,
+            "explanation": "a = F/m = 20/10 = 2 m/s²"
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Ingliz Tili - Grammar",
+      "subject": "english",
+      "level": "beginner",
+      "duration": 25,
+      "content": "English grammar is the foundation of effective communication. Present Simple tense is used for habits and facts. For example: 'I study every day.' Past Simple describes completed actions: 'I studied yesterday.' Future Simple talks about tomorrow: 'I will study tomorrow.' Understanding these tenses is essential for fluent English speaking.",
+      "exam": {
+        "title": "English Grammar Test",
+        "questions": [
+          {
+            "id": 1,
+            "question": "She ___ to school every day.",
+            "options": ["go", "goes", "going", "went"],
+            "correctAnswer": 1,
+            "explanation": "Present Simple - third person singular adds 'es'."
+          },
+          {
+            "id": 2,
+            "question": "Yesterday, I ___ my homework.",
+            "options": ["do", "does", "did", "done"],
+            "correctAnswer": 2,
+            "explanation": "Past Simple of 'do' is 'did'."
+          },
+          {
+            "id": 3,
+            "question": "Tomorrow, we ___ the exam.",
+            "options": ["take", "took", "will take", "taking"],
+            "correctAnswer": 2,
+            "explanation": "Future Simple uses 'will + verb'."
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "title": "Kimyo - Elementlar",
+      "subject": "chemistry",
+      "level": "intermediate",
+      "duration": 18,
+      "content": "Kimyo - moddaning tarkibi, tuzilishi va xossalari o'rganadigan fan. Davriy jadval 118 elementni o'z ichiga oladi. Vodorod - eng yengil element, kislorod - hayot uchun muhim. Kimyoviy reaksiyalarda atomlar qayta tuziladi, lekin yo'qolmaydi. Mendeleyev davriy jadvalni kashf qildi va elementlarni tartibli ravishda joylashtirdi.",
+      "exam": {
+        "title": "Kimyo Imtihoni",
+        "questions": [
+          {
+            "id": 1,
+            "question": "Davriy jadvelda nechta element bor?",
+            "options": ["100", "108", "118", "120"],
+            "correctAnswer": 2,
+            "explanation": "Hozirgi kunda 118 element ma'lum."
+          },
+          {
+            "id": 2,
+            "question": "Vodorodning belgisi nima?",
+            "options": ["V", "H", "O", "N"],
+            "correctAnswer": 1,
+            "explanation": "Vodorodning kimyoviy belgisi H (Hydrogen)."
+          },
+          {
+            "id": 3,
+            "question": "Kislorodning atom raqami qancha?",
+            "options": ["6", "7", "8", "9"],
+            "correctAnswer": 2,
+            "explanation": "Kislorodning atom raqami 8."
+          }
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "title": "Tarix - O'zbekiston",
+      "subject": "history",
+      "level": "beginner",
+      "duration": 20,
+      "content": "O'zbekiston - qadimiy Buyuk Ipak Yo'li bo'ylab joylashgan mamlakat. Samarqand, Buxoro, Xiva - qadimiy shaharlar. Amir Temur XV asrda buyuk imperiya qurdi. O'zbekiston 1991 yilda mustaqillikka erishdi. Mamlakatda boy madaniyat va tarix mavjud. Qadimiy davrda Movarounnahr deb atalgan bu hudud ko'plab olimlar yetishib chiqqan.",
+      "exam": {
+        "title": "O'zbekiston Tarixi Imtihoni",
+        "questions": [
+          {
+            "id": 1,
+            "question": "O'zbekiston qachon mustaqil bo'ldi?",
+            "options": ["1989", "1990", "1991", "1992"],
+            "correctAnswer": 2,
+            "explanation": "O'zbekiston 1991 yil 1 sentyabrda mustaqillikka erishdi."
+          },
+          {
+            "id": 2,
+            "question": "Amir Temur qaysi asrda yashagan?",
+            "options": ["XIV asr", "XV asr", "XIII asr", "XVI asr"],
+            "correctAnswer": 0,
+            "explanation": "Amir Temur 1336-1405 yillarda yashagan, XIV asr oxiri - XV asr boshlari."
+          },
+          {
+            "id": 3,
+            "question": "Qaysi shahar 'Sharq qalasi' deb ataladi?",
+            "options": ["Toshkent", "Samarqand", "Buxoro", "Xiva"],
+            "correctAnswer": 1,
+            "explanation": "Samarqand 'Sharq qalasi' deb ataladi."
+          }
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "title": "Biologiya - Hujayralar",
+      "subject": "biology",
+      "level": "beginner",
+      "duration": 15,
+      "content": "Hujayra - tirik organizmning asosiy birligi. Har bir hujayra yadro, sitoplazma va membranadan iborat. O'simlik hujayralarida devor va xloroplastlar mavjud. Hayvon hujayralarida esa yo'q. Mitoxondriya - energiya ishlab chiqaruvchi organell. Hujayralar bo'linib ko'payadi va organizmni rivojlantiradi.",
+      "exam": {
+        "title": "Biologiya Imtihoni",
+        "questions": [
+          {
+            "id": 1,
+            "question": "Hujayraning energiya ishlab chiqaruvchi organelli qaysi?",
+            "options": ["Yadro", "Mitoxondriya", "Ribosoma", "Golgi apparati"],
+            "correctAnswer": 1,
+            "explanation": "Mitoxondriya hujayraning 'elektr stansiyasi' hisoblanadi."
+          },
+          {
+            "id": 2,
+            "question": "O'simlik hujayralarida qaysi qisma hayvon hujayralarida yo'q?",
+            "options": ["Yadro", "Sitoplazma", "Hujayra devori", "Membrana"],
+            "correctAnswer": 2,
+            "explanation": "Hujayra devori faqat o'simlik hujayralarida mavjud."
+          },
+          {
+            "id": 3,
+            "question": "DNK qaysi qismda joylashgan?",
+            "options": ["Sitoplazma", "Yadro", "Mitoxondriya", "Ribosoma"],
+            "correctAnswer": 1,
+            "explanation": "DNK asosan yadroda joylashgan."
+          }
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "title": "Geografiya - O'zbekiston",
+      "subject": "geography",
+      "level": "beginner",
+      "duration": 12,
+      "content": "O'zbekiston Markaziy Osiyoda joylashgan. Maydoni - 448,978 kvadrat kilometr. Qo'shni davlatlar: Qozog'iston, Qirg'iziston, Tojikiston, Turkmaniston va Afg'oniston. Poytaxti - Toshkent. Iqlimi - kontinental. Yozda issiq, qishda sovuq. Amudaryo va Sirdaryo - asosiy daryolar. Qoraqum va Qizilqum cho'llari mavjud.",
+      "exam": {
+        "title": "Geografiya Imtihoni",
+        "questions": [
+          {
+            "id": 1,
+            "question": "O'zbekistonning maydoni qancha?",
+            "options": ["400,000 km²", "448,978 km²", "500,000 km²", "350,000 km²"],
+            "correctAnswer": 1,
+            "explanation": "O'zbekiston maydoni 448,978 kvadrat kilometr."
+          },
+          {
+            "id": 2,
+            "question": "O'zbekiston nechta qo'shni davlatga ega?",
+            "options": ["4", "5", "6", "3"],
+            "correctAnswer": 1,
+            "explanation": "O'zbekiston 5 ta qo'shni davlatga ega."
+          },
+          {
+            "id": 3,
+            "question": "O'zbekistonning poytaxti qaysi shahar?",
+            "options": ["Samarqand", "Buxoro", "Toshkent", "Xiva"],
+            "correctAnswer": 2,
+            "explanation": "Toshkent - O'zbekistonning poytaxti."
+          }
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "title": "Dasturlash - Python Asoslari",
+      "subject": "programming",
+      "level": "beginner",
+      "duration": 25,
+      "content": "Python - oddiy va kuchli dasturlash tili. O'rganish oson, sintaksisi aniq. O'zgaruvchilarni e'lon qilish shart emas. print() funksiyasi ma'lumot chiqarish uchun ishlatiladi. Python ma'lumotlar turlari: integer, float, string, boolean. Shart operatorlari: if, elif, else. Sikllar: for, while. Funksiyalar def bilan yaratiladi.",
+      "exam": {
+        "title": "Python Asoslari Imtihoni",
+        "questions": [
+          {
+            "id": 1,
+            "question": "Python'da ma'lumot chiqarish uchun qaysi funksiya ishlatiladi?",
+            "options": ["console.log()", "print()", "echo()", "write()"],
+            "correctAnswer": 1,
+            "explanation": "Python'da print() funksiyasi ishlatiladi."
+          },
+          {
+            "id": 2,
+            "question": "Quyidagi qaysi to'g'ri o'zgaruvchi e'loni?",
+            "options": ["var x = 5", "int x = 5", "x = 5", "let x = 5"],
+            "correctAnswer": 2,
+            "explanation": "Python'da o'zgaruvchi turi ko'rsatilmaydi."
+          },
+          {
+            "id": 3,
+            "question": "Python'da funksiya qanday yaratiladi?",
+            "options": ["function myFunc()", "def myFunc():", "func myFunc():", "create myFunc()"],
+            "correctAnswer": 1,
+            "explanation": "Python'da funksiya def kalit so'zi bilan yaratiladi."
+          }
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "title": "IELTS - Listening Module",
+      "subject": "ielts",
+      "level": "intermediate",
+      "duration": 30,
+      "content": "IELTS Listening Module - 40 questions, 4 sections. Section 1: Form completion (10 questions). Section 2: Multiple choice (10 questions). Section 3: Academic lecture (10 questions). Section 4: Complex discussion (10 questions). Total time: 30 minutes. Each correct answer earns 1 point. Band score calculated from raw score (0-40). Focus on understanding main ideas, specific details, and following academic discussions.",
+      "exam": {
+        "title": "IELTS Listening Practice Test",
+        "questions": [
+          {
+            "id": 1,
+            "question": "What is the main topic of the lecture?",
+            "options": ["Climate change", "Renewable energy", "Ocean pollution", "Urban planning"],
+            "correctAnswer": 1,
+            "explanation": "The lecture focuses on renewable energy sources."
+          },
+          {
+            "id": 2,
+            "question": "According to the speaker, what percentage of energy comes from solar power?",
+            "options": ["10%", "25%", "40%", "55%"],
+            "correctAnswer": 2,
+            "explanation": "The speaker mentions 40% solar energy contribution."
+          },
+          {
+            "id": 3,
+            "question": "What challenge does the speaker mention?",
+            "options": ["Cost", "Storage", "Both A and B", "Neither A nor B"],
+            "correctAnswer": 2,
+            "explanation": "Both cost and storage are mentioned as challenges."
+          }
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "title": "IELTS - Reading Module",
+      "subject": "ielts",
+      "level": "intermediate",
+      "duration": 60,
+      "content": "IELTS Reading Module - 40 questions, 3 passages. Passage 1: 13 questions (easy). Passage 2: 13 questions (medium). Passage 3: 14 questions (hard). Total time: 60 minutes. Question types: True/False/Not Given, Multiple Choice, Matching Headings, Summary Completion. Focus on skimming, scanning, and detailed comprehension. Academic texts from journals, magazines, and books.",
+      "exam": {
+        "title": "IELTS Reading Practice Test",
+        "questions": [
+          {
+            "id": 1,
+            "question": "According to the passage, what is one major benefit of AI in education?",
+            "options": [
+              "Reduced costs for schools",
+              "Personalized learning experiences",
+              "Elimination of teachers",
+              "Faster internet connections"
+            ],
+            "correctAnswer": 1,
+            "explanation": "The passage highlights personalized learning as a key benefit."
+          },
+          {
+            "id": 2,
+            "question": "How does AI help with assessment according to the text?",
+            "options": [
+              "It replaces all human graders",
+              "It provides instant feedback",
+              "It only grades multiple-choice questions",
+              "It increases test difficulty"
+            ],
+            "correctAnswer": 1,
+            "explanation": "AI provides instant feedback to students."
+          },
+          {
+            "id": 3,
+            "question": "What challenge does the passage mention regarding AI in education?",
+            "options": [
+              "High implementation costs",
+              "Privacy concerns about student data",
+              "Lack of student interest",
+              "Technical difficulties"
+            ],
+            "correctAnswer": 1,
+            "explanation": "Privacy concerns are mentioned as a significant challenge."
+          }
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "title": "IELTS - Writing Task 1",
+      "subject": "ielts",
+      "level": "advanced",
+      "duration": 20,
+      "content": "IELTS Writing Task 1 - Academic. Describe visual information: graphs, charts, tables, diagrams, or maps. Minimum 150 words. Time: 20 minutes. Task Achievement (25%), Coherence & Cohesion (25%), Lexical Resource (25%), Grammar (25%). Focus on identifying main trends, comparing data, and reporting key features objectively without opinion.",
+      "exam": {
+        "title": "IELTS Writing Task 1 Practice",
+        "questions": [
+          {
+            "id": 1,
+            "question": "What is the minimum word count for Task 1?",
+            "options": ["100 words", "150 words", "200 words", "250 words"],
+            "correctAnswer": 1,
+            "explanation": "Task 1 requires minimum 150 words."
+          },
+          {
+            "id": 2,
+            "question": "How much time is allocated for Task 1?",
+            "options": ["15 minutes", "20 minutes", "25 minutes", "30 minutes"],
+            "correctAnswer": 1,
+            "explanation": "Task 1 has 20 minutes time limit."
+          },
+          {
+            "id": 3,
+            "question": "What are the four assessment criteria for Task 1?",
+            "options": [
+              "Content, Structure, Vocabulary, Grammar",
+              "Task Achievement, Coherence, Lexical Resource, Grammar",
+              "Introduction, Body, Conclusion, Style",
+              "Accuracy, Speed, Length, Format"
+            ],
+            "correctAnswer": 1,
+            "explanation": "The four criteria are Task Achievement, Coherence & Cohesion, Lexical Resource, and Grammar."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "title": "IELTS - Writing Task 2",
+      "subject": "ielts",
+      "level": "advanced",
+      "duration": 40,
+      "content": "IELTS Writing Task 2 - Academic Essay. Respond to a point of view, argument, or problem. Minimum 250 words. Time: 40 minutes. Task Response (25%), Coherence & Cohesion (25%), Lexical Resource (25%), Grammar (25%). Focus on developing arguments, providing examples, and maintaining formal academic style. Task 2 counts for 2/3 of total writing score.",
+      "exam": {
+        "title": "IELTS Writing Task 2 Practice",
+        "questions": [
+          {
+            "id": 1,
+            "question": "What is the minimum word count for Task 2?",
+            "options": ["150 words", "200 words", "250 words", "300 words"],
+            "correctAnswer": 2,
+            "explanation": "Task 2 requires minimum 250 words."
+          },
+          {
+            "id": 2,
+            "question": "How much time is allocated for Task 2?",
+            "options": ["30 minutes", "35 minutes", "40 minutes", "45 minutes"],
+            "correctAnswer": 2,
+            "explanation": "Task 2 has 40 minutes time limit."
+          },
+          {
+            "id": 3,
+            "question": "What percentage of the total writing score does Task 2 represent?",
+            "options": ["1/3", "1/2", "2/3", "3/4"],
+            "correctAnswer": 2,
+            "explanation": "Task 2 accounts for 2/3 of the total writing score."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "title": "IELTS - Speaking Part 1",
+      "subject": "ielts",
+      "level": "intermediate",
+      "duration": 5,
+      "content": "IELTS Speaking Part 1 - Introduction & Interview. Duration: 4-5 minutes. Topics: Work/Studies, Home/Accommodation, Hometown, Family, Hobbies, Daily Routine. Assessment: Fluency & Coherence (25%), Lexical Resource (25%), Grammar (25%), Pronunciation (25%). Focus on natural conversation, expanding answers, and showing range of vocabulary.",
+      "exam": {
+        "title": "IELTS Speaking Part 1 Practice",
+        "questions": [
+          {
+            "id": 1,
+            "question": "How long does Speaking Part 1 last?",
+            "options": ["2-3 minutes", "4-5 minutes", "6-7 minutes", "8-9 minutes"],
+            "correctAnswer": 1,
+            "explanation": "Part 1 lasts 4-5 minutes."
+          },
+          {
+            "id": 2,
+            "question": "What are the main topics in Part 1?",
+            "options": [
+              "Academic subjects only",
+              "Personal topics like work, home, hobbies",
+              "Complex social issues",
+              "Technical problems"
+            ],
+            "correctAnswer": 1,
+            "explanation": "Part 1 covers personal topics familiar to the candidate."
+          },
+          {
+            "id": 3,
+            "question": "What are the four assessment criteria for Speaking?",
+            "options": [
+              "Speed, Volume, Clarity, Accent",
+              "Fluency, Vocabulary, Grammar, Pronunciation",
+              "Content, Structure, Length, Style",
+              "Confidence, Eye Contact, Posture, Gesture"
+            ],
+            "correctAnswer": 1,
+            "explanation": "Speaking is assessed on Fluency, Lexical Resource, Grammar, and Pronunciation."
+          }
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "title": "IELTS - Speaking Part 2",
+      "subject": "ielts",
+      "level": "advanced",
+      "duration": 4,
+      "content": "IELTS Speaking Part 2 - Individual Long Turn. Duration: 3-4 minutes. 1 minute preparation, 2 minutes speaking. Cue card topic: Describe a person, place, object, or event. Assessment: Fluency, Vocabulary, Grammar, Pronunciation. Focus on structured response, using examples, and maintaining fluency for the full 2 minutes.",
+      "exam": {
+        "title": "IELTS Speaking Part 2 Practice",
+        "questions": [
+          {
+            "id": 1,
+            "question": "How long is the preparation time in Part 2?",
+            "options": ["30 seconds", "1 minute", "2 minutes", "3 minutes"],
+            "correctAnswer": 1,
+            "explanation": "You get 1 minute to prepare."
+          },
+          {
+            "id": 2,
+            "question": "How long should you speak in Part 2?",
+            "options": ["1 minute", "2 minutes", "3 minutes", "4 minutes"],
+            "correctAnswer": 1,
+            "explanation": "You should speak for 2 minutes."
+          },
+          {
+            "id": 3,
+            "question": "What do you receive in Part 2?",
+            "options": [
+              "A written essay topic",
+              "A cue card with topic points",
+              "A multiple-choice test",
+              "A reading passage"
+            ],
+            "correctAnswer": 1,
+            "explanation": "You receive a cue card with topic points to discuss."
+          }
+        ]
+      }
+    },
+    {
+      "id": 15,
+      "title": "IELTS - Speaking Part 3",
+      "subject": "ielts",
+      "level": "advanced",
+      "duration": 5,
+      "content": "IELTS Speaking Part 3 - Two-way Discussion. Duration: 4-5 minutes. Topics related to Part 2 but more abstract and complex. Discussion questions: Social issues, Technology, Education, Environment, Globalization. Assessment: Fluency, Vocabulary, Grammar, Pronunciation. Focus on expressing opinions, justifying answers, and discussing abstract concepts.",
+      "exam": {
+        "title": "IELTS Speaking Part 3 Practice",
+        "questions": [
+          {
+            "id": 1,
+            "question": "How long does Speaking Part 3 last?",
+            "options": ["2-3 minutes", "4-5 minutes", "6-7 minutes", "8-9 minutes"],
+            "correctAnswer": 1,
+            "explanation": "Part 3 lasts 4-5 minutes."
+          },
+          {
+            "id": 2,
+            "question": "What type of topics are discussed in Part 3?",
+            "options": [
+              "Simple personal questions",
+              "Abstract and complex topics related to Part 2",
+              "Technical scientific subjects",
+              "Historical dates and events"
+            ],
+            "correctAnswer": 1,
+            "explanation": "Part 3 discusses abstract topics related to Part 2."
+          },
+          {
+            "id": 3,
+            "question": "What should you focus on in Part 3?",
+            "options": [
+              "Short one-word answers",
+              "Expressing opinions and justifying answers",
+              "Memorizing scripts",
+              "Speaking as fast as possible"
+            ],
+            "correctAnswer": 1,
+            "explanation": "Focus on expressing opinions and providing justifications."
+          }
+        ]
+      }
+    }
+  ],
+  "settings": {
+    "defaultLanguage": "uz",
+    "autoPlay": false,
+    "showSubtitles": true,
+    "writingSpeed": 150,
+    "voiceRate": 0.9,
+    "voicePitch": 1.0
+  }
+}

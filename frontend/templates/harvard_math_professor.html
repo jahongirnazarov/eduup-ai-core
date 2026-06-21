@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harvard Virtual Professor — 2D Emotion Copy</title>
+    <style>
+        body { margin: 0; background: #080808; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; font-family: 'Georgia', serif; color: #f5f5f5; overflow: hidden; }
+        #app-wrapper { box-shadow: 0 35px 90px rgba(0,0,0,0.95); border-radius: 12px; overflow: hidden; border: 5px solid #3a0007; }
+        canvas { display: block; background: #111; }
+        .dashboard { margin-top: 20px; display: flex; gap: 15px; background: #1a1112; padding: 14px 30px; border-radius: 30px; border: 1px solid #5c000b; }
+        button { padding: 12px 28px; font-size: 15px; font-weight: bold; font-family: 'Georgia', serif; background: #a51c30; color: white; border: 1px solid #7f1221; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #c5243a; transform: translateY(-2px); }
+        .btn-speak { background: #143124; border-color: #0f241a; }
+        .btn-speak:hover { background: #1e4734; }
+    </style>
+</head>
+<body>
+
+<div style="margin-bottom: 15px; font-size: 22px; color: #a51c30; italic; letter-spacing: 1px;">
+    Harvard Math Simulation — 2D Girl Professor Model
+</div>
+
+<div id="app-wrapper">
+    <canvas id="harvardCanvas" width="1000" height="550"></canvas>
+</div>
+
+<div class="dashboard">
+    <button onclick="changeEmotion('explain')">1. Tushuntirish rejimi</button>
+    <button onclick="changeEmotion('happy')">2. Quvonch (To'g'ri javob)</button>
+    <button onclick="changeEmotion('think')">3. O'ylanish rejimi</button>
+    <button class="btn-speak" onclick="startSpeech()">🔊 Ovozni yoqish va Gapirtirish</button>
+</div>
+
+<script>
+const canvas = document.getElementById('harvardCanvas');
+const ctx = canvas.getContext('2d');
+
+let girl = {
+    x: 180,
+    y: 360,
+    emotion: 'explain',
+    isTalking: false,
+    mouthOpenScale: 0,
+    eyeBlink: false,
+    handY: 0
+};
+
+let boardText = "Dars kutilmoqda...";
+let currentText = "";
+let charIndex = 0;
+let lastTypeClock = Date.now();
+
+const synth = window.speechSynthesis;
+let speechUtterance = new SpeechSynthesisUtterance();
+
+function changeEmotion(type) {
+    girl.emotion = type;
+    girl.isTalking = false;
+    synth.cancel();
+    
+    if (type === 'explain') {
+        boardText = "Harvard Mathematics Department:\nFundamental Theorem of Calculus\n∫[a,b] f(x)dx = F(b) - F(a)";
+    } else if (type === 'happy') {
+        boardText = "Barakalla! To'g'ri javob!\nPIIMA Imtihonidan muvaffaqiyatli o'tdingiz.\nEyler formulasi: V - E + F = 2";
+    } else if (type === 'think') {
+        boardText = "Masalani diqqat bilan o'ylab ko'ring:\nx^2 + y^2 = r^2\nDoira tenglamasini yeching.";
+    }
+    
+    currentText = "";
+    charIndex = 0;
+}
+
+function startSpeech() {
+    girl.isTalking = true;
+    speechUtterance.text = boardText.replace(/[\n∫=\[\]\+]/g, " "); 
+    speechUtterance.lang = 'uz-UZ';
+    speechUtterance.rate = 0.9;
+    
+    synth.speak(speechUtterance);
+    
+    speechUtterance.onend = () => { girl.isTalking = false; };
+}
+
+function render() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const now = Date.now();
+
+    ctx.fillStyle = '#210f11'; ctx.fillRect(0, 0, canvas.width, 420);
+    ctx.fillStyle = '#0f0809'; ctx.fillRect(0, 420, canvas.width, 130);
+
+    ctx.fillStyle = '#143124'; ctx.fillRect(400, 40, 550, 280);
+    ctx.strokeStyle = '#5c4033'; ctx.lineWidth = 8; ctx.strokeRect(400, 40, 550, 280);
+
+    if (now - lastTypeClock > 60 && charIndex < boardText.length) {
+        currentText += boardText[charIndex];
+        charIndex++;
+        lastTypeClock = now;
+    }
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.font = '20px "Courier New", monospace';
+    let lines = currentText.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+        ctx.fillText(lines[i], 430, 90 + (i * 35));
+    }
+
+    ctx.save();
+    ctx.translate(girl.x, girl.y);
+
+    let breathe = Math.sin(now * 0.003) * 3;
+    
+    ctx.fillStyle = '#3a0007';
+    ctx.beginPath();
+    ctx.moveTo(-40, 150);
+    ctx.lineTo(-30, 40 + breathe);
+    ctx.lineTo(30, 40 + breathe);
+    ctx.lineTo(40, 150);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#ffdbac';
+    ctx.fillRect(-10, 20 + breathe, 20, 25);
+
+    ctx.beginPath();
+    ctx.arc(0, -10 + breathe, 32, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#2b1d16';
+    ctx.beginPath();
+    ctx.arc(0, -16 + breathe, 35, Math.PI, 0);
+    ctx.fill();
+    ctx.fillRect(-35, -16 + breathe, 12, 60);
+    ctx.fillRect(23, -16 + breathe, 12, 60);
+
+    if (now % 4000 < 150) girl.eyeBlink = true; else girl.eyeBlink = false;
+    ctx.fillStyle = '#333';
+    if (!girl.eyeBlink) {
+        ctx.beginPath();
+        ctx.arc(-12, -12 + breathe, 4, 0, Math.PI * 2);
+        ctx.arc(12, -12 + breathe, 4, 0, Math.PI * 2);
+        ctx.fill();
+    } else {
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(-16, -12+breathe); ctx.lineTo(-8, -12+breathe); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(8, -12+breathe); ctx.lineTo(16, -12+breathe); ctx.stroke();
+    }
+
+    ctx.strokeStyle = '#333'; ctx.lineWidth = 2;
+    if (girl.emotion === 'happy') {
+        ctx.beginPath(); ctx.arc(-12, -20+breathe, 6, Math.PI, 0); ctx.stroke();
+        ctx.beginPath(); ctx.arc(12, -20+breathe, 6, Math.PI, 0); ctx.stroke();
+        ctx.fillStyle = '#e25c5c';
+        ctx.beginPath(); ctx.arc(0, 5+breathe, 10, 0, Math.PI); ctx.fill();
+    } 
+    else if (girl.emotion === 'think') {
+        ctx.beginPath(); ctx.moveTo(-16, -18+breathe); ctx.lineTo(-6, -15+breathe); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(16, -18+breathe); ctx.lineTo(6, -15+breathe); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-8, 5+breathe); ctx.lineTo(8, 5+breathe); ctx.stroke();
+    } 
+    else {
+        ctx.beginPath(); ctx.moveTo(-15, -18+breathe); ctx.lineTo(-7, -18+breathe); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(7, -18+breathe); ctx.lineTo(15, -18+breathe); ctx.stroke();
+        
+        if (girl.isTalking) {
+            girl.mouthOpenScale = Math.abs(Math.sin(now * 0.15)) * 8;
+            ctx.fillStyle = '#5a1818';
+            ctx.beginPath();
+            ctx.ellipse(0, 5 + breathe, 6, girl.mouthOpenScale, 0, 0, Math.PI * 2);
+            ctx.fill();
+        } else {
+            ctx.beginPath(); ctx.arc(0, 2+breathe, 8, 0, Math.PI); ctx.stroke();
+        }
+    }
+
+    ctx.strokeStyle = '#ffdbac'; ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.moveTo(-30, 50 + breathe);
+    if (girl.emotion === 'explain') {
+        ctx.lineTo(10, 30 + breathe);
+        ctx.lineTo(50, 10 + Math.sin(now * 0.005) * 5);
+    } else if (girl.emotion === 'happy') {
+        ctx.lineTo(-50, 20);
+        ctx.moveTo(30, 50 + breathe);
+        ctx.lineTo(50, 20);
+    } else {
+        ctx.lineTo(0, 40);
+        ctx.lineTo(0, 20 + breathe);
+    }
+    ctx.stroke();
+
+    ctx.restore();
+    requestAnimationFrame(render);
+}
+
+render();
+</script>
+</body>
+</html>

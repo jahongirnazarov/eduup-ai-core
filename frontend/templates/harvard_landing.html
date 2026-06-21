@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harvard Virtual Classroom - EduUp AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a0a0a 0%, #2d1515 50%, #1a0a0a 100%);
+            color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #a51c30 0%, #cca243 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 24px;
+            color: #cca243;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            background: rgba(165, 28, 48, 0.2);
+            border: 2px solid #a51c30;
+            border-radius: 10px;
+            padding: 20px 30px;
+            min-width: 150px;
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #cca243;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #f5f5f5;
+            margin-top: 5px;
+        }
+        
+        .classroom-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .classroom-card {
+            background: rgba(26, 26, 46, 0.9);
+            border: 3px solid #a51c30;
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .classroom-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(165, 28, 48, 0.4);
+            border-color: #cca243;
+        }
+        
+        .classroom-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .classroom-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #a51c30;
+            margin-bottom: 10px;
+        }
+        
+        .classroom-description {
+            font-size: 16px;
+            color: #f5f5f5;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .classroom-features {
+            font-size: 14px;
+            color: #cca243;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #a51c30;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .badge-premium {
+            background: #cca243;
+            color: #1a0a0a;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 32px;
+            }
+            
+            .subtitle {
+                font-size: 18px;
+            }
+            
+            .stats {
+                gap: 20px;
+            }
+            
+            .stat {
+                min-width: 120px;
+                padding: 15px 20px;
+            }
+            
+            .stat-number {
+                font-size: 28px;
+            }
+            
+            .classroom-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Harvard Virtual Classroom</h1>
+        <p class="subtitle">EduUp AI - 100 Million Users • Zero Server Cost</p>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number">100M+</div>
+                <div class="stat-label">Concurrent Users</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Server Cost (UZS)</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Client-Side</div>
+            </div>
+        </div>
+        
+        <div class="classroom-grid">
+            <a href="/harvard" class="classroom-card">
+                <div class="badge">Classic</div>
+                <div class="classroom-icon">🏛️</div>
+                <div class="classroom-title">Harvard Classroom</div>
+                <div class="classroom-description">
+                    Real-time video professor with green screen chroma key, Harvard crimson board, and interactive voice commands.
+                </div>
+                <div class="classroom-features">
+                    ✓ Video Professor ✓ Green Screen ✓ Voice Recognition ✓ Certificate
+                </div>
+            </a>
+            
+            <a href="/harvard-3d" class="classroom-card">
+                <div class="badge badge-premium">Recommended</div>
+                <div class="classroom-icon">🌐</div>
+                <div class="classroom-title">Harvard 3D Classroom</div>
+                <div class="classroom-description">
+                    Full 3D immersive experience with Three.js, dynamic LOD system, and zero-cost scaling architecture.
+                </div>
+                <div class="classroom-features">
+                    ✓ 3D Environment ✓ Dynamic LOD ✓ PWA Support ✓ Telegram Mini App
+                </div>
+            </a>
+            
+            <a href="/harvard/professor" class="classroom-card">
+                <div class="badge">2D Model</div>
+                <div class="classroom-icon">👩‍🏫</div>
+                <div class="classroom-title">Harvard Professor</div>
+                <div class="classroom-description">
+                    2D emotion-based professor model with facial expressions, lip-sync, and interactive teaching modes.
+                </div>
+                <div class="classroom-features">
+                    ✓ Emotion System ✓ Lip-Sync ✓ Teaching Modes ✓ Interactive
+                </div>
+            </a>
+        </div>
+        
+        <div style="background: rgba(26, 26, 46, 0.9); border: 2px solid #cca243; border-radius: 15px; padding: 30px; margin-top: 30px;">
+            <h3 style="color: #cca243; margin-bottom: 15px; font-size: 24px;">🚀 Zero-Cost Scaling Architecture</h3>
+            <p style="font-size: 16px; line-height: 1.8; color: #f5f5f5;">
+                All Harvard classrooms use <strong>client-side architecture</strong> - no server processing required. 
+                Static files served via CDN, all computations in browser. This enables <strong>100 million concurrent users</strong> 
+                at <strong>0 UZS server cost</strong>. PWA support for offline learning, Telegram Mini App integration, 
+                and cross-device compatibility (desktop, mobile, smart board, smart TV).
+            </p>
+        </div>
+    </div>
+</body>
+</html>

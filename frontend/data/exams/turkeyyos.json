@@ -1,0 +1,75 @@
+{
+  "standard": "TurkeyYOS",
+  "duration": 1800,
+  "listening": {
+    "audioUrl": "https://cloudinary.com/your-audio/turkeyyos-listening.mp3",
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple-choice",
+        "question": "Konuşmanın ana konusu nedir?",
+        "options": ["Spor", "Eğitim", "Teknoloji", "Tarih"],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 2,
+        "type": "multiple-choice",
+        "question": "Konuşmacıya göre, en önemli faktör nedir?",
+        "options": ["Zaman", "Para", "Çaba", "Şans"],
+        "correctAnswer": 2,
+        "points": 1
+      }
+    ]
+  },
+  "reading": {
+    "passage": "Türkiye'de Yükseköğretim Sistemi\n\nTürkiye'de yükseköğretim sistemi, son yıllarda önemli gelişmeler yaşamıştır. 1981 yılında çıkarılan Yükseköğretim Kanunu ile üniversiteler yeniden yapılandırılmış ve Yükseköğretim Kurulu (YÖK) kurulmuştur. Bu kurum, üniversitelerin akademik standartlarını denetlemek ve koordine etmekle görevlidir.\n\nTürkiye'de üniversite eğitimi genellikle dört yıl sürer, ancak bazı programlar (tıp, diş hekimliği, eczacılık gibi) daha uzun sürebilir. Öğrenciler, lise eğitimlerini tamamladıktan sonra Yükseköğretim Kurumları Sınavı (YKS)'na girerler. Bu sınavın sonucuna göre üniversite ve program tercihlerinde bulunurlar.\n\nTürkiye'de hem devlet hem de vakıf üniversiteleri bulunmaktadır. Devlet üniversiteleri devlet tarafından finanse edilirken, vakıf üniversiteleri özel kuruluşlar tarafından desteklenir. Son yıllarda vakıf üniversitelerinin sayısı hızla artmış ve eğitim kalitesi açısından önemli başarılar elde etmişlerdir.\n\nÜniversite eğitimi, teorik bilgilerin yanı sıra pratik becerilerin geliştirilmesine de önem verir. Birçok üniversite, öğrencilerine staj imkanları sunar ve endüstri ile iş birliği içinde projeler yürütür. Ayrıca, Erasmus gibi uluslararası değişim programları sayesinde öğrenciler yurtdışında eğitim alma fırsatı bulurlar.\n\nTürkiye'de yükseköğretim, uluslararası standartlara uygun bir şekilde gelişmeye devam etmektedir. Üniversiteler, araştırma ve geliştirme faaliyetlerine büyük önem vermektedir. Bu sayede, Türkiye akademik alanda dünya ile entegre olmaya çalışmaktadır.",
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple-choice",
+        "question": "Yükseköğretim Kurulu (YÖK) ne zaman kurulmuştur?",
+        "options": ["1970", "1981", "1990", "2000"],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 2,
+        "type": "multiple-choice",
+        "question": "Türkiye'de üniversite eğitimi genellikle kaç yıl sürer?",
+        "options": ["2 yıl", "3 yıl", "4 yıl", "5 yıl"],
+        "correctAnswer": 2,
+        "points": 1
+      },
+      {
+        "id": 3,
+        "type": "multiple-choice",
+        "question": "Öğrenciler hangi sınav sonucuna göre üniversite tercihlerinde bulunurlar?",
+        "options": ["ALES", "YKS", "TUS", "DUS"],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 4,
+        "type": "multiple-choice",
+        "question": "Metne göre, vakıf üniversiteleri kim tarafından finanse edilir?",
+        "options": [
+          "Devlet tarafından",
+          "Özel kuruluşlar tarafından",
+          "Uluslararası kuruluşlar tarafından",
+          "Öğrenciler tarafından"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      }
+    ]
+  },
+  "writing": {
+    "prompt": "Türkiye'de eğitim sisteminin güçlü ve zayıf yönlerini tartışın. En az 200 kelimelik bir kompozisyon yazın.",
+    "minWords": 200
+  },
+  "speaking": {
+    "prompt": "Gelecekteki kariyer hedeflerinizi açıklayın. Bu hedeflere ulaşmak için nasıl bir planınız var?",
+    "duration": 120
+  }
+}

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /main.js
+Allow: /manifest.json
+Allow: /sw.js
+
+Sitemap: https://eduupai.com/sitemap.xml

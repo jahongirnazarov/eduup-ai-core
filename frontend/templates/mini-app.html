@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="EduUp AI Academy - Telegram Mini App">
+  <meta name="theme-color" content="#2563eb">
+  
+  <title>EduUp AI Academy - Mini App</title>
+  
+  <!-- Telegram WebApp Script -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <!-- CSS -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--tg-theme-bg-color, #ffffff);
+      color: var(--tg-theme-text-color, #000000);
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .header {
+      text-align: center;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--tg-theme-hint-color, #cccccc);
+      margin-bottom: 20px;
+    }
+    
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--tg-theme-button-color, #2563eb);
+    }
+    
+    .nav-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .nav-btn {
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .nav-btn.primary {
+      background: var(--tg-theme-button-color, #2563eb);
+      color: var(--tg-theme-button-text-color, #ffffff);
+    }
+    
+    .nav-btn.secondary {
+      background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+      color: var(--tg-theme-text-color, #000000);
+    }
+    
+    .nav-btn:active {
+      transform: scale(0.98);
+      opacity: 0.8;
+    }
+    
+    .card {
+      background: var(--tg-theme-secondary-bg-color, #f5f5f5);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--tg-theme-text-color, #000000);
+    }
+    
+    .card p {
+      font-size: 14px;
+      color: var(--tg-theme-hint-color, #666666);
+      line-height: 1.5;
+    }
+    
+    .card .price {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--tg-theme-button-color, #2563eb);
+      margin-top: 12px;
+    }
+    
+    .card .btn {
+      margin-top: 12px;
+      width: 100%;
+      padding: 12px;
+      background: var(--tg-theme-button-color, #2563eb);
+      color: var(--tg-theme-button-text-color, #ffffff);
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .section {
+      display: none;
+    }
+    
+    .section.active {
+      display: block;
+    }
+    
+    .back-btn {
+      background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--tg-theme-hint-color, #666666);
+    }
+    
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--tg-theme-hint-color, #cccccc);
+      border-top-color: var(--tg-theme-button-color, #2563eb);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #4caf50;
+      color: white;
+    }
+    
+    .exam-item {
+      background: var(--tg-theme-bg-color, #ffffff);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--tg-theme-hint-color, #cccccc);
+    }
+    
+    .exam-item h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .exam-item .meta {
+      font-size: 13px;
+      color: var(--tg-theme-hint-color, #666666);
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>🎓 EduUp AI Academy</h1>
+      <p style="color: var(--tg-theme-hint-color, #666666); margin-top: 8px;">AI-powered education platform</p>
+    </div>
+    
+    <!-- Main Navigation -->
+    <div id="main-nav" class="section active">
+      <div class="nav-buttons">
+        <button class="nav-btn primary" onclick="showSection('courses')">
+          📚 Courses
+        </button>
+        <button class="nav-btn primary" onclick="showSection('exams')">
+          🎯 Exams
+        </button>
+        <button class="nav-btn secondary" onclick="showSection('profile')">
+          👤 Profile
+        </button>
+        <button class="nav-btn secondary" onclick="showSection('support')">
+          ❓ Support
+        </button>
+      </div>
+      
+      <!-- Quick Stats -->
+      <div class="card">
+        <h3>📊 Your Progress</h3>
+        <p>Courses in progress: 2</p>
+        <p>Exams completed: 5</p>
+        <p>Average score: 85%</p>
+      </div>
+      
+      <!-- Featured Course -->
+      <div class="card">
+        <h3>🌟 Featured Course</h3>
+        <p>IELTS Preparation - Complete preparation with AI scoring and instant feedback</p>
+        <div class="price">149,000 UZS</div>
+        <button class="btn" onclick="showSection('courses')">View Details</button>
+      </div>
+    </div>
+    
+    <!-- Courses Section -->
+    <div id="courses" class="section">
+      <button class="back-btn" onclick="showSection('main-nav')">← Back</button>
+      <h2 style="margin-bottom: 16px;">📚 Available Courses</h2>
+      
+      <div class="card">
+        <h3>IELTS Preparation</h3>
+        <p>Complete IELTS preparation with AI scoring and instant feedback</p>
+        <p style="font-size: 13px; color: var(--tg-theme-hint-color, #666666);">Duration: 8 weeks • Level: Intermediate+</p>
+        <div class="price">149,000 UZS</div>
+        <button class="btn" onclick="subscribeCourse('ielts')">Subscribe</button>
+      </div>
+      
+      <div class="card">
+        <h3>Cambridge B2 First</h3>
+        <p>Cambridge English B2 First exam preparation course</p>
+        <p style="font-size: 13px; color: var(--tg-theme-hint-color, #666666);">Duration: 10 weeks • Level: Upper Intermediate</p>
+        <div class="price">199,000 UZS</div>
+        <button class="btn" onclick="subscribeCourse('b2')">Subscribe</button>
+      </div>
+      
+      <div class="card">
+        <h3>Cambridge C1 Advanced</h3>
+        <p>Advanced Cambridge English exam preparation</p>
+        <p style="font-size: 13px; color: var(--tg-theme-hint-color, #666666);">Duration: 12 weeks • Level: Advanced</p>
+        <div class="price">249,000 UZS</div>
+        <button class="btn" onclick="subscribeCourse('c1')">Subscribe</button>
+      </div>
+      
+      <div class="card">
+        <h3>Digital SAT Prep</h3>
+        <p>Digital SAT preparation with adaptive practice tests</p>
+        <p style="font-size: 13px; color: var(--tg-theme-hint-color, #666666);">Duration: 6 weeks • Level: Intermediate+</p>
+        <div class="price">299,000 UZS</div>
+        <button class="btn" onclick="subscribeCourse('sat')">Subscribe</button>
+      </div>
+    </div>
+    
+    <!-- Exams Section -->
+    <div id="exams" class="section">
+      <button class="back-btn" onclick="showSection('main-nav')">← Back</button>
+      <h2 style="margin-bottom: 16px;">🎯 Practice Exams</h2>
+      
+      <div class="exam-item">
+        <h4>📝 IELTS Mock Test</h4>
+        <div class="meta">4 sections • 2h 45min • Instant AI scoring</div>
+        <button class="btn" onclick="startExam('ielts')">Start Exam</button>
+      </div>
+      
+      <div class="exam-item">
+        <h4>📝 Cambridge B2 First</h4>
+        <div class="meta">4 papers • 3h 30min • Detailed feedback</div>
+        <button class="btn" onclick="startExam('b2')">Start Exam</button>
+      </div>
+      
+      <div class="exam-item">
+        <h4>📝 Cambridge C1 Advanced</h4>
+        <div class="meta">4 papers • 4h • Advanced assessment</div>
+        <button class="btn" onclick="startExam('c1')">Start Exam</button>
+      </div>
+      
+      <div class="exam-item">
+        <h4>📝 Digital SAT Practice</h4>
+        <div class="meta">Math & Reading • 2h 15min • Adaptive testing</div>
+        <button class="btn" onclick="startExam('sat')">Start Exam</button>
+      </div>
+    </div>
+    
+    <!-- Profile Section -->
+    <div id="profile" class="section">
+      <button class="back-btn" onclick="showSection('main-nav')">← Back</button>
+      <h2 style="margin-bottom: 16px;">👤 Your Profile</h2>
+      
+      <div class="card">
+        <h3>Account Information</h3>
+        <p><strong>User ID:</strong> <span id="user-id">Loading...</span></p>
+        <p><strong>Name:</strong> <span id="user-name">Loading...</span></p>
+        <p><strong>Enrolled:</strong> January 15, 2024</p>
+        <p><strong>Subscription:</strong> <span class="status-badge">Active</span></p>
+      </div>
+      
+      <div class="card">
+        <h3>Statistics</h3>
+        <p><strong>Courses Completed:</strong> 5</p>
+        <p><strong>Exams Taken:</strong> 12</p>
+        <p><strong>Average Score:</strong> 85.5%</p>
+        <p><strong>Study Hours:</strong> 156 hours</p>
+      </div>
+      
+      <div class="card">
+        <h3>Certificates</h3>
+        <p>IELTS Band 7.0 - Completed</p>
+        <p>Cambridge B2 - Completed</p>
+        <button class="btn" style="margin-top: 8px;">View All Certificates</button>
+      </div>
+    </div>
+    
+    <!-- Support Section -->
+    <div id="support" class="section">
+      <button class="back-btn" onclick="showSection('main-nav')">← Back</button>
+      <h2 style="margin-bottom: 16px;">❓ Support</h2>
+      
+      <div class="card">
+        <h3>Contact Us</h3>
+        <p>📧 <strong>Email:</strong> support@eduup.ai</p>
+        <p>📱 <strong>Telegram:</strong> @eduup_support</p>
+        <p>📞 <strong>Phone:</strong> +998 90 123 45 67</p>
+        <p>🌐 <strong>Website:</strong> eduup.ai/support</p>
+      </div>
+      
+      <div class="card">
+        <h3>FAQ</h3>
+        <p><strong>Q: How do I subscribe to a course?</strong></p>
+        <p>A: Go to Courses section, select a course, and click Subscribe.</p>
+        <p style="margin-top: 12px;"><strong>Q: Can I retake exams?</strong></p>
+        <p>A: Yes, you can retake exams unlimited times.</p>
+        <p style="margin-top: 12px;"><strong>Q: Payment methods?</strong></p>
+        <p>A: UzumNasiya, Click, Payme, and credit cards accepted.</p>
+      </div>
+      
+      <button class="btn" onclick="contactSupport()">Contact Support</button>
+    </div>
+    
+    <!-- Loading Screen -->
+    <div id="loading" class="section">
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <p>Loading...</p>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Initialize Telegram WebApp
+    const tg = window.Telegram.WebApp;
+    
+    // Expand the WebApp
+    tg.expand();
+    
+    // Set theme colors
+    document.documentElement.style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#ffffff');
+    document.documentElement.style.setProperty('--tg-theme-text-color', tg.themeParams.text_color || '#000000');
+    document.documentElement.style.setProperty('--tg-theme-hint-color', tg.themeParams.hint_color || '#666666');
+    document.documentElement.style.setProperty('--tg-theme-button-color', tg.themeParams.button_color || '#2563eb');
+    document.documentElement.style.setProperty('--tg-theme-button-text-color', tg.themeParams.button_text_color || '#ffffff');
+    document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', tg.themeParams.secondary_bg_color || '#f0f0f0');
+    
+    // Get user info
+    const user = tg.initDataUnsafe.user;
+    if (user) {
+      document.getElementById('user-id').textContent = user.id;
+      document.getElementById('user-name').textContent = user.first_name + ' ' + (user.last_name || '');
+    }
+    
+    // Show section
+    function showSection(sectionId) {
+      // Hide all sections
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // Show target section
+      document.getElementById(sectionId).classList.add('active');
+      
+      // Haptic feedback
+      if (tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+      }
+    }
+    
+    // Subscribe to course
+    function subscribeCourse(courseCode) {
+      if (tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('medium');
+      }
+      
+      const courses = {
+        'ielts': 'IELTS Preparation - 149,000 UZS',
+        'b2': 'Cambridge B2 First - 199,000 UZS',
+        'c1': 'Cambridge C1 Advanced - 249,000 UZS',
+        'sat': 'Digital SAT Prep - 299,000 UZS'
+      };
+      
+      tg.showPopup({
+        title: 'Subscribe to Course',
+        message: `You selected: ${courses[courseCode]}\n\nProceed to payment?`,
+        buttons: [
+          {type: 'ok', text: 'Proceed'},
+          {type: 'cancel', text: 'Cancel'}
+        ]
+      }, (buttonId) => {
+        if (buttonId === 'ok') {
+          // Send data to bot
+          tg.sendData(JSON.stringify({
+            action: 'subscribe',
+            course: courseCode
+          }));
+        }
+      });
+    }
+    
+    // Start exam
+    function startExam(examCode) {
+      if (tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('medium');
+      }
+      
+      const exams = {
+        'ielts': 'IELTS Mock Test',
+        'b2': 'Cambridge B2 First',
+        'c1': 'Cambridge C1 Advanced',
+        'sat': 'Digital SAT Practice'
+      };
+      
+      tg.showPopup({
+        title: 'Start Exam',
+        message: `You selected: ${exams[examCode]}\n\nDuration: 2 hours\nReady to begin?`,
+        buttons: [
+          {type: 'ok', text: 'Start'},
+          {type: 'cancel', text: 'Cancel'}
+        ]
+      }, (buttonId) => {
+        if (buttonId === 'ok') {
+          // Send data to bot
+          tg.sendData(JSON.stringify({
+            action: 'start_exam',
+            exam: examCode
+          }));
+        }
+      });
+    }
+    
+    // Contact support
+    function contactSupport() {
+      if (tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+      }
+      
+      tg.openTelegramLink('https://t.me/eduup_support');
+    }
+    
+    // Handle main button
+    tg.MainButton.setText('Open Full Website');
+    tg.MainButton.onClick(() => {
+      tg.openLink('https://eduup.ai');
+    });
+    tg.MainButton.show();
+    
+    // Send ready signal
+    tg.ready();
+  </script>
+</body>
+</html>

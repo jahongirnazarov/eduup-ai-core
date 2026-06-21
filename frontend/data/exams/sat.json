@@ -1,0 +1,82 @@
+{
+  "standard": "SAT",
+  "duration": 2400,
+  "listening": {
+    "audioUrl": "https://cloudinary.com/your-audio/sat-listening.mp3",
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple-choice",
+        "question": "What is the speaker's main argument about renewable energy?",
+        "options": [
+          "It is too expensive to implement",
+          "It is essential for future sustainability",
+          "It causes more environmental damage",
+          "It should be abandoned in favor of fossil fuels"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 2,
+        "type": "multiple-choice",
+        "question": "According to the passage, what percentage of global energy currently comes from renewable sources?",
+        "options": ["5%", "15%", "25%", "35%"],
+        "correctAnswer": 1,
+        "points": 1
+      }
+    ]
+  },
+  "reading": {
+    "passage": "The Evolution of Digital Communication\n\nThe advent of digital communication has fundamentally transformed how humans interact, conduct business, and share information. From the early days of email to the current era of social media and instant messaging, the landscape of communication has undergone dramatic changes that continue to reshape society.\n\nEmail revolutionized business communication in the 1990s, enabling instant document sharing and asynchronous conversations across time zones. This technology eliminated many of the delays inherent in traditional mail systems and allowed for more efficient collaboration among geographically dispersed teams. However, email also introduced new challenges, including information overload and the blurring of work-life boundaries.\n\nThe rise of social media platforms in the early 2000s marked another significant shift. Platforms like Facebook, Twitter, and Instagram created new spaces for personal expression, community building, and public discourse. These platforms democratized content creation, allowing anyone with internet access to share their thoughts and experiences with a global audience. However, they also raised concerns about privacy, misinformation, and the impact of constant connectivity on mental health.\n\nToday, we are witnessing the emergence of new communication technologies, including augmented reality, virtual reality, and artificial intelligence-powered chatbots. These technologies promise to further transform how we interact, potentially creating more immersive and personalized communication experiences. However, they also present new ethical and practical challenges that society must address.\n\nAs we navigate this evolving landscape, it is essential to consider both the opportunities and risks presented by new communication technologies. By understanding their potential impacts, we can work to harness their benefits while mitigating their drawbacks.",
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple-choice",
+        "question": "According to the passage, what was one major benefit of email for business communication?",
+        "options": [
+          "It increased the cost of communication",
+          "It enabled instant document sharing across time zones",
+          "It eliminated the need for face-to-face meetings",
+          "It reduced the need for written documentation"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 2,
+        "type": "multiple-choice",
+        "question": "What concern does the author raise about social media platforms?",
+        "options": [
+          "They are too expensive to use",
+          "They raise concerns about privacy and misinformation",
+          "They have no impact on society",
+          "They are only used by young people"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 3,
+        "type": "multiple-choice",
+        "question": "What new communication technologies does the author mention as emerging today?",
+        "options": [
+          "Telegraph and radio",
+          "Augmented reality, virtual reality, and AI chatbots",
+          "Only traditional phone calls",
+          "Printed newspapers"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      }
+    ]
+  },
+  "writing": {
+    "prompt": "Do you agree or disagree with the following statement: Social media has had a positive impact on society. Write an essay explaining your position with specific examples and evidence.",
+    "minWords": 300
+  },
+  "speaking": {
+    "prompt": "Describe a significant change in communication technology that you have experienced. Explain how it has affected your life and relationships.",
+    "duration": 90
+  }
+}

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Harvard University — Real Human Virtual Classroom</title>
+    <style>
+        body { 
+            margin: 0; 
+            background: #080808; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            font-family: 'Georgia', serif; 
+            color: #f5f5f5;
+            overflow: hidden;
+        }
+        #app-wrapper {
+            position: relative;
+            box-shadow: 0 35px 90px rgba(0,0,0,0.95);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 5px solid #3a0007; /* Harvard Crimson ramkasi */
+        }
+        canvas { display: block; background: #111; }
+        .dashboard {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            background: #1a1112;
+            padding: 14px 30px;
+            border-radius: 30px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            border: 1px solid #5c000b;
+        }
+        button { 
+            padding: 12px 28px; 
+            font-size: 15px; 
+            font-weight: bold; 
+            font-family: 'Georgia', serif;
+            background: #a51c30; /* Rasmiy Harvard Crimson qizili */
+            color: white; 
+            border: 1px solid #7f1221; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        button:hover { background: #c5243a; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(165,28,48,0.4); }
+        .exam-mode { background: #222; border: 1px solid #a51c30; color: #a51c30; }
+        .exam-mode:hover { background: #a51c30; color: white; }
+        
+        .voice-panel {
+            position: absolute; bottom: 40px; right: 40px; display: flex; flex-direction: column; gap: 10px; background: rgba(23, 16, 17, 0.9); padding: 20px; border-radius: 8px; border: 1px solid #5c0813; width: 300px; align-items: center;
+        }
+        .status-light { width: 12px; height: 12px; background: #777; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .active-light { background: #2ecc71; box-shadow: 0 0 10px #2ecc71; }
+        .mic-btn {
+            background: #a51c30; color: white; border: none; padding: 12px 20px; font-size: 15px; border-radius: 25px; cursor: pointer; font-weight: bold; width: 100%; font-family: 'Georgia', serif; transition: 0.3s;
+        }
+        .mic-btn:hover { background: #c5243a; transform: scale(1.02); }
+        #liveSubtitle { font-size: 13px; font-style: italic; color: #cca243; margin-top: 10px; text-align: center; min-height: 35px; }
+        
+        /* SERTIFIKAT VA VARIANTLAR PANEL STILI */
+        .quiz-container {
+            position: absolute; bottom: 50px; left: 390px; display: none; gap: 10px; flex-direction: row; background: rgba(13,23,21,0.9); padding: 10px; border-radius: 6px; border: 1px solid #cca243;
+        }
+        .quiz-btn { background: #222; border: 1px solid #cca243; color: #cca243; padding: 8px 15px; font-size: 13px; border-radius: 4px; cursor: pointer; font-family: 'Georgia', serif; }
+        .quiz-btn:hover { background: #cca243; color: black; }
+    </style>
+</head>
+<body>
+
+<div style="margin-bottom: 15px; font-size: 22px; font-weight: normal; font-style: italic; color: #a51c30; letter-spacing: 1px;" id="globalStatus">
+    Harvard Department of Mathematics — Active Human Simulation
+</div>
+
+<div id="app-wrapper">
+    <canvas id="harvardCanvas" width="1050" height="620"></canvas>
+    
+    <!-- VOICE PANEL -->
+    <div class="voice-panel">
+        <div style="font-size: 14px; font-weight: bold; display: flex; align-items: center;">
+            <span class="status-light" id="micStatusLight"></span>
+            <span id="statusLabel">Ustoz kutmoqda...</span>
+        </div>
+        <button class="mic-btn" id="startMicBtn">Tugmani Bosib Gapiring</button>
+        <div id="liveSubtitle">Sizning gapingiz shu yerda chiqadi...</div>
+    </div>
+    
+    <!-- IMTIHON TEST VARIANTLARI PANEL -->
+    <div class="quiz-container" id="quizPanel">
+        <button class="quiz-btn" onclick="submitExamAnswer('A')">A) χ = 0</button>
+        <button class="quiz-btn" onclick="submitExamAnswer('B')">B) χ = 2</button>
+        <button class="quiz-btn" onclick="submitExamAnswer('C')">C) χ = 1</button>
+    </div>
+</div>
+
+<div class="dashboard">
+    <button onclick="activateHarvardLecture(0)">Lecture 1: Advanced Calculus</button>
+    <button onclick="activateHarvardLecture(1)">Lecture 2: 3D Topology (Geometry)</button>
+    <button class="exam-mode" onclick="activateHarvardExam()">Start Harvard Exam Paper</button>
+    <div style="width: 100%; height: 1px; background: #5c000b; margin: 10px 0;"></div>
+    <button onclick="activateHarvardLecture(2)" style="background: #2c5aa0;">IELTS: Listening</button>
+    <button onclick="activateHarvardLecture(3)" style="background: #2c5aa0;">IELTS: Reading</button>
+    <button onclick="activateHarvardLecture(4)" style="background: #2c5aa0;">IELTS: Writing Task 1</button>
+    <button onclick="activateHarvardLecture(5)" style="background: #2c5aa0;">IELTS: Writing Task 2</button>
+    <button onclick="activateHarvardLecture(6)" style="background: #2c5aa0;">IELTS: Speaking Part 1</button>
+    <button onclick="activateHarvardLecture(7)" style="background: #2c5aa0;">IELTS: Speaking Part 2</button>
+    <button onclick="activateHarvardLecture(8)" style="background: #2c5aa0;">IELTS: Speaking Part 3</button>
+    <button class="exam-mode" onclick="activateIELTSExam()" style="background: #1a4a8a;">Start IELTS Mock Exam</button>
+</div>
+
+<!-- Yashil fondagi haqiqiy o'qituvchi videosi (Fonda yashirin yuklanadi) -->
+<video id="teacherVideo" src="models/teacher_walk_write.mp4" loop crossorigin="anonymous" style="display:none;"></video>
+
+<script>
+const canvas = document.getElementById('harvardCanvas');
+const ctx = canvas.getContext('2d');
+const video = document.getElementById('teacherVideo');
+
+let startTime = Date.now();
+let isPlaying = false;
+let boardWrittenText = "", textCharIndex = 0, lastTypeClock = 0;
+let mouthOpenIntensity = 0;
+let showCertificate = false;
+let studentGrade = "A+";
+let studentName = "Azizbek Nazarov";
+
+// BRAUZER ICHKI AUDIO TAHLILCHISI (LIP-SYNC UCHUN)
+let audioCtx, analyser, dataArray, sourceNode;
+
+// O'qituvchining xona bo'ylab yurish koordinatalari (Yurish Fizikasi)
+let humanX = -180; // Dars boshida xonadan tashqarida (chapda) bo'ladi
+let humanTargetX = 40; // Doska oldidagi to'xtash o'rni
+let humanState = "idle"; // "idle", "walking", "writing"
+
+// HARVARD UNIVERSITETI LEKSIYALARI VA IMTIHONLAR OMBORI (JSON)
+const harvardDatabase = {
+    lessons: [
+        {
+            title: "HARVARD UNIVERSITY — LECTURE 1: ADVANCED CALCULUS",
+            text: "Harvard Department of Mathematics\nTopic: Fundamental Theorem of Calculus\n\n ∫[a,b] f(x)dx = F(b) - F(a)\n Where F'(x) = f(x)\n\nTheorem successfully verified by Professor.",
+            shape: "none",
+            speech: "Harvard matematika kafedrasiga xush kelibsiz. Bugun biz Nyuton-Leybnits fundamental teoremasini o'rganamiz."
+        },
+        {
+            title: "HARVARD UNIVERSITY — LECTURE 2: 3D TOPOLOGY",
+            text: "Topic: Spatial Geometric Projections\nStructure: 3D Pyramid Topology\nEuler's Formula: V - E + F = 2\n5 Vertices - 8 Edges + 5 Faces = 2",
+            shape: "3d_pyramid",
+            speech: "Bugun biz fazoviy geometrik proyeksiyalarni o'rganamiz. Eyler formulasi: uchburchaklar soni minus qirralar soni plus yuzalar soni teng ikkiga."
+        },
+        {
+            title: "IELTS — LISTENING MODULE OVERVIEW",
+            text: "IELTS Listening Module\n\nTotal Questions: 40\nTime: 30 minutes\n\nSections:\n1. Form Completion (10 questions)\n2. Multiple Choice (10 questions)\n3. Academic Lecture (10 questions)\n4. Complex Discussion (10 questions)\n\nBand Score: 0-9",
+            shape: "none",
+            speech: "IELTS Listening moduliga xush kelibsiz. Jami 40 ta savol, 30 daqiqa vaqt. 4 ta qismdan iborat: forma to'ldirish, ko'p tanli savollar, akademik ma'ruza va murakkab munozara."
+        },
+        {
+            title: "IELTS — READING MODULE OVERVIEW",
+            text: "IELTS Reading Module\n\nTotal Questions: 40\nTime: 60 minutes\n\nPassages:\n1. Passage 1: 13 questions (Easy)\n2. Passage 2: 13 questions (Medium)\n3. Passage 3: 14 questions (Hard)\n\nQuestion Types:\n- True/False/Not Given\n- Multiple Choice\n- Matching Headings\n- Summary Completion",
+            shape: "none",
+            speech: "IELTS Reading modulini o'rganamiz. 40 ta savol, 60 daqiqa. 3 ta maqola: oson, o'rtacha va murakkab darajada. Savol turlari: ha/yo'q/ma'lum emas, ko'p tanli, sarlavha moslash va xulma to'ldirish."
+        },
+        {
+            title: "IELTS — WRITING TASK 1",
+            text: "IELTS Writing Task 1\n\nTask: Describe visual information\n- Graphs, Charts, Tables\n- Diagrams, Maps\n\nMinimum: 150 words\nTime: 20 minutes\n\nAssessment Criteria:\n- Task Achievement (25%)\n- Coherence & Cohesion (25%)\n- Lexical Resource (25%)\n- Grammar (25%)",
+            shape: "none",
+            speech: "IELTS Writing Task 1 - vizual ma'lumotlarni tasvirlash. Grafik, jadval, diagramma yoki xarita. Minimum 150 so'z, 20 daqiqa. 4 ta baholash mezonini eslab qoling."
+        },
+        {
+            title: "IELTS — WRITING TASK 2",
+            text: "IELTS Writing Task 2\n\nTask: Academic Essay\n- Respond to point of view\n- Argument or problem\n\nMinimum: 250 words\nTime: 40 minutes\nWeight: 2/3 of total score\n\nAssessment Criteria:\n- Task Response (25%)\n- Coherence & Cohesion (25%)\n- Lexical Resource (25%)\n- Grammar (25%)",
+            shape: "none",
+            speech: "IELTS Writing Task 2 - akademik esse. Nuqtai nazarga javob berish, argument yoki muammo. Minimum 250 so'z, 40 daqiqa. Umumiy ballning 2/3 qismini tashkil qiladi."
+        },
+        {
+            title: "IELTS — SPEAKING PART 1",
+            text: "IELTS Speaking Part 1\n\nDuration: 4-5 minutes\nTopics:\n- Work/Studies\n- Home/Accommodation\n- Hometown\n- Family\n- Hobbies\n- Daily Routine\n\nAssessment:\n- Fluency & Coherence (25%)\n- Lexical Resource (25%)\n- Grammar (25%)\n- Pronunciation (25%)",
+            shape: "none",
+            speech: "IELTS Speaking Part 1 - tanishuv va intervyu. 4-5 daqiqa. Ish, uy, shahar, oila, hobbi va kundalik rutin haqida suhbat. 4 ta baholash mezoniga e'tibor bering."
+        },
+        {
+            title: "IELTS — SPEAKING PART 2",
+            text: "IELTS Speaking Part 2\n\nDuration: 3-4 minutes\nPreparation: 1 minute\nSpeaking: 2 minutes\n\nTask: Cue Card\n- Describe a person\n- Describe a place\n- Describe an object\n- Describe an event\n\nFocus on structured response.",
+            shape: "none",
+            speech: "IELTS Speaking Part 2 - individual nutq. 1 daqiqa tayyorlanish, 2 daqiqa gapirish. Cue card bo'yicha shaxs, joy, obyekt yoki hodisa haqida gapiring."
+        },
+        {
+            title: "IELTS — SPEAKING PART 3",
+            text: "IELTS Speaking Part 3\n\nDuration: 4-5 minutes\nTopics:\n- Abstract concepts\n- Related to Part 2\n- Social issues\n- Technology\n- Education\n- Environment\n\nFocus on:\n- Expressing opinions\n- Justifying answers\n- Discussing abstract concepts",
+            shape: "none",
+            speech: "IELTS Speaking Part 3 - ikki tomonlama munozara. 4-5 daqiqa. Abstrakt mavzular, ijtimoiy muammolar, texnologiya, ta'lim va atrof-muhit. Fikr bildirish va asoslashga e'tibor bering."
+        }
+    ],
+    exam: {
+        title: "HARVARD MATHEMATICS COMPETITION — EXAM PAPER",
+        text: "HARVARD INTEGRATED EXAM:\nQuestion: Compute the Euler characteristic\nof the given 2D simplex network.\n\n[A] χ = 1     [B] χ = 2     [C] χ = 0\nSelect your thesis answer below:",
+        shape: "2d_triangle",
+        speech: "Diqqat, imtihon savoli. Ikki o'lchamli simpleks tarmog'ining Eyler xarakteristikasini hisoblang."
+    },
+    ielts_exam: {
+        title: "IELTS MOCK EXAM — PRACTICE TEST",
+        text: "IELTS FULL MOCK EXAM\n\nSelect a module to begin:\n\n[1] Listening (30 min)\n[2] Reading (60 min)\n[3] Writing Task 1 (20 min)\n[4] Writing Task 2 (40 min)\n[5] Speaking Part 1 (5 min)\n[6] Speaking Part 2 (4 min)\n[7] Speaking Part 3 (5 min)\n\nBand Score: 0-9\nCEFR Level: A1-C2",
+        shape: "none",
+        speech: "IELTS to'liq mock imtihoniga xush kelibsiz. Listening, Reading, Writing yoki Speaking modulini tanlang. Har bir modul o'z vaqt va baholash mezonlariga ega."
+    }
+};
+
+let appMode = "idle"; 
+let currentActiveData = { text: "Harvard University — Faculty of Arts and Sciences\nMathematics Department Digital Lecture Hall.\n\nSelect a lecture or begin the official examination\nusing the panels below to initiate the Real Professor.", shape: "none", speech: "" };
+
+// --- 3D GEOMETRIK PIRAMIDA MATRIX NUQTALARI ---
+const pyramidVertices = [
+    {x: 0, y: -1.1, z: 0},   // Tepa cho'qqisi
+    {x: -0.9, y: 0.9, z: -0.9}, // Asos orqa-chap
+    {x: 0.9, y: 0.9, z: -0.9},  // Asos orqa-o'ng
+    {x: 0.9, y: 0.9, z: 0.9},   // Asos old-o'ng
+    {x: -0.9, y: 0.9, z: 0.9}   // Asos old-chap
+];
+const pyramidEdges = [0,1, 0,2, 0,3, 0,4, 1,2, 2,3, 3,4, 4,1];
+
+function projectToBoard(vertex, angle) {
+    let cosA = Math.cos(angle), sinA = Math.sin(angle);
+    let rotX = vertex.x * cosA - vertex.z * sinA;
+    let rotZ = vertex.x * sinA + vertex.z * cosA;
+    
+    const scaleFactor = 75;
+    const distanceView = 3.2;
+    let projectionRatio = scaleFactor / (distanceView + rotZ);
+    
+    return {
+        x: rotX * projectionRatio + 700, 
+        y: vertex.y * scaleFactor + 310  
+    };
+}
+
+function activateHarvardLecture(index) {
+    appMode = "lesson";
+    document.getElementById('globalStatus').innerText = harvardDatabase.lessons[index].title;
+    currentActiveData = harvardDatabase.lessons[index];
+    startHumanVideo();
+    speakText(currentActiveData.speech);
+}
+
+function activateHarvardExam() {
+    appMode = "exam";
+    document.getElementById('globalStatus').innerText = harvardDatabase.exam.title;
+    currentActiveData = harvardDatabase.exam;
+    startHumanVideo();
+    speakText(currentActiveData.speech);
+    document.getElementById('quizPanel').style.display = "flex"; // Test tugmalarini ochish
+    showCertificate = false;
+}
+
+function activateIELTSExam() {
+    appMode = "ielts_exam";
+    document.getElementById('globalStatus').innerText = harvardDatabase.ielts_exam.title;
+    currentActiveData = harvardDatabase.ielts_exam;
+    startHumanVideo();
+    speakText(currentActiveData.speech);
+    showCertificate = false;
+}
+
+function submitExamAnswer(answer) {
+    document.getElementById('quizPanel').style.display = "none";
+    
+    if (answer === 'B') {
+        studentGrade = "A+";
+        speakText("Tabriklaymiz! Sizning javobingiz to'g'ri. Eyler xarakteristikasi 2 ga teng. Siz A+ bahoga ega bo'ldingiz.");
+    } else {
+        studentGrade = "B";
+        speakText("Kechirasiz, javobingiz noto'g'ri. To'g'ri javob B - 2. Siz B bahoga ega bo'ldingiz.");
+    }
+    
+    setTimeout(() => {
+        showCertificate = true;
+        boardWrittenText = "";
+        textCharIndex = 0;
+        lastTypeClock = Date.now();
+    }, 2000);
+}
+
+function startHumanVideo() {
+    boardWrittenText = "";
+    textCharIndex = 0;
+    lastTypeClock = Date.now();
+    
+    if (!isPlaying) {
+        video.play();
+        isPlaying = true;
+        humanState = "walking"; // Professor xonaga kirishni boshlaydi
+    }
+}
+
+function speakText(text) {
+    if (!text) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'uz-UZ';
+    
+    // Lip-Sync uchun audio oqimini ulash mantiqi
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 32;
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+    }
+    
+    utterance.onstart = () => { document.getElementById('statusLabel').innerText = "Ustoz gapirmoqda..."; };
+    utterance.onend = () => { document.getElementById('statusLabel').innerText = "Ustoz kutmoqda..."; };
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+// --- SPEECH RECOGNITION ---
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SpeechRecognition) {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'uz-UZ';
+    recognition.interimResults = false;
+
+    document.getElementById('startMicBtn').addEventListener('click', () => {
+        if (!isPlaying) { video.play(); isPlaying = true; }
+        recognition.start();
+        document.getElementById('micStatusLight').classList.add('active-light');
+        document.getElementById('statusLabel').innerText = "Eshityapman, gapiring...";
+    });
+
+    recognition.onresult = (event) => {
+        document.getElementById('micStatusLight').classList.remove('active-light');
+        document.getElementById('statusLabel').innerText = "Ustoz o'ylamoqda...";
+        
+        const userSpeechText = event.results[0][0].transcript.toLowerCase();
+        document.getElementById('liveSubtitle').innerText = "Siz: " + userSpeechText;
+
+        // Simple response logic
+        if (userSpeechText.includes('salom') || userSpeechText.includes('assalomu')) {
+            speakText("Assalomu alaykum, Harvard matematika kafedrasiga xush kelibsiz. Qanday yordam bera olaman?");
+        } else if (userSpeechText.includes('formula') || userSpeechText.includes('teorema')) {
+            activateHarvardLecture(0);
+        } else if (userSpeechText.includes('geometriya') || userSpeechText.includes('topologiya')) {
+            activateHarvardLecture(1);
+        } else if (userSpeechText.includes('imtihon') || userSpeechText.includes('exam')) {
+            activateHarvardExam();
+        } else if (userSpeechText.includes('ielts') || userSpeechText.includes('listening')) {
+            activateHarvardLecture(2);
+        } else if (userSpeechText.includes('reading') || userSpeechText.includes('reading')) {
+            activateHarvardLecture(3);
+        } else if (userSpeechText.includes('writing') || userSpeechText.includes('writing')) {
+            activateHarvardLecture(4);
+        } else if (userSpeechText.includes('speaking') || userSpeechText.includes('speaking')) {
+            activateHarvardLecture(6);
+        } else if (userSpeechText.includes('ielts exam') || userSpeechText.includes('ielts mock')) {
+            activateIELTSExam();
+        } else {
+            speakText("Kechirasiz, savolingizni to'liq tushunmadim. Iltimos, formula, geometriya, imtihon, ielts, listening, reading, writing, speaking yoki ielts exam so'zlaridan birini ishlating.");
+        }
+    };
+}
+
+function renderHarvardClassroom() {
+    const elapsed = (Date.now() - startTime) / 1000;
+    const now = Date.now();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // --- 1. HARVARD UNIVERSITETI GEOMETRIYASI (QIZIL G'ISHTLI DEVOR) ---
+    ctx.fillStyle = '#210f11'; ctx.fillRect(0, 0, canvas.width, 460); 
+    
+    // Haqiqiy qadimiy g'isht liniyalari chizmasi
+    ctx.strokeStyle = '#170a0b'; ctx.lineWidth = 1;
+    for(let i = 0; i < 460; i += 20) {
+        ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+        let shift = (i % 40 === 0) ? 20 : 0;
+        for(let j = shift; j < canvas.width; j += 40) {
+            ctx.beginPath(); ctx.moveTo(j, i); ctx.lineTo(j, i + 20); ctx.stroke();
+        }
+    }
+
+    // Harvard derazasidan tushuvchi kinematik nur (Cinematic Light)
+    let sunLight = ctx.createRadialGradient(500, -50, 100, 500, 200, 600);
+    sunLight.addColorStop(0, 'rgba(230, 140, 60, 0.25)');
+    sunLight.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = sunLight; ctx.fillRect(0, 0, canvas.width, 460);
+    
+    // Qorong'u Pol (Qadimiy quyuq eman yog'och laminat)
+    let floorGrad = ctx.createLinearGradient(0, 460, 0, canvas.height);
+    floorGrad.addColorStop(0, '#1c110a'); floorGrad.addColorStop(1, '#0a0603');
+    ctx.fillStyle = floorGrad; ctx.fillRect(0, 460, canvas.width, canvas.height - 460);
+
+    // --- 2. HARVARD TALABALAR PARTALARI (ANTIQUE OAK DESKS) ---
+    ctx.fillStyle = '#26160e'; 
+    ctx.beginPath(); ctx.moveTo(0, 520); ctx.lineTo(330, 520); ctx.lineTo(260, 620); ctx.lineTo(0, 620); ctx.fill();
+    ctx.fillStyle = '#140b07'; ctx.fillRect(0, 520, 330, 6); // Soya qismi
+
+    ctx.fillStyle = '#26160e'; 
+    ctx.beginPath(); ctx.moveTo(670, 520); ctx.lineTo(canvas.width, 520); ctx.lineTo(canvas.width, 620); ctx.lineTo(740, 620); ctx.fill();
+    ctx.fillStyle = '#140b07'; ctx.fillRect(670, 520, canvas.width - 670, 6);
+
+    // --- 3. HARVARD UNIVERSITETI RASMIY OLTIN GERBI (VERITAS) ---
+    const lx = 960, ly = 90;
+    ctx.fillStyle = '#a51c30'; ctx.beginPath(); ctx.arc(lx, ly, 26, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#cca243'; ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 9px Georgia'; ctx.fillText("VE RI", lx-13, ly-4); ctx.fillText("TAS", lx-10, ly+10);
+
+    // --- 4. TRADITIONAL HARVARD YASHIL DOSKASI (BLACKBOARD) ---
+    ctx.fillStyle = '#081412'; ctx.fillRect(360, 40, 650, 390);
+    ctx.strokeStyle = '#3d2416'; ctx.lineWidth = 12; ctx.strokeRect(360, 40, 650, 390); // To'q jigar ramka
+    ctx.fillStyle = '#21130b'; ctx.fillRect(346, 426, 678, 14); // Bo'r tagligi
+
+    // --- 5. PROFESSOR HARAKATI VA DOSKAGA INTEGRATSIYA FIZIKASI ---
+    if (humanState === "walking") {
+        humanX += 2.5; // Professorning chapdan kirib kelish tezligi
+        if (humanX >= humanTargetX) {
+            humanX = humanTargetX;
+            humanState = "writing"; // Doska oldiga yetgach yozish rejimi faollashadi
+        }
+    }
+
+    // Doskada harflar va bo'r yozuvining chiqish tezligi
+    if (humanState === "writing" && now - lastTypeClock > 65 && textCharIndex < currentActiveData.text.length) {
+        boardWrittenText += currentActiveData.text[textCharIndex];
+        textCharIndex++;
+        lastTypeClock = now;
+    }
+
+    // Matn renderi (Imtihonda tillarang bo'r, darsda sof oq bo'r effekti)
+    ctx.fillStyle = (appMode === "exam") ? '#cca243' : 'rgba(254, 254, 254, 0.9)';
+    ctx.font = 'bold 20px "Courier New", monospace';
+    ctx.shadowBlur = 1; ctx.shadowColor = ctx.fillStyle;
+    let linesArray = boardWrittenText.split('\n');
+    for (let i = 0; i < linesArray.length; i++) {
+        ctx.fillText(linesArray[i], 390, 95 + (i * 38));
+    }
+    ctx.shadowBlur = 0;
+
+    // 3D/2D Geometrik shakllar renderi
+    if (currentActiveData.shape === "3d_pyramid") {
+        let rotationAngle = elapsed * 0.6;
+        let projectedPoints = pyramidVertices.map(v => projectToBoard(v, rotationAngle));
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)'; ctx.lineWidth = 2.5;
+        ctx.shadowBlur = 4; ctx.shadowColor = "white";
+        pyramidEdges.forEach((edge, idx) => {
+            if(idx % 2 === 0) {
+                ctx.beginPath();
+                ctx.moveTo(projectedPoints[pyramidEdges[idx]].x, projectedPoints[pyramidEdges[idx]].y);
+                ctx.lineTo(projectedPoints[pyramidEdges[idx+1]].x, projectedPoints[pyramidEdges[idx+1]].y);
+                ctx.stroke();
+            }
+        });
+        ctx.shadowBlur = 0;
+    } else if (currentActiveData.shape === "2d_triangle") {
+        ctx.strokeStyle = '#cca243'; ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.moveTo(700, 240); ctx.lineTo(610, 360); ctx.lineTo(790, 360); ctx.closePath(); ctx.stroke();
+    }
+
+    // --- LIP-SYNC ANALIZATORI (Insoniy ovoz yoki Mahalliy AI ovoziga qarab lab ochiladi) ---
+    if (analyser && window.speechSynthesis.speaking) {
+        analyser.getByteFrequencyData(dataArray);
+        let total = 0;
+        for (let i = 0; i < dataArray.length; i++) total += dataArray[i];
+        mouthOpenIntensity = (total / dataArray.length / 255) * 14;
+    } else if (window.speechSynthesis.speaking) {
+        mouthOpenIntensity = Math.abs(Math.sin(elapsed * 14)) * 6; // Mahalliy AI uchun lab dinamikasi
+    } else {
+        mouthOpenIntensity = 0;
+    }
+
+    // --- 7. DINAMIK EDUUPAI SERTIFIKAT GENERATORI + QR-CODE (0 SO'M) ---
+    if (showCertificate) {
+        // Sertifikat fonini chizish
+        ctx.fillStyle = '#fffaf0'; ctx.fillRect(380, 60, 610, 350);
+        ctx.strokeStyle = '#a51c30'; ctx.lineWidth = 8; ctx.strokeRect(380, 60, 610, 350);
+        
+        // Harvard gerbi
+        ctx.fillStyle = '#a51c30'; ctx.beginPath(); ctx.arc(685, 110, 35, 0, Math.PI*2); ctx.fill();
+        ctx.strokeStyle = '#cca243'; ctx.lineWidth = 3; ctx.stroke();
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 12px Georgia'; ctx.fillText("VE RI TAS", 665, 115);
+        
+        // Sertifikat matni
+        ctx.fillStyle = '#1a0f09'; ctx.font = 'bold 24px Georgia'; ctx.fillText("CERTIFICATE OF ACHIEVEMENT", 470, 170);
+        ctx.font = '14px Georgia'; ctx.fillText("Harvard University Mathematics Competition", 530, 200);
+        ctx.font = '16px Georgia'; ctx.fillText("This certifies that", 620, 240);
+        ctx.font = 'bold 22px Georgia'; ctx.fillStyle = '#a51c30'; ctx.fillText(studentName, 610, 275);
+        ctx.fillStyle = '#1a0f09'; ctx.font = '16px Georgia'; ctx.fillText("has successfully completed with grade:", 560, 310);
+        ctx.font = 'bold 32px Georgia'; ctx.fillStyle = '#cca243'; ctx.fillText(studentGrade, 670, 350);
+        
+        // QR Code (simulated)
+        ctx.fillStyle = '#000'; ctx.fillRect(880, 280, 60, 60);
+        ctx.fillStyle = '#fff'; ctx.fillRect(885, 285, 50, 50);
+        ctx.fillStyle = '#000';
+        for(let i = 0; i < 5; i++) {
+            for(let j = 0; j < 5; j++) {
+                if((i+j)%2 === 0) ctx.fillRect(890 + i*10, 290 + j*10, 8, 8);
+            }
+        }
+        ctx.font = '10px Georgia'; ctx.fillStyle = '#666'; ctx.fillText("EduUp Verified", 883, 355);
+    }
+
+    // --- 8. REAL-TIME XROMAKEY (YASHIL FONNI BUTUNLAY O'CHIRISH) ---
+    if (isPlaying && !showCertificate) {
+        // Videodan kadrni xotiraga olish uchun vaqtinchalik yordamchi canvas elementlar
+        let tempCanvas = document.createElement('canvas');
+        tempCanvas.width = 400; tempCanvas.height = 500;
+        let tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(video, 0, 0, 400, 500);
+        let imgData = tempCtx.getImageData(0, 0, 400, 500);
+        let data = imgData.data;
+        // Har bitta pikselni tekshirib yashil rangni 100% shaffof qilamiz
+        for (let i = 0; i < data.length; i += 4) {
+            let r = data[i]; let g = data[i + 1]; let b = data[i + 2];
+            // Yashil rang diapazoni algoritmi (Toza xromakey o'chirish)
+            if (g > 110 && r < 95 && b < 95) {
+                data[i + 3] = 0; // Alpha kanal 0 qilinadi
+            }
+        }
+        tempCtx.putImageData(imgData, 0, 0);
+        // Yashil foni yo'qolgan 100% REAL ODAMNI dinamik harakatlanuvchi X koordinatada chizamiz
+        ctx.drawImage(tempCanvas, humanX, 100, 400, 500);
+        
+        // --- JONLI LAB OVERLAY (REALISTIC LIP-SYNC) ---
+        ctx.fillStyle = '#cc5a5a'; ctx.beginPath();
+        ctx.ellipse(humanX + 200, 375, 12, 3 + mouthOpenIntensity, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#913434'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(humanX + 188, 374);
+        ctx.quadraticCurveTo(humanX + 200, 376 + mouthOpenIntensity, humanX + 212, 374); ctx.stroke();
+    } else if (!showCertificate) {
+        // Dars boshlanishidan oldingi kutish soyasi
+        ctx.fillStyle = 'rgba(255,255,255,0.03)'; ctx.fillRect(60, 100, 400, 500);
+        ctx.fillStyle = '#a51c30'; ctx.font = '16px Georgia'; ctx.fillText("Professor Offline", 190, 320);
+    }
+    requestAnimationFrame(renderHarvardClassroom);
+}
+
+// Render tizimini ishga tushurish
+renderHarvardClassroom();
+</script>
+</body>
+</html>

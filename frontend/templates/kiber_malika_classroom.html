@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiber-Malika 3D Classroom - EduUp Sovereign</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="/static/js/client-side-data-loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.0"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #030305; 
+            overflow: hidden; 
+            font-family: 'Consolas', monospace;
+        }
+        #canvas-viewport {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        #hud-overlay {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            color: #00f07f;
+        }
+        #malika-speech-viewport {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 20, 40, 0.9);
+            border: 2px solid #00bcff;
+            padding: 30px;
+            border-radius: 20px;
+            color: #00bcff;
+            font-size: 18px;
+            max-width: 600px;
+            text-align: center;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 0 50px rgba(0, 188, 255, 0.3);
+        }
+        #action-status {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ff0055;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ff0055;
+            z-index: 100;
+        }
+        #ignition-gate-trigger {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 30px 60px;
+            font-size: 24px;
+            background: linear-gradient(90deg, #ff0055, #00f07f);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            z-index: 200;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        #ignition-gate-trigger:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 240, 127, 0.5);
+        }
+        #radar-label {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            color: #ffaa00;
+            font-size: 16px;
+            z-index: 100;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        #live-transcript-node {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #00f07f;
+            font-size: 16px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-viewport"></div>
+    
+    <div id="hud-overlay">
+        <h2>🪐 KIBER-MALIKA SOVEREIGN CLASSROOM</h2>
+        <p>System Status: <span id="system-status">ONLINE</span></p>
+        <p>Database: <span id="db-status">INITIALIZING...</span></p>
+    </div>
+
+    <div id="radar-label">🎤 MIKROFON KUTMOQDA</div>
+    
+    <button id="ignition-gate-trigger" onclick="initializeHardwareSensors()">🚀 TIZIMNI YOQISH</button>
+    
+    <div id="malika-speech-viewport"></div>
+    <div id="action-status"></div>
+    <div id="live-transcript-node"></div>
+
+    <script>
+        // =====================================================================
+        // CLIENT-SIDE DATA LOADING (ZERO SERVER COST)
+        // =====================================================================
+        let lessonsData = null;
+        let quizzesData = null;
+        let userTiersData = null;
+
+        async function loadClientSideData() {
+            try {
+                // Load all data from JSON files
+                lessonsData = await dataLoader.loadLessons();
+                quizzesData = await dataLoader.loadQuizzes();
+                userTiersData = await dataLoader.loadUserTiers();
+                
+                document.getElementById('db-status').textContent = 'ACTIVE (JSON)';
+                document.getElementById('db-status').style.color = '#00f07f';
+                
+                console.log('Client-side data loaded successfully');
+                return true;
+            } catch (error) {
+                console.error('Failed to load client-side data:', error);
+                document.getElementById('db-status').textContent = 'ERROR';
+                document.getElementById('db-status').style.color = '#ff0055';
+                return false;
+            }
+        }
+
+        // =====================================================================
+        // THREE.JS 3D ENVIRONMENT WITH HOLOGRAM
+        // =====================================================================
+        let rendererInstance, coreScene, activeCamera, visualMeshObject;
+
+        function initializeThreeDEnvironment() {
+            const parentNode = document.getElementById('canvas-viewport');
+            coreScene = new THREE.Scene();
+            coreScene.background = new THREE.Color(0x030305);
+
+            activeCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            activeCamera.position.set(0, 0, 4.0);
+
+            rendererInstance = new THREE.WebGLRenderer({ antialias: true });
+            rendererInstance.setSize(window.innerWidth, window.innerHeight);
+            rendererInstance.setPixelRatio(window.devicePixelRatio);
+            parentNode.appendChild(rendererInstance.domElement);
+
+            // Neon Pol (Grid Environment)
+            const architecturalGrid = new THREE.GridHelper(40, 40, 0x00f07f, 0x111122);
+            architecturalGrid.position.y = -1.6;
+            coreScene.add(architecturalGrid);
+
+            // Kiber-Malika High-Poly Wireframe Gologrammasi
+            const meshGeometry = new THREE.IcosahedronGeometry(1.3, 3);
+            const meshMaterial = new THREE.MeshBasicMaterial({ color: 0xff0055, wireframe: true });
+            visualMeshObject = new THREE.Mesh(meshGeometry, meshMaterial);
+            coreScene.add(visualMeshObject);
+
+            // Add particle system for ambient effect
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particleCount = 1000;
+            const positions = new Float32Array(particleCount * 3);
+            
+            for(let i = 0; i < particleCount * 3; i++) {
+                positions[i] = (Math.random() - 0.5) * 20;
+            }
+            
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const particlesMaterial = new THREE.PointsMaterial({ 
+                color: 0x00f07f, 
+                size: 0.02,
+                transparent: true,
+                opacity: 0.6
+            });
+            const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+            coreScene.add(particles);
+
+            executeRenderLoop();
+        }
+
+        function executeRenderLoop() {
+            requestAnimationFrame(executeRenderLoop);
+            if (visualMeshObject) {
+                visualMeshObject.rotation.y += 0.005;
+                visualMeshObject.rotation.x += 0.002;
+                // Tirik odamdek biologik dynamic nafas olish sikli
+                const breathAmplitude = 1.0 + Math.sin(Date.now() * 0.003) * 0.02;
+                visualMeshObject.scale.set(breathAmplitude, breathAmplitude, breathAmplitude);
+            }
+            rendererInstance.render(coreScene, activeCamera);
+        }
+
+        // =====================================================================
+        // CLIENT-SIDE VECTOR SEARCH (0 UZS API COST)
+        // =====================================================================
+        function queryLocalData(targetSubject, humanSpokenText) {
+            if (!lessonsData) return;
+            
+            const subject = lessonsData.subjects[targetSubject];
+            if (!subject) {
+                // Default to math if subject not found
+                const mathSubject = lessonsData.subjects['matematika'];
+                if (mathSubject && mathSubject.lessons.length > 0) {
+                    const firstLesson = mathSubject.lessons[0];
+                    executeEdgeLipSyncAnimation(firstLesson.content, firstLesson.title);
+                }
+                return;
+            }
+            
+            // Search through lessons for matching content
+            for (const lesson of subject.lessons) {
+                const searchTerms = [
+                    lesson.title.toLowerCase(),
+                    lesson.description.toLowerCase(),
+                    ...lesson.skills_gained.map(s => s.toLowerCase())
+                ];
+                
+                for (const term of searchTerms) {
+                    if (humanSpokenText.includes(term) || 
+                        humanSpokenText.includes("dars") || 
+                        humanSpokenText.includes("imtihon") ||
+                        humanSpokenText.includes("tushuntir")) {
+                        executeEdgeLipSyncAnimation(lesson.content, lesson.title);
+                        return;
+                    }
+                }
+            }
+            
+            // If no match found, show first lesson
+            if (subject.lessons.length > 0) {
+                const firstLesson = subject.lessons[0];
+                executeEdgeLipSyncAnimation(firstLesson.content, firstLesson.title);
+            }
+        }
+
+        // =====================================================================
+        // EDGE LIP SYNC ANIMATION
+        // =====================================================================
+        function executeEdgeLipSyncAnimation(speechText, topicTitle) {
+            document.getElementById('malika-speech-viewport').innerHTML = '"' + speechText + '"';
+            document.getElementById('malika-speech-viewport').style.display = 'block';
+            document.getElementById('action-status').innerText = topicTitle + " Yoqildi";
+            
+            // Hologramma rangini havoda mutatsiya qilish
+            if (visualMeshObject) {
+                visualMeshObject.material.color.setHex(0x00bcff);
+                
+                // 5 soniyadan keyin asl rangiga qaytarish
+                setTimeout(() => {
+                    visualMeshObject.material.color.setHex(0xff0055);
+                    document.getElementById('malika-speech-viewport').style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // =====================================================================
+        // HARDWARE SENSORS INITIALIZATION (VOICE RECOGNITION)
+        // =====================================================================
+        function initializeHardwareSensors() {
+            document.getElementById('ignition-gate-trigger').style.display = 'none';
+            let label = document.getElementById('radar-label');
+            label.innerText = "🎤 MIKROFON FAOLLASHTIRILDI... GAPIRING";
+            label.style.color = '#00f07f';
+            
+            window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let recognition = new window.SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = false;
+            recognition.lang = 'uz-UZ';
+            
+            recognition.onresult = function(event) {
+                let transcript = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+                document.getElementById('live-transcript-node').innerText = "👉 Siz: " + transcript;
+                document.getElementById('live-transcript-node').style.display = 'block';
+                
+                // Search through local JSON data based on speech
+                if(transcript.includes('matematika') || transcript.includes('math') || transcript.includes('hisob')) {
+                    queryLocalData('matematika', transcript);
+                } else if(transcript.includes('ingliz') || transcript.includes('english') || transcript.includes('ielts')) {
+                    queryLocalData('ingliz-tili', transcript);
+                } else if(transcript.includes('fizika') || transcript.includes('physics')) {
+                    queryLocalData('fizika', transcript);
+                } else {
+                    // Default - mathematics
+                    queryLocalData('matematika', transcript);
+                }
+            };
+            
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                document.getElementById('radar-label').innerText = "❌ XATO: " + event.error;
+                document.getElementById('radar-label').style.color = '#ff0055';
+            };
+            
+            recognition.start();
+        }
+
+        // =====================================================================
+        // WEBSOCKET CONNECTION TO BACKEND (OPTIONAL)
+        // =====================================================================
+        let wsConnection = null;
+        
+        function connectToBackend() {
+            try {
+                wsConnection = new WebSocket('ws://localhost:8000/ws/voice-stream');
+                
+                wsConnection.onopen = function() {
+                    console.log('WebSocket connected to backend');
+                    document.getElementById('system-status').textContent = 'CONNECTED';
+                    document.getElementById('system-status').style.color = '#00f07f';
+                };
+                
+                wsConnection.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
+                    if (data.speech) {
+                        executeEdgeLipSyncAnimation(data.speech, data.status);
+                    }
+                };
+                
+                wsConnection.onerror = function(error) {
+                    console.error('WebSocket error:', error);
+                    document.getElementById('system-status').textContent = 'OFFLINE (LOCAL MODE)';
+                    document.getElementById('system-status').style.color = '#ffaa00';
+                };
+                
+                wsConnection.onclose = function() {
+                    document.getElementById('system-status').textContent = 'DISCONNECTED';
+                    document.getElementById('system-status').style.color = '#ff0055';
+                };
+            } catch (error) {
+                console.log('Backend not available, running in local mode');
+                document.getElementById('system-status').textContent = 'LOCAL MODE';
+                document.getElementById('system-status').style.color = '#ffaa00';
+            }
+        }
+
+        // =====================================================================
+        // CLIENT-SIDE AI INITIALIZATION (TRANSFORMERS.JS)
+        // =====================================================================
+        let clientSideAI = null;
+        let aiModelLoaded = false;
+
+        async function initClientSideAI() {
+            try {
+                // Load a lightweight model for client-side inference
+                // Using Xenova/Llama-3.2-1B-Instruct (quantized)
+                clientSideAI = await pipeline('text-generation', 'Xenova/Llama-3.2-1B-Instruct', {
+                    quantized: true,
+                    progress_callback: (progress) => {
+                        console.log('AI Model loading:', progress.status, progress.progress);
+                    }
+                });
+                
+                aiModelLoaded = true;
+                console.log('Client-side AI loaded successfully');
+                return true;
+            } catch (error) {
+                console.error('Failed to load client-side AI:', error);
+                return false;
+            }
+        }
+
+        async function generateClientSideResponse(userMessage) {
+            if (!aiModelLoaded || !clientSideAI) {
+                // Fallback responses if AI not loaded
+                const fallbackResponses = [
+                    "Ajoyib savol! Keling, birgalikda tushunib chiqamiz.",
+                    "Bu juda muhim mavzu. Men sizga batafsil tushuntiraman.",
+                    "Zo'r, davom eting! Siz yaxshi progress qilyapsiz.",
+                    "Keling, bu masalani qadamba-qadam yechamiz."
+                ];
+                return fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+            }
+
+            try {
+                const response = await clientSideAI(userMessage, {
+                    max_new_tokens: 200,
+                    temperature: 0.7,
+                    do_sample: true,
+                    top_k: 50,
+                    top_p: 0.95
+                });
+                
+                return response[0].generated_text;
+            } catch (error) {
+                console.error('AI generation failed:', error);
+                return "Kechirasir, AI hozircha javob bera olmaydi.";
+            }
+        }
+
+        // =====================================================================
+        // INITIALIZATION
+        // =====================================================================
+        window.addEventListener('load', async function() {
+            // Load client-side data
+            await loadClientSideData();
+            
+            // Initialize 3D environment
+            initializeThreeDEnvironment();
+            
+            // Initialize client-side AI (background)
+            initClientSideAI().then(success => {
+                if (success) {
+                    console.log('AI ready for client-side inference');
+                }
+            });
+            
+            // Connect to backend (optional - for VIP features)
+            connectToBackend();
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (activeCamera && rendererInstance) {
+                activeCamera.aspect = window.innerWidth / window.innerHeight;
+                activeCamera.updateProjectionMatrix();
+                rendererInstance.setSize(window.innerWidth, window.innerHeight);
+            }
+        });
+    </script>
+</body>
+</html>

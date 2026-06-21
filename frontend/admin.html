@@ -1,0 +1,2260 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MALIKA 3D - Admin Panel</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a15, #050508);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: rgba(10, 10, 20, 0.9);
+            border: 1px solid #00ffcc;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            color: #00ffcc;
+            font-size: 24px;
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+        .sidebar {
+            background: rgba(10, 10, 20, 0.9);
+            border: 1px solid #00ffcc;
+            padding: 20px;
+            border-radius: 15px;
+            height: fit-content;
+        }
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .section {
+            background: rgba(10, 10, 20, 0.9);
+            border: 1px solid #00ffcc;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        .section h2 {
+            color: #00ffcc;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .section.collapsed .section-content {
+            display: none;
+        }
+        .section-toggle {
+            background: none;
+            border: none;
+            color: #00ffcc;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #aaa;
+            font-size: 14px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00ffcc;
+        }
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .btn {
+            background: rgba(0, 255, 204, 0.2);
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background: rgba(0, 255, 204, 0.4);
+        }
+        .btn-primary {
+            background: rgba(0, 255, 204, 0.3);
+        }
+        .btn-danger {
+            background: rgba(255, 51, 102, 0.2);
+            border-color: #ff3366;
+            color: #ff3366;
+        }
+        .btn-danger:hover {
+            background: rgba(255, 51, 102, 0.4);
+        }
+        .lesson-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .lesson-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #333;
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .lesson-card:hover {
+            border-color: #00ffcc;
+        }
+        .lesson-card h3 {
+            color: #00ffcc;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .lesson-card p {
+            color: #aaa;
+            font-size: 12px;
+            margin: 5px 0;
+        }
+        .lesson-card .actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .section-list {
+            margin-top: 20px;
+        }
+        .section-item {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #333;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .section-item h4 {
+            color: #00ffcc;
+            font-size: 14px;
+        }
+        .section-item p {
+            color: #aaa;
+            font-size: 12px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-card h3 {
+            color: #00ffcc;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+        .stat-card p {
+            color: #aaa;
+            font-size: 14px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: rgba(10, 10, 20, 0.95);
+            border: 1px solid #00ffcc;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 {
+            color: #00ffcc;
+            margin-bottom: 20px;
+        }
+        .close-btn {
+            float: right;
+            background: none;
+            border: none;
+            color: #ff3366;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MALIKA 3D - Boshqaruv Paneli</h1>
+            <button class="btn" onclick="window.open('index.html', '_blank')">🚀 Malika 3D Ochish</button>
+        </header>
+
+        <div class="main-content">
+            <!-- Sidebar - Quick Stats & Actions -->
+            <div class="sidebar">
+                <h3 style="color: #00ffcc; margin-bottom: 15px;">Tezkor Statistika</h3>
+                <div class="stats-grid" style="grid-template-columns: 1fr;">
+                    <div class="stat-card">
+                        <h3 id="total-lessons">0</h3>
+                        <p>Jami Darslar</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="total-sections">0</h3>
+                        <p>Jami Bo'limlar</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="total-words">0</h3>
+                        <p>Jami So'zlar</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="total-duration">0</h3>
+                        <p>Davomiylik (daq)</p>
+                    </div>
+                </div>
+                
+                <h3 style="color: #00ffcc; margin: 20px 0 15px;">Tezkor Harakatlar</h3>
+                <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="scrollToSection('create-lesson')">+ Yangi Dars</button>
+                <button class="btn" style="width: 100%; margin-bottom: 10px;" onclick="refreshData()">🔄 Ma'lumotlarni Yangilash</button>
+                <button class="btn" style="width: 100%;" onclick="exportAllLessons()">📤 Barcha Darslarni Export</button>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="content-area">
+                <!-- Lessons List Section -->
+                <div class="section" id="lessons-section">
+                    <h2>
+                        📚 Mavjud Darslar
+                        <button class="section-toggle" onclick="toggleSection('lessons-section')">−</button>
+                    </h2>
+                    <div class="section-content">
+                        <div class="lesson-list" id="lesson-list"></div>
+                    </div>
+                </div>
+
+                <!-- Create Lesson Section -->
+                <div class="section" id="create-lesson">
+                    <h2>
+                        ➕ Yangi Dars Yaratish
+                        <button class="section-toggle" onclick="toggleSection('create-lesson')">−</button>
+                    </h2>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Dars ID</label>
+                            <input type="text" id="lesson-id" placeholder="lesson-3">
+                        </div>
+                        <div class="form-group">
+                            <label>Sarlavha</label>
+                            <input type="text" id="lesson-title" placeholder="Matematika: Algebra">
+                        </div>
+                        <div class="form-group">
+                            <label>Fan</label>
+                            <select id="lesson-subject">
+                                <option value="matematika">Matematika</option>
+                                <option value="ingliz tili">Ingliz Tili</option>
+                                <option value="fizika">Fizika</option>
+                                <option value="kimyo">Kimyo</option>
+                                <option value="biologiya">Biologiya</option>
+                                <option value="tarix">Tarix</option>
+                                <option value="geografiya">Geografiya</option>
+                                <option value="dasturlash">Dasturlash</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Daraja</label>
+                            <select id="lesson-level">
+                                <option value="boshlang'ich">Boshlang'ich</option>
+                                <option value="o'rta">O'rta</option>
+                                <option value="yuqori">Yuqori</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Davomiylik (daqiqa)</label>
+                            <input type="number" id="lesson-duration" placeholder="15">
+                        </div>
+                        <div class="form-group">
+                            <label>Til</label>
+                            <select id="lesson-language">
+                                <option value="uz">O'zbek</option>
+                                <option value="en">Ingliz</option>
+                                <option value="ru">Rus</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tavsif</label>
+                            <textarea id="lesson-description" placeholder="Dars haqida qisqacha ma'lumot..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Shaxsiyat</label>
+                            <select id="lesson-personality">
+                                <option value="mentor">Mentor (ilhomlantiruvchi)</option>
+                                <option value="disciplinarian">Disciplinarian (qattiq)</option>
+                                <option value="marketer">Marketer (energetik)</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="createLesson()">Dars Yaratish</button>
+                    </div>
+                </div>
+
+                <!-- Edit Lesson Section -->
+                <div class="section" id="edit-lesson" style="display: none;">
+                    <h2>
+                        ✏️ Darsni Tahrirlash: <span id="edit-lesson-title-display"></span>
+                        <button class="section-toggle" onclick="toggleSection('edit-lesson')">−</button>
+                    </h2>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Sarlavha</label>
+                            <input type="text" id="edit-lesson-title-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Tavsif</label>
+                            <textarea id="edit-lesson-description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Davomiylik (daqiqa)</label>
+                            <input type="number" id="edit-lesson-duration">
+                        </div>
+                        <button class="btn btn-primary" onclick="saveLessonChanges()">Saqlash</button>
+                        <button class="btn" onclick="hideEditSection()">Bekor Qilish</button>
+                        
+                        <h3 style="color: #00ffcc; margin-top: 30px; margin-bottom: 15px;">Bo'limlar</h3>
+                        <div class="section-list" id="section-list"></div>
+                        <button class="btn btn-primary" onclick="openSectionModal()">+ Yangi Bo'lim Qo'shish</button>
+                    </div>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="section" id="preview-section">
+                    <h2>
+                        👁️ Dars Preview
+                        <button class="section-toggle" onclick="toggleSection('preview-section')">−</button>
+                    </h2>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Darsni Tanlang</label>
+                            <select id="preview-lesson-select" onchange="loadPreviewLesson()">
+                                <option value="">Darsni tanlang...</option>
+                            </select>
+                        </div>
+                        <div id="preview-content"></div>
+                        <button class="btn btn-primary" onclick="openPreviewInNewTab()">Yangi Tabda Ochish</button>
+                    </div>
+                </div>
+
+                <!-- Subject Management Section -->
+                <div class="section" id="subjects-section">
+                    <h2>
+                        📚 Fanlar Boshqaruvi
+                        <button class="section-toggle" onclick="toggleSection('subjects-section')">−</button>
+                    </h2>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Yangi Fan Qo'shish</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="new-subject-name" placeholder="Fan nomi (masalan: Fizika)">
+                                <input type="text" id="new-subject-id" placeholder="Fan ID (masalan: fizika)" style="width: 150px;">
+                                <button class="btn btn-primary" onclick="addSubject()">Qo'shish</button>
+                            </div>
+                        </div>
+                        <div id="subjects-list" style="margin-top: 15px;"></div>
+                    </div>
+                </div>
+
+                <!-- Level Management Section -->
+                <div class="section" id="levels-section">
+                    <h2>
+                        📊 Darajalar Boshqaruvi
+                        <button class="section-toggle" onclick="toggleSection('levels-section')">−</button>
+                    </h2>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Yangi Daraja Qo'shish</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="new-level-name" placeholder="Daraja nomi (masalan: O'rta)">
+                                <input type="text" id="new-level-id" placeholder="Daraja ID (masalan: orta)" style="width: 150px;">
+                                <button class="btn btn-primary" onclick="addLevel()">Qo'shish</button>
+                            </div>
+                        </div>
+                        <div id="levels-list" style="margin-top: 15px;"></div>
+                    </div>
+                </div>
+
+                <!-- Panel Management Section -->
+                <div class="section" id="panels-section">
+                    <h2>
+                        ⚙️ Panellar Boshqaruvi
+                        <button class="section-toggle" onclick="toggleSection('panels-section')">−</button>
+                    </h2>
+                    <div class="section-content">
+                        <p style="color: #aaa; margin-bottom: 15px;">Keraksiz panellarni yashirish yoki ko'rsatish</p>
+                        <div id="panels-list"></div>
+                    </div>
+                </div>
+
+                <!-- AI Content Generation Section -->
+                <div class="section" id="ai-generation-section">
+                    <h2>
+                        🤖 AI Kontent Generatsiyasi
+                        <button class="section-toggle" onclick="toggleSection('ai-generation-section')">−</button>
+                    </h2>
+                    <div class="section-content">
+                        <p style="color: #aaa; margin-bottom: 15px;">AI yordamida avtomatik dars va kontent yaratish</p>
+                        
+                        <div class="form-group">
+                            <label>Generatsiya Turi</label>
+                            <select id="ai-generation-type">
+                                <option value="lesson">To'liq Dars</option>
+                                <option value="quiz">Test Savollari</option>
+                                <option value="curriculum">Kurikulum</option>
+                                <option value="summary">Mavzu Xulosasi</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Fan</label>
+                            <select id="ai-generation-subject"></select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Daraja</label>
+                            <select id="ai-generation-level"></select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Mavzu</label>
+                            <input type="text" id="ai-generation-topic" placeholder="Masalan: Algebra asoslari">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Til</label>
+                            <select id="ai-generation-language">
+                                <option value="uz">O'zbek</option>
+                                <option value="en">Ingliz</option>
+                                <option value="ru">Rus</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Bo'limlar Soni</label>
+                            <input type="number" id="ai-generation-sections" value="5" min="3" max="15">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Shaxsiyat</label>
+                            <select id="ai-generation-personality">
+                                <option value="mentor">Mentor (ilhomlantiruvchi)</option>
+                                <option value="disciplinarian">Disciplinarian (qattiq)</option>
+                                <option value="marketer">Marketer (energetik)</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="generateAIContent()">🤖 AI Kontent Yaratish</button>
+                        
+                        <div id="ai-generation-result" style="margin-top: 20px; display: none;">
+                            <h3 style="color: #00ffcc; margin-bottom: 15px;">Generatsiya Natijasi</h3>
+                            <div id="ai-generation-preview" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; max-height: 400px; overflow-y: auto;"></div>
+                            <div style="margin-top: 15px;">
+                                <button class="btn btn-primary" onclick="saveAIGeneratedLesson()">💾 Darsni Saqlash</button>
+                                <button class="btn" onclick="regenerateAIContent()">🔄 Qayta Generatsiya</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plugin Management Section -->
+                <div class="section" id="plugins-section">
+                    <h2>
+                        🔌 Pluginlar Boshqaruvi
+                        <button class="section-toggle" onclick="toggleSection('plugins-section')">−</button>
+                    </h2>
+                    <div class="section-content">
+                        <p style="color: #aaa; margin-bottom: 15px;">Platformani kengaytirish uchun pluginlar</p>
+                        
+                        <div class="form-group">
+                            <label>Plugin Qo'shish</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="new-plugin-name" placeholder="Plugin nomi">
+                                <input type="text" id="new-plugin-id" placeholder="Plugin ID" style="width: 150px;">
+                                <button class="btn btn-primary" onclick="addPlugin()">Qo'shish</button>
+                            </div>
+                        </div>
+                        
+                        <div id="plugins-list" style="margin-top: 15px;"></div>
+                    </div>
+                </div>
+
+                <!-- Analytics Section -->
+                <div class="section" id="analytics-section">
+                    <h2>
+                        📊 Analytics va Feedback
+                        <button class="section-toggle" onclick="toggleSection('analytics-section')">−</button>
+                    </h2>
+                    <div class="section-content">
+                        <p style="color: #aaa; margin-bottom: 15px;">Platforma statistikasi va foydalanuvchi feedback</p>
+                        
+                        <div class="stats-grid" style="margin-bottom: 20px;">
+                            <div class="stat-card">
+                                <h3 id="analytics-total-users">0</h3>
+                                <p>Jami Foydalanuvchilar</p>
+                            </div>
+                            <div class="stat-card">
+                                <h3 id="analytics-active-users">0</h3>
+                                <p>Aktiv Foydalanuvchilar</p>
+                            </div>
+                            <div class="stat-card">
+                                <h3 id="analytics-completed-lessons">0</h3>
+                                <p>Tamomlangan Darslar</p>
+                            </div>
+                            <div class="stat-card">
+                                <h3 id="analytics-avg-rating">0</h3>
+                                <p>O'rtacha Reyting</p>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Feedback Qo'shish</label>
+                            <textarea id="new-feedback" placeholder="Foydalanuvchi feedback'i..." style="min-height: 80px;"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Feedback Turi</label>
+                            <select id="feedback-type">
+                                <option value="suggestion">Taklif</option>
+                                <option value="bug">Xato</option>
+                                <option value="feature">Yangi xususiyat</option>
+                                <option value="improvement">Yaxshilash</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="addFeedback()">Feedback Qo'shish</button>
+                        
+                        <h3 style="color: #00ffcc; margin-top: 20px; margin-bottom: 15px;">Feedbacklar</h3>
+                        <div id="feedback-list"></div>
+                    </div>
+                </div>
+
+                <!-- Adaptive Learning Section -->
+                <div class="section" id="adaptive-learning-section">
+                    <h2>
+                        🧠 Adaptive Learning Engine
+                        <button class="section-toggle" onclick="toggleSection('adaptive-learning-section')">−</button>
+                    </h2>
+                    <div class="section-content">
+                        <p style="color: #aaa; margin-bottom: 15px;">Shaxsiy o'quv yo'nalishi va qiyinlik sozlash</p>
+                        
+                        <div class="form-group">
+                            <label>Adaptive Learning Holati</label>
+                            <select id="adaptive-learning-status">
+                                <option value="enabled">Yoqilgan</option>
+                                <option value="disabled">O'chirilgan</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Qiyinlik Darajasi</label>
+                            <select id="difficulty-level">
+                                <option value="auto">Avtomatik</option>
+                                <option value="easy">Oson</option>
+                                <option value="medium">O'rtacha</option>
+                                <option value="hard">Qiyin</option>
+                                <option value="expert">Ekspert</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>O'quvchi Darajasi</label>
+                            <select id="student-level">
+                                <option value="beginner">Boshlang'ich</option>
+                                <option value="intermediate">O'rtacha</option>
+                                <option value="advanced">Yuqori</option>
+                                <option value="expert">Ekspert</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>O'quv Stili</label>
+                            <select id="learning-style">
+                                <option value="visual">Visual (Ko'rish)</option>
+                                <option value="auditory">Auditory (Eshitish)</option>
+                                <option value="kinesthetic">Kinesthetic (Harakat)</option>
+                                <option value="reading">Reading (O'qish)</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="saveAdaptiveSettings()">Sozlamalarni Saqlash</button>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+                            <h4 style="color: #00ffcc; margin-bottom: 10px;">Adaptive Learning Statistikasi</h4>
+                            <p><strong>Tavsiya etilgan darslar:</strong> <span id="recommended-lessons">0</span></p>
+                            <p><strong>Progress:</strong> <span id="adaptive-progress">0%</span></p>
+                            <p><strong>Qiyinlik o'zgarishi:</strong> <span id="difficulty-changes">0</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced AI Integration Section -->
+                <div class="section" id="advanced-ai-section">
+                    <h2>
+                        🤖 Advanced AI Integration (WebLLM, RAG)
+                        <button class="section-toggle" onclick="toggleSection('advanced-ai-section')">−</button>
+                    </h2>
+                    <div class="section-content">
+                        <p style="color: #aaa; margin-bottom: 15px;">WebLLM va RAG integratsiyasi uchun sozlamalar</p>
+                        
+                        <div class="form-group">
+                            <label>AI Model Turi</label>
+                            <select id="ai-model-type">
+                                <option value="webllm">WebLLM (Client-side)</option>
+                                <option value="transformers">Transformers.js</option>
+                                <option value="openai">OpenAI API</option>
+                                <option value="anthropic">Anthropic API</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Model Name</label>
+                            <input type="text" id="ai-model-name" placeholder="Llama-3-8B-Instruct" value="Llama-3-8B-Instruct">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>API Key (Agar kerak bo'lsa)</label>
+                            <input type="password" id="ai-api-key" placeholder="sk-...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Temperature (0.0 - 1.0)</label>
+                            <input type="number" id="ai-temperature" value="0.7" min="0" max="1" step="0.1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Max Tokens</label>
+                            <input type="number" id="ai-max-tokens" value="2048" min="256" max="8192">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>RAG Knowledge Base</label>
+                            <textarea id="rag-knowledge-base" placeholder="RAG uchun bilim bazasi kontenti..." style="min-height: 100px;"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>RAG Chunk Size</label>
+                            <input type="number" id="rag-chunk-size" value="512" min="128" max="2048">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Vector Database</label>
+                            <select id="vector-db">
+                                <option value="local">Local (Client-side)</option>
+                                <option value="pinecone">Pinecone</option>
+                                <option value="weaviate">Weaviate</option>
+                                <option value="chromadb">ChromaDB</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="saveAISettings()">AI Sozlamalarni Saqlash</button>
+                        <button class="btn" onclick="testAIConnection()">🧪 AI Connection Test</button>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+                            <h4 style="color: #00ffcc; margin-bottom: 10px;">AI Status</h4>
+                            <p><strong>Model:</strong> <span id="ai-status-model">Not configured</span></p>
+                            <p><strong>Status:</strong> <span id="ai-status-status">-</span></p>
+                            <p><strong>Latency:</strong> <span id="ai-status-latency">-</span></p>
+                            <p><strong>Memory Usage:</strong> <span id="ai-status-memory">-</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legal Content Ingestion Section -->
+                <div class="section" id="legal-content-section">
+                    <h2>
+                        ⚖️ Legal Content Ingestion (Copyright-Safe)
+                        <button class="section-toggle" onclick="toggleSection('legal-content-section')">−</button>
+                    </h2>
+                    <div class="section-content">
+                        <p style="color: #aaa; margin-bottom: 15px;">SAT va IELTS uchun legal content yig'ish - Mualliflik huquqini buzmasdan</p>
+                        
+                        <div class="form-group">
+                            <label>Manba (Legal Source)</label>
+                            <select id="legal-source">
+                                <option value="khan_academy">Khan Academy (Open Educational)</option>
+                                <option value="college_board_official">College Board Official Practice</option>
+                                <option value="british_council">British Council IELTS Practice</option>
+                                <option value="ielts_official">IELTS Official Practice Materials</option>
+                                <option value="openstax">OpenStax (Open Educational)</option>
+                                <option value="mit_opencourseware">MIT OpenCourseWare</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Imtihon Turi</label>
+                            <select id="legal-exam-type">
+                                <option value="sat">SAT (Digital)</option>
+                                <option value="ielts">IELTS</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Mavzu</label>
+                            <input type="text" id="legal-topic" placeholder="Masalan: Linear Equations">
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="processLegalContent()">🔄 Content Yig'ish</button>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+                            <h4 style="color: #00ffcc; margin-bottom: 10px;">Quality Thresholds</h4>
+                            <div class="form-group">
+                                <label>Quality Threshold (0.0 - 1.0)</label>
+                                <input type="number" id="quality-threshold" value="0.85" min="0" max="1" step="0.05">
+                            </div>
+                            <div class="form-group">
+                                <label>Copyright Safety Threshold (0.0 - 1.0)</label>
+                                <input type="number" id="copyright-safety-threshold" value="0.95" min="0" max="1" step="0.05">
+                            </div>
+                            <button class="btn" onclick="updateQualityThresholds()">Thresholds Yangilash</button>
+                        </div>
+                        
+                        <h3 style="color: #00ffcc; margin-top: 20px; margin-bottom: 15px;">Batch Processing</h3>
+                        <div class="form-group">
+                            <label>Mavzular (Qatorga ajratilgan)</label>
+                            <textarea id="batch-topics" placeholder="Linear Equations&#10;Quadratic Functions&#10;Systems of Equations" style="min-height: 80px;"></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="batchProcessLegalContent()">🚀 Batch Processing</button>
+                        
+                        <h3 style="color: #00ffcc; margin-top: 20px; margin-bottom: 15px;">Processing Results</h3>
+                        <div id="legal-content-results" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; max-height: 300px; overflow-y: auto;">
+                            <p style="color: #aaa;">Hali natijalar yo'q</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multi-Format File Upload Section (Telegram-Style) -->
+                <div class="section" id="file-upload-section">
+                    <h2>
+                        📁 Multi-Format File Upload (Telegram-Style)
+                        <button class="section-toggle" onclick="toggleSection('file-upload-section')">−</button>
+                    </h2>
+                    <div class="section-content">
+                        <p style="color: #aaa; margin-bottom: 15px;">Har qanday formatdagi fayl, kitob, rasm yuklash - Avtomatik generatsiya</p>
+                        
+                        <div class="form-group">
+                            <label>Fan (Subject)</label>
+                            <input type="text" id="upload-subject" placeholder="Masalan: Matematika, Fizika, Ingliz tili">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Imtihon Turi (Optional)</label>
+                            <select id="upload-exam-type">
+                                <option value="">Umumiy</option>
+                                <option value="sat">SAT</option>
+                                <option value="ielts">IELTS</option>
+                                <option value="dtm">DTM</option>
+                                <option value="bmba">BMBA</option>
+                                <option value="mcat">MCAT</option>
+                                <option value="usmle">USMLE</option>
+                                <option value="lsat">LSAT</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Kategoriya</label>
+                            <select id="upload-category">
+                                <option value="textbook">Darslik (Textbook)</option>
+                                <option value="lecture">Ma'ruza (Lecture)</option>
+                                <option value="notes">Qaydlar (Notes)</option>
+                                <option value="image">Rasm (Image)</option>
+                                <option value="video">Video</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Til</label>
+                            <select id="upload-language">
+                                <option value="uz">O'zbek tili</option>
+                                <option value="en">English</option>
+                                <option value="ru">Русский</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Fayl yuklash (Telegram-style)</label>
+                            <div id="file-drop-zone" style="border: 2px dashed #00ffcc; padding: 40px; text-align: center; border-radius: 10px; cursor: pointer; background: rgba(0,255,204,0.05);">
+                                <p style="color: #00ffcc; font-size: 24px; margin-bottom: 10px;">📎</p>
+                                <p style="color: #aaa;">Faylni bu yerga torting yoki bosing</p>
+                                <p style="color: #666; font-size: 12px;">PDF, DOCX, TXT, JPG, PNG, MP4, WEBP, HEIC (Max 500MB)</p>
+                                <input type="file" id="file-input" multiple style="display: none;" accept=".pdf,.docx,.txt,.jpg,.jpeg,.png,.mp4,.webp,.heic">
+                            </div>
+                        </div>
+                        
+                        <div id="selected-files" style="margin-top: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; display: none;">
+                            <h4 style="color: #00ffcc; margin-bottom: 10px;">Tanlangan fayllar:</h4>
+                            <div id="file-list"></div>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="processUploadedFiles()" style="margin-top: 15px;">🚀 Fayllarni Qayta Ishlash</button>
+                        
+                        <h3 style="color: #00ffcc; margin-top: 20px; margin-bottom: 15px;">Processing Results</h3>
+                        <div id="file-upload-results" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; max-height: 300px; overflow-y: auto;">
+                            <p style="color: #aaa;">Hali natijalar yo'q</p>
+                        </div>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+                            <h4 style="color: #00ffcc; margin-bottom: 10px;">Qo'llab-quvvatlanadigan formatlar:</h4>
+                            <div id="supported-formats" style="color: #aaa; font-size: 13px;">
+                                <p>Yuklanmoqda...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Modal -->
+    <div id="section-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeSectionModal()">&times;</button>
+            <h2>Yangi Bo'lim Qo'shish</h2>
+            <div class="form-group">
+                <label>Bo'lim ID</label>
+                <input type="text" id="section-id" placeholder="section-1">
+            </div>
+            <div class="form-group">
+                <label>Sarlavha</label>
+                <input type="text" id="section-title" placeholder="Kirish">
+            </div>
+            <div class="form-group">
+                <label>Turi</label>
+                <select id="section-type">
+                    <option value="intro">Kirish</option>
+                    <option value="concept">Tushuncha</option>
+                    <option value="practice">Amaliyot</option>
+                    <option value="example">Misol</option>
+                    <option value="quiz">Test</option>
+                    <option value="summary">Xulosa</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Kontent (Matn)</label>
+                <textarea id="section-text" placeholder="Bo'lim matnini kiriting..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Avatar Emotion</label>
+                <select id="section-emotion">
+                    <option value="happy">Xursand</option>
+                    <option value="focused">Diqqatli</option>
+                    <option value="thoughtful">O'ylab qolgan</option>
+                    <option value="encouraging">Ilhomlantiruvchi</option>
+                    <option value="excited">Hayajonli</option>
+                    <option value="curious">Qiziqqan</option>
+                    <option value="proud">Maqtanadigan</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Animatsiya</label>
+                <select id="section-animation">
+                    <option value="wave">Qo'l silash</option>
+                    <option value="explain">Tushuntirish</option>
+                    <option value="thinking">O'ylash</option>
+                    <option value="clap">Qarsak chalish</option>
+                    <option value="point">Ko'rsatish</option>
+                    <option value="question">Savol</option>
+                    <option value="wave_goodbye">Xayr deyish</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="addSection()">Bo'lim Qo'shish</button>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let lessons = [];
+        let currentLesson = null;
+        let currentSectionIndex = null;
+        let subjects = [];
+        let levels = [];
+        let panelConfig = {};
+        let plugins = [];
+        let aiGeneratedLesson = null;
+        let feedbacks = [];
+        let analyticsData = {};
+        let adaptiveSettings = {};
+        let aiSettings = {};
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            loadConfiguration();
+            await loadLessons();
+            updateDashboard();
+            renderLessonList();
+            populatePreviewSelect();
+            renderSubjectsList();
+            renderLevelsList();
+            renderPanelsList();
+            populateSubjectDropdowns();
+            populateLevelDropdowns();
+            populateAIGenerationDropdowns();
+            renderPluginsList();
+            renderFeedbackList();
+            loadAdaptiveSettings();
+            loadAISettings();
+            updateAnalyticsDisplay();
+        });
+
+        // Section Toggle
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.classList.toggle('collapsed');
+            const toggle = section.querySelector('.section-toggle');
+            toggle.textContent = section.classList.contains('collapsed') ? '+' : '−';
+        }
+
+        // Scroll to Section
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.scrollIntoView({ behavior: 'smooth' });
+            if (section.classList.contains('collapsed')) {
+                toggleSection(sectionId);
+            }
+        }
+
+        // Refresh Data
+        async function refreshData() {
+            await loadLessons();
+            updateDashboard();
+            renderLessonList();
+            populatePreviewSelect();
+        }
+
+        // Export All Lessons
+        function exportAllLessons() {
+            lessons.forEach(lesson => {
+                const blob = new Blob([JSON.stringify(lesson, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${lesson.id}.json`;
+                a.click();
+            });
+            alert('Barcha darslar export qilindi!');
+        }
+
+        // Configuration Management
+        function loadConfiguration() {
+            // Load subjects
+            const savedSubjects = localStorage.getItem('malika_subjects');
+            if (savedSubjects) {
+                subjects = JSON.parse(savedSubjects);
+            } else {
+                subjects = [
+                    { id: 'matematika', name: 'Matematika' },
+                    { id: 'ingliz tili', name: 'Ingliz Tili' },
+                    { id: 'fizika', name: 'Fizika' },
+                    { id: 'kimyo', name: 'Kimyo' },
+                    { id: 'biologiya', name: 'Biologiya' },
+                    { id: 'tarix', name: 'Tarix' },
+                    { id: 'geografiya', name: 'Geografiya' },
+                    { id: 'dasturlash', name: 'Dasturlash' }
+                ];
+                saveSubjects();
+            }
+
+            // Load levels
+            const savedLevels = localStorage.getItem('malika_levels');
+            if (savedLevels) {
+                levels = JSON.parse(savedLevels);
+            } else {
+                levels = [
+                    { id: 'boshlang\'ich', name: 'Boshlang\'ich' },
+                    { id: 'o\'rta', name: 'O\'rta' },
+                    { id: 'yuqori', name: 'Yuqori' },
+                    { id: 'advanced', name: 'Advanced' }
+                ];
+                saveLevels();
+            }
+
+            // Load panel config
+            const savedPanelConfig = localStorage.getItem('malika_panel_config');
+            if (savedPanelConfig) {
+                panelConfig = JSON.parse(savedPanelConfig);
+                applyPanelConfig();
+            } else {
+                panelConfig = {
+                    'lessons-section': true,
+                    'create-lesson': true,
+                    'preview-section': true,
+                    'subjects-section': true,
+                    'levels-section': true,
+                    'panels-section': true,
+                    'ai-generation-section': true,
+                    'plugins-section': true,
+                    'analytics-section': true,
+                    'adaptive-learning-section': true,
+                    'advanced-ai-section': true
+                };
+                savePanelConfig();
+            }
+
+            // Load plugins
+            const savedPlugins = localStorage.getItem('malika_plugins');
+            if (savedPlugins) {
+                plugins = JSON.parse(savedPlugins);
+            } else {
+                plugins = [
+                    { id: 'social', name: 'Social Features', status: 'inactive' },
+                    { id: 'gamification', name: 'Gamification', status: 'inactive' },
+                    { id: 'analytics', name: 'Analytics', status: 'inactive' },
+                    { id: 'certification', name: 'Certification', status: 'inactive' }
+                ];
+                savePlugins();
+            }
+
+            // Load feedbacks
+            const savedFeedbacks = localStorage.getItem('malika_feedbacks');
+            if (savedFeedbacks) {
+                feedbacks = JSON.parse(savedFeedbacks);
+            } else {
+                feedbacks = [];
+                saveFeedbacks();
+            }
+
+            // Load analytics data
+            const savedAnalytics = localStorage.getItem('malika_analytics');
+            if (savedAnalytics) {
+                analyticsData = JSON.parse(savedAnalytics);
+            } else {
+                analyticsData = {
+                    totalUsers: 0,
+                    activeUsers: 0,
+                    completedLessons: 0,
+                    avgRating: 0
+                };
+                saveAnalytics();
+            }
+
+            // Load adaptive settings
+            const savedAdaptive = localStorage.getItem('malika_adaptive_settings');
+            if (savedAdaptive) {
+                adaptiveSettings = JSON.parse(savedAdaptive);
+            } else {
+                adaptiveSettings = {
+                    status: 'enabled',
+                    difficultyLevel: 'auto',
+                    studentLevel: 'beginner',
+                    learningStyle: 'visual',
+                    recommendedLessons: 0,
+                    progress: 0,
+                    difficultyChanges: 0
+                };
+                saveAdaptiveSettings();
+            }
+
+            // Load AI settings
+            const savedAI = localStorage.getItem('malika_ai_settings');
+            if (savedAI) {
+                aiSettings = JSON.parse(savedAI);
+            } else {
+                aiSettings = {
+                    modelType: 'webllm',
+                    modelName: 'Llama-3-8B-Instruct',
+                    apiKey: '',
+                    temperature: 0.7,
+                    maxTokens: 2048,
+                    ragKnowledgeBase: '',
+                    ragChunkSize: 512,
+                    vectorDb: 'local',
+                    status: 'not configured'
+                };
+                saveAISettings();
+            }
+        }
+
+        function saveSubjects() {
+            localStorage.setItem('malika_subjects', JSON.stringify(subjects));
+        }
+
+        function saveLevels() {
+            localStorage.setItem('malika_levels', JSON.stringify(levels));
+        }
+
+        function savePanelConfig() {
+            localStorage.setItem('malika_panel_config', JSON.stringify(panelConfig));
+        }
+
+        function savePlugins() {
+            localStorage.setItem('malika_plugins', JSON.stringify(plugins));
+        }
+
+        function saveFeedbacks() {
+            localStorage.setItem('malika_feedbacks', JSON.stringify(feedbacks));
+        }
+
+        function saveAnalytics() {
+            localStorage.setItem('malika_analytics', JSON.stringify(analyticsData));
+        }
+
+        function saveAdaptiveSettings() {
+            localStorage.setItem('malika_adaptive_settings', JSON.stringify(adaptiveSettings));
+        }
+
+        function applyPanelConfig() {
+            Object.keys(panelConfig).forEach(panelId => {
+                const panel = document.getElementById(panelId);
+                if (panel) {
+                    panel.style.display = panelConfig[panelId] ? 'block' : 'none';
+                }
+            });
+        }
+
+        // Subject Management
+        function addSubject() {
+            const name = document.getElementById('new-subject-name').value.trim();
+            const id = document.getElementById('new-subject-id').value.trim().toLowerCase();
+
+            if (!name || !id) {
+                alert('Fan nomi va ID kiritish shart!');
+                return;
+            }
+
+            if (subjects.find(s => s.id === id)) {
+                alert('Bu ID allaqachon mavjud!');
+                return;
+            }
+
+            subjects.push({ id, name });
+            saveSubjects();
+            renderSubjectsList();
+            populateSubjectDropdowns();
+
+            document.getElementById('new-subject-name').value = '';
+            document.getElementById('new-subject-id').value = '';
+        }
+
+        function deleteSubject(id) {
+            if (confirm('Haqiqatan ham bu fanni o\'chirmoqchimisiz?')) {
+                subjects = subjects.filter(s => s.id !== id);
+                saveSubjects();
+                renderSubjectsList();
+                populateSubjectDropdowns();
+            }
+        }
+
+        function renderSubjectsList() {
+            const container = document.getElementById('subjects-list');
+            container.innerHTML = '';
+
+            subjects.forEach(subject => {
+                const item = document.createElement('div');
+                item.className = 'section-item';
+                item.innerHTML = `
+                    <div>
+                        <h4>${subject.name}</h4>
+                        <p>ID: ${subject.id}</p>
+                    </div>
+                    <button class="btn btn-danger" onclick="deleteSubject('${subject.id}')">O'chirish</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function populateSubjectDropdowns() {
+            const dropdowns = ['lesson-subject', 'edit-lesson-subject'];
+            dropdowns.forEach(dropdownId => {
+                const dropdown = document.getElementById(dropdownId);
+                if (dropdown) {
+                    const currentValue = dropdown.value;
+                    dropdown.innerHTML = '';
+                    subjects.forEach(subject => {
+                        const option = document.createElement('option');
+                        option.value = subject.id;
+                        option.textContent = subject.name;
+                        dropdown.appendChild(option);
+                    });
+                    dropdown.value = currentValue;
+                }
+            });
+        }
+
+        // Level Management
+        function addLevel() {
+            const name = document.getElementById('new-level-name').value.trim();
+            const id = document.getElementById('new-level-id').value.trim().toLowerCase();
+
+            if (!name || !id) {
+                alert('Daraja nomi va ID kiritish shart!');
+                return;
+            }
+
+            if (levels.find(l => l.id === id)) {
+                alert('Bu ID allaqachon mavjud!');
+                return;
+            }
+
+            levels.push({ id, name });
+            saveLevels();
+            renderLevelsList();
+            populateLevelDropdowns();
+
+            document.getElementById('new-level-name').value = '';
+            document.getElementById('new-level-id').value = '';
+        }
+
+        function deleteLevel(id) {
+            if (confirm('Haqiqatan ham bu darajani o\'chirmoqchimisiz?')) {
+                levels = levels.filter(l => l.id !== id);
+                saveLevels();
+                renderLevelsList();
+                populateLevelDropdowns();
+            }
+        }
+
+        function renderLevelsList() {
+            const container = document.getElementById('levels-list');
+            container.innerHTML = '';
+
+            levels.forEach(level => {
+                const item = document.createElement('div');
+                item.className = 'section-item';
+                item.innerHTML = `
+                    <div>
+                        <h4>${level.name}</h4>
+                        <p>ID: ${level.id}</p>
+                    </div>
+                    <button class="btn btn-danger" onclick="deleteLevel('${level.id}')">O'chirish</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function populateLevelDropdowns() {
+            const dropdowns = ['lesson-level', 'edit-lesson-level'];
+            dropdowns.forEach(dropdownId => {
+                const dropdown = document.getElementById(dropdownId);
+                if (dropdown) {
+                    const currentValue = dropdown.value;
+                    dropdown.innerHTML = '';
+                    levels.forEach(level => {
+                        const option = document.createElement('option');
+                        option.value = level.id;
+                        option.textContent = level.name;
+                        dropdown.appendChild(option);
+                    });
+                    dropdown.value = currentValue;
+                }
+            });
+        }
+
+        // Panel Management
+        function renderPanelsList() {
+            const container = document.getElementById('panels-list');
+            container.innerHTML = '';
+
+            const panels = [
+                { id: 'lessons-section', name: '📚 Mavjud Darslar' },
+                { id: 'create-lesson', name: '➕ Yangi Dars Yaratish' },
+                { id: 'preview-section', name: '👁️ Dars Preview' },
+                { id: 'subjects-section', name: '📚 Fanlar Boshqaruvi' },
+                { id: 'levels-section', name: '📊 Darajalar Boshqaruvi' },
+                { id: 'panels-section', name: '⚙️ Panellar Boshqaruvi' },
+                { id: 'ai-generation-section', name: '🤖 AI Kontent Generatsiyasi' },
+                { id: 'plugins-section', name: '🔌 Pluginlar Boshqaruvi' },
+                { id: 'analytics-section', name: '📊 Analytics va Feedback' },
+                { id: 'adaptive-learning-section', name: '🧠 Adaptive Learning Engine' }
+            ];
+
+            panels.forEach(panel => {
+                const item = document.createElement('div');
+                item.className = 'section-item';
+                item.innerHTML = `
+                    <div>
+                        <h4>${panel.name}</h4>
+                        <p>Holat: ${panelConfig[panel.id] ? 'Ko\'rinadi' : 'Yashirilgan'}</p>
+                    </div>
+                    <button class="btn" onclick="togglePanelVisibility('${panel.id}')">
+                        ${panelConfig[panel.id] ? 'Yashirish' : 'Ko\'rsatish'}
+                    </button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function togglePanelVisibility(panelId) {
+            panelConfig[panelId] = !panelConfig[panelId];
+            savePanelConfig();
+            applyPanelConfig();
+            renderPanelsList();
+        }
+
+        // AI Generation
+        function populateAIGenerationDropdowns() {
+            const subjectSelect = document.getElementById('ai-generation-subject');
+            const levelSelect = document.getElementById('ai-generation-level');
+            
+            if (subjectSelect) {
+                subjectSelect.innerHTML = '';
+                subjects.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject.id;
+                    option.textContent = subject.name;
+                    subjectSelect.appendChild(option);
+                });
+            }
+            
+            if (levelSelect) {
+                levelSelect.innerHTML = '';
+                levels.forEach(level => {
+                    const option = document.createElement('option');
+                    option.value = level.id;
+                    option.textContent = level.name;
+                    levelSelect.appendChild(option);
+                });
+            }
+        }
+
+        function generateAIContent() {
+            const type = document.getElementById('ai-generation-type').value;
+            const subject = document.getElementById('ai-generation-subject').value;
+            const level = document.getElementById('ai-generation-level').value;
+            const topic = document.getElementById('ai-generation-topic').value;
+            const language = document.getElementById('ai-generation-language').value;
+            const sectionsCount = parseInt(document.getElementById('ai-generation-sections').value);
+            const personality = document.getElementById('ai-generation-personality').value;
+
+            if (!topic) {
+                alert('Mavzu kiritish shart!');
+                return;
+            }
+
+            // Simulate AI generation (in real implementation, this would call WebLLM/Transformers.js)
+            const subjectName = subjects.find(s => s.id === subject)?.name || subject;
+            const levelName = levels.find(l => l.id === level)?.name || level;
+
+            aiGeneratedLesson = {
+                id: `ai-generated-${Date.now()}`,
+                title: `${subjectName}: ${topic}`,
+                subject: subjectName,
+                level: levelName,
+                duration_minutes: sectionsCount * 3,
+                language: language,
+                description: `AI tomonidan generatsiya qilingan ${subjectName} darsi - ${topic}`,
+                personality: personality,
+                sections: generateAISections(topic, sectionsCount, personality, language),
+                metadata: {
+                    created_at: new Date().toISOString(),
+                    author: 'AI Generator',
+                    version: '1.0',
+                    tags: [subjectName, 'ai-generated'],
+                    ai_generated: true
+                }
+            };
+
+            // Show result
+            const preview = document.getElementById('ai-generation-preview');
+            preview.innerHTML = `
+                <p><strong>ID:</strong> ${aiGeneratedLesson.id}</p>
+                <p><strong>Sarlavha:</strong> ${aiGeneratedLesson.title}</p>
+                <p><strong>Fan:</strong> ${aiGeneratedLesson.subject}</p>
+                <p><strong>Daraja:</strong> ${aiGeneratedLesson.level}</p>
+                <p><strong>Davomiylik:</strong> ${aiGeneratedLesson.duration_minutes} daqiqa</p>
+                <p><strong>Bo'limlar:</strong> ${aiGeneratedLesson.sections.length}</p>
+                <hr style="border-color: #333; margin: 15px 0;">
+                <h4 style="color: #00ffcc;">Bo'limlar:</h4>
+                ${aiGeneratedLesson.sections.map((s, i) => `
+                    <div style="margin: 10px 0; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 5px;">
+                        <strong>${i + 1}. ${s.title}</strong>
+                        <p style="font-size: 12px; color: #aaa;">${s.content.text.substring(0, 100)}...</p>
+                    </div>
+                `).join('')}
+            `;
+
+            document.getElementById('ai-generation-result').style.display = 'block';
+        }
+
+        function generateAISections(topic, count, personality, language) {
+            const sections = [];
+            const sectionTypes = ['intro', 'concept', 'concept', 'practice', 'example', 'quiz', 'summary'];
+            const emotions = ['happy', 'focused', 'thoughtful', 'encouraging', 'excited', 'curious', 'proud'];
+            const animations = ['wave', 'explain', 'thinking', 'clap', 'point', 'question', 'wave_goodbye'];
+
+            for (let i = 0; i < count; i++) {
+                const type = sectionTypes[Math.min(i, sectionTypes.length - 1)];
+                sections.push({
+                    id: `section-${i + 1}`,
+                    title: getSectionTitle(type, topic, i + 1),
+                    type: type,
+                    content: {
+                        text: generateSectionText(type, topic, personality, language),
+                        avatar_emotion: emotions[Math.floor(Math.random() * emotions.length)],
+                        animation: animations[Math.floor(Math.random() * animations.length)]
+                    }
+                });
+            }
+
+            return sections;
+        }
+
+        function getSectionTitle(type, topic, index) {
+            const titles = {
+                intro: `Kirish: ${topic}`,
+                concept: `${topic} Tushunchasi`,
+                practice: `${topic} Amaliyoti`,
+                example: `${topic} Misollari`,
+                quiz: `${topic} Testi`,
+                summary: `${topic} Xulosasi`
+            };
+            return titles[type] || `${topic} - Bo'lim ${index}`;
+        }
+
+        function generateSectionText(type, topic, personality, language) {
+            // Simulated AI-generated text (in real implementation, this would use WebLLM)
+            const texts = {
+                intro: `Assalomu alaykum! Bugun biz ${topic} mavzusini o'rganamiz. Bu juda muhim mavzu. Keling, birga boshlaymiz!`,
+                concept: `${topic} - bu asosiy tushuncha. U ko'p joylarda ishlatiladi. Tushunish oson, lekin amaliyotda muhim.`,
+                practice: `Endi amaliyot qilamiz. ${topic}ni qo'llash orqali ko'p narsani o'rganasiz. Diqqat bilan kuzating.`,
+                example: `Keling, misol ko'ramiz. ${topic}ni real hayotda qanday qo'llash mumkin? Bu misol yordam beradi.`,
+                quiz: `Endi bilimlaringizni tekshiramiz. ${topic} haqida savollar beraman. O'ylab, javob bering.`,
+                summary: `Bugun biz ${topic}ni o'rgandik. Asosiy tushunchalarni tushundik. Keyingi darsda davom etamiz. Xayr!`
+            };
+            return texts[type] || `${topic} haqida ma'lumot.`;
+        }
+
+        function saveAIGeneratedLesson() {
+            if (!aiGeneratedLesson) return;
+
+            const blob = new Blob([JSON.stringify(aiGeneratedLesson, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${aiGeneratedLesson.id}.json`;
+            a.click();
+
+            alert('AI generatsiya qilingan dars saqlandi! lessons/ papkasiga joylang.');
+            
+            // Clear
+            document.getElementById('ai-generation-result').style.display = 'none';
+            aiGeneratedLesson = null;
+        }
+
+        function regenerateAIContent() {
+            generateAIContent();
+        }
+
+        // Plugin Management
+        function addPlugin() {
+            const name = document.getElementById('new-plugin-name').value.trim();
+            const id = document.getElementById('new-plugin-id').value.trim().toLowerCase();
+
+            if (!name || !id) {
+                alert('Plugin nomi va ID kiritish shart!');
+                return;
+            }
+
+            if (plugins.find(p => p.id === id)) {
+                alert('Bu ID allaqachon mavjud!');
+                return;
+            }
+
+            plugins.push({ id, name, status: 'inactive' });
+            savePlugins();
+            renderPluginsList();
+
+            document.getElementById('new-plugin-name').value = '';
+            document.getElementById('new-plugin-id').value = '';
+        }
+
+        function deletePlugin(id) {
+            if (confirm('Haqiqatan ham bu pluginni o\'chirmoqchimisiz?')) {
+                plugins = plugins.filter(p => p.id !== id);
+                savePlugins();
+                renderPluginsList();
+            }
+        }
+
+        function togglePluginStatus(id) {
+            const plugin = plugins.find(p => p.id === id);
+            if (plugin) {
+                plugin.status = plugin.status === 'active' ? 'inactive' : 'active';
+                savePlugins();
+                renderPluginsList();
+            }
+        }
+
+        function renderPluginsList() {
+            const container = document.getElementById('plugins-list');
+            container.innerHTML = '';
+
+            plugins.forEach(plugin => {
+                const item = document.createElement('div');
+                item.className = 'section-item';
+                item.innerHTML = `
+                    <div>
+                        <h4>${plugin.name}</h4>
+                        <p>ID: ${plugin.id} | Holat: ${plugin.status === 'active' ? '✅ Faol' : '❌ Faol emas'}</p>
+                    </div>
+                    <div>
+                        <button class="btn" onclick="togglePluginStatus('${plugin.id}')">
+                            ${plugin.status === 'active' ? 'O\'chirish' : 'Yoqish'}
+                        </button>
+                        <button class="btn btn-danger" onclick="deletePlugin('${plugin.id}')">O'chirish</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Analytics and Feedback
+        function addFeedback() {
+            const text = document.getElementById('new-feedback').value.trim();
+            const type = document.getElementById('feedback-type').value;
+
+            if (!text) {
+                alert('Feedback matni kiritish shart!');
+                return;
+            }
+
+            const feedback = {
+                id: `feedback-${Date.now()}`,
+                text: text,
+                type: type,
+                createdAt: new Date().toISOString(),
+                status: 'pending'
+            };
+
+            feedbacks.push(feedback);
+            saveFeedbacks();
+            renderFeedbackList();
+
+            document.getElementById('new-feedback').value = '';
+            alert('Feedback qo\'shildi!');
+        }
+
+        function deleteFeedback(id) {
+            if (confirm('Haqiqatan ham bu feedbackni o\'chirmoqchimisiz?')) {
+                feedbacks = feedbacks.filter(f => f.id !== id);
+                saveFeedbacks();
+                renderFeedbackList();
+            }
+        }
+
+        function renderFeedbackList() {
+            const container = document.getElementById('feedback-list');
+            container.innerHTML = '';
+
+            if (feedbacks.length === 0) {
+                container.innerHTML = '<p style="color: #aaa;">Hozircha feedback yo\'q.</p>';
+                return;
+            }
+
+            feedbacks.forEach(feedback => {
+                const item = document.createElement('div');
+                item.className = 'section-item';
+                const typeLabels = {
+                    suggestion: '💡 Taklif',
+                    bug: '🐛 Xato',
+                    feature: '✨ Yangi xususiyat',
+                    improvement: '📈 Yaxshilash'
+                };
+                item.innerHTML = `
+                    <div>
+                        <h4>${typeLabels[feedback.type] || feedback.type}</h4>
+                        <p>${feedback.text}</p>
+                        <p style="font-size: 11px; color: #888;">${new Date(feedback.createdAt).toLocaleString('uz-UZ')}</p>
+                    </div>
+                    <button class="btn btn-danger" onclick="deleteFeedback('${feedback.id}')">O'chirish</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function updateAnalyticsDisplay() {
+            document.getElementById('analytics-total-users').textContent = analyticsData.totalUsers;
+            document.getElementById('analytics-active-users').textContent = analyticsData.activeUsers;
+            document.getElementById('analytics-completed-lessons').textContent = analyticsData.completedLessons;
+            document.getElementById('analytics-avg-rating').textContent = analyticsData.avgRating.toFixed(1);
+        }
+
+        function simulateAnalyticsUpdate() {
+            // Simulate real-time analytics updates
+            analyticsData.totalUsers = Math.floor(Math.random() * 1000) + 100;
+            analyticsData.activeUsers = Math.floor(analyticsData.totalUsers * 0.3);
+            analyticsData.completedLessons = Math.floor(Math.random() * 5000) + 500;
+            analyticsData.avgRating = (Math.random() * 2 + 3).toFixed(1);
+            saveAnalytics();
+            updateAnalyticsDisplay();
+        }
+
+        // Adaptive Learning
+        function loadAdaptiveSettings() {
+            document.getElementById('adaptive-learning-status').value = adaptiveSettings.status;
+            document.getElementById('difficulty-level').value = adaptiveSettings.difficultyLevel;
+            document.getElementById('student-level').value = adaptiveSettings.studentLevel;
+            document.getElementById('learning-style').value = adaptiveSettings.learningStyle;
+
+            document.getElementById('recommended-lessons').textContent = adaptiveSettings.recommendedLessons;
+            document.getElementById('adaptive-progress').textContent = adaptiveSettings.progress + '%';
+            document.getElementById('difficulty-changes').textContent = adaptiveSettings.difficultyChanges;
+        }
+
+        function saveAdaptiveSettings() {
+            adaptiveSettings.status = document.getElementById('adaptive-learning-status').value;
+            adaptiveSettings.difficultyLevel = document.getElementById('difficulty-level').value;
+            adaptiveSettings.studentLevel = document.getElementById('student-level').value;
+            adaptiveSettings.learningStyle = document.getElementById('learning-style').value;
+
+            saveAdaptiveSettings();
+            alert('Adaptive Learning sozlamalari saqlandi!');
+        }
+
+        function simulateAdaptiveProgress() {
+            // Simulate adaptive learning progress
+            adaptiveSettings.recommendedLessons = Math.floor(Math.random() * 50) + 10;
+            adaptiveSettings.progress = Math.floor(Math.random() * 100);
+            adaptiveSettings.difficultyChanges = Math.floor(Math.random() * 20);
+            saveAdaptiveSettings();
+            loadAdaptiveSettings();
+        }
+
+        // Load Lessons
+        async function loadLessons() {
+            try {
+                const response = await fetch('./lessons/');
+                const text = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                const links = doc.querySelectorAll('a');
+                
+                lessons = [];
+                for (const link of links) {
+                    const href = link.getAttribute('href');
+                    if (href.endsWith('.json')) {
+                        const lessonResponse = await fetch(`./lessons/${href}`);
+                        const lesson = await lessonResponse.json();
+                        lessons.push(lesson);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading lessons:', error);
+            }
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            document.getElementById('total-lessons').textContent = lessons.length;
+            
+            let totalSections = 0;
+            let totalWords = 0;
+            let totalDuration = 0;
+            
+            lessons.forEach(lesson => {
+                totalSections += lesson.sections.length;
+                totalDuration += lesson.duration_minutes || 0;
+                lesson.sections.forEach(section => {
+                    const words = section.content.text.split(/\s+/).length;
+                    totalWords += words;
+                });
+            });
+            
+            document.getElementById('total-sections').textContent = totalSections;
+            document.getElementById('total-words').textContent = totalWords;
+            document.getElementById('total-duration').textContent = totalDuration;
+        }
+
+        // Render Lesson List
+        function renderLessonList() {
+            const container = document.getElementById('lesson-list');
+            container.innerHTML = '';
+            
+            lessons.forEach(lesson => {
+                const card = document.createElement('div');
+                card.className = 'lesson-card';
+                card.innerHTML = `
+                    <h3>${lesson.title}</h3>
+                    <p><strong>Fan:</strong> ${lesson.subject}</p>
+                    <p><strong>Daraja:</strong> ${lesson.level}</p>
+                    <p><strong>Davomiylik:</strong> ${lesson.duration_minutes} daqiqa</p>
+                    <p><strong>Bo'limlar:</strong> ${lesson.sections.length}</p>
+                    <div class="actions">
+                        <button class="btn" onclick="editLesson('${lesson.id}')">Tahrirlash</button>
+                        <button class="btn btn-danger" onclick="deleteLesson('${lesson.id}')">O'chirish</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Create Lesson
+        async function createLesson() {
+            const lesson = {
+                id: document.getElementById('lesson-id').value,
+                title: document.getElementById('lesson-title').value,
+                subject: document.getElementById('lesson-subject').value,
+                level: document.getElementById('lesson-level').value,
+                duration_minutes: parseInt(document.getElementById('lesson-duration').value),
+                language: document.getElementById('lesson-language').value,
+                description: document.getElementById('lesson-description').value,
+                personality: document.getElementById('lesson-personality').value,
+                sections: [],
+                metadata: {
+                    created_at: new Date().toISOString(),
+                    author: 'Admin',
+                    version: '1.0',
+                    tags: [document.getElementById('lesson-subject').value]
+                }
+            };
+            
+            if (!lesson.id || !lesson.title) {
+                alert('ID va Sarlavha kiritish shart!');
+                return;
+            }
+            
+            // Save to file (simulated - in real app, this would use a backend)
+            const blob = new Blob([JSON.stringify(lesson, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${lesson.id}.json`;
+            a.click();
+            
+            alert('Dars yaratildi! JSON faylini lessons/ papkasiga joylang.');
+            
+            // Clear form
+            document.getElementById('lesson-id').value = '';
+            document.getElementById('lesson-title').value = '';
+            document.getElementById('lesson-description').value = '';
+            document.getElementById('lesson-duration').value = '';
+            
+            await loadLessons();
+            updateDashboard();
+            renderLessonList();
+            populatePreviewSelect();
+        }
+
+        // Edit Lesson
+        function editLesson(lessonId) {
+            currentLesson = lessons.find(l => l.id === lessonId);
+            if (!currentLesson) return;
+            
+            document.getElementById('edit-lesson-title-display').textContent = currentLesson.title;
+            document.getElementById('edit-lesson-title-input').value = currentLesson.title;
+            document.getElementById('edit-lesson-description').value = currentLesson.description;
+            document.getElementById('edit-lesson-duration').value = currentLesson.duration_minutes;
+            
+            renderSectionList();
+            
+            // Show edit section
+            document.getElementById('edit-lesson').style.display = 'block';
+            scrollToSection('edit-lesson');
+        }
+
+        // Hide Edit Section
+        function hideEditSection() {
+            document.getElementById('edit-lesson').style.display = 'none';
+            currentLesson = null;
+        }
+
+        // Save Lesson Changes
+        async function saveLessonChanges() {
+            if (!currentLesson) return;
+            
+            currentLesson.title = document.getElementById('edit-lesson-title-input').value;
+            currentLesson.description = document.getElementById('edit-lesson-description').value;
+            currentLesson.duration_minutes = parseInt(document.getElementById('edit-lesson-duration').value);
+            
+            // Download updated file
+            const blob = new Blob([JSON.stringify(currentLesson, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentLesson.id}.json`;
+            a.click();
+            
+            alert('Dars saqlandi! JSON faylini lessons/ papkasiga yangilang.');
+            
+            hideEditSection();
+            await loadLessons();
+            updateDashboard();
+            renderLessonList();
+            populatePreviewSelect();
+        }
+
+        // Delete Lesson
+        function deleteLesson(lessonId) {
+            if (confirm('Haqiqatan ham bu darsni o'chirmoqchimisiz?')) {
+                alert(`Dars o'chirildi: ${lessonId}.json faylini lessons/ papkasidan o'chiring.`);
+                // In real app, this would delete the file
+            }
+        }
+
+        // Render Section List
+        function renderSectionList() {
+            const container = document.getElementById('section-list');
+            container.innerHTML = '';
+            
+            currentLesson.sections.forEach((section, index) => {
+                const item = document.createElement('div');
+                item.className = 'section-item';
+                item.innerHTML = `
+                    <div>
+                        <h4>${index + 1}. ${section.title}</h4>
+                        <p>${section.type}</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-danger" onclick="deleteSection(${index})">O'chirish</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Section Modal
+        function openSectionModal() {
+            document.getElementById('section-modal').classList.add('active');
+        }
+
+        function closeSectionModal() {
+            document.getElementById('section-modal').classList.remove('active');
+        }
+
+        // Add Section
+        function addSection() {
+            const section = {
+                id: document.getElementById('section-id').value,
+                title: document.getElementById('section-title').value,
+                type: document.getElementById('section-type').value,
+                content: {
+                    text: document.getElementById('section-text').value,
+                    avatar_emotion: document.getElementById('section-emotion').value,
+                    animation: document.getElementById('section-animation').value
+                }
+            };
+            
+            if (!section.id || !section.title || !section.content.text) {
+                alert('Barcha maydonlarni to'ldiring!');
+                return;
+            }
+            
+            currentLesson.sections.push(section);
+            renderSectionList();
+            closeSectionModal();
+            
+            // Clear form
+            document.getElementById('section-id').value = '';
+            document.getElementById('section-title').value = '';
+            document.getElementById('section-text').value = '';
+        }
+
+        // Delete Section
+        function deleteSection(index) {
+            if (confirm('Bo'limni o'chirmoqchimisiz?')) {
+                currentLesson.sections.splice(index, 1);
+                renderSectionList();
+            }
+        }
+
+        // Preview
+        function populatePreviewSelect() {
+            const select = document.getElementById('preview-lesson-select');
+            select.innerHTML = '<option value="">Darsni tanlang...</option>';
+            
+            lessons.forEach(lesson => {
+                const option = document.createElement('option');
+                option.value = lesson.id;
+                option.textContent = lesson.title;
+                select.appendChild(option);
+            });
+        }
+
+        function loadPreviewLesson() {
+            const lessonId = document.getElementById('preview-lesson-select').value;
+            if (!lessonId) return;
+            
+            const lesson = lessons.find(l => l.id === lessonId);
+            if (!lesson) return;
+            
+            const container = document.getElementById('preview-content');
+            container.innerHTML = `
+                <h3 style="color: #00ffcc; margin-bottom: 15px;">${lesson.title}</h3>
+                <p style="color: #aaa; margin-bottom: 15px;">${lesson.description}</p>
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                    <p><strong>Fan:</strong> ${lesson.subject}</p>
+                    <p><strong>Daraja:</strong> ${lesson.level}</p>
+                    <p><strong>Davomiylik:</strong> ${lesson.duration_minutes} daqiqa</p>
+                    <p><strong>Bo'limlar:</strong> ${lesson.sections.length}</p>
+                </div>
+                <h4 style="color: #00ffcc; margin-top: 20px; margin-bottom: 10px;">Bo'limlar:</h4>
+                ${lesson.sections.map((section, i) => `
+                    <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid #00ffcc;">
+                        <h5 style="color: #00ffcc;">${i + 1}. ${section.title}</h5>
+                        <p style="color: #aaa; font-size: 12px;">${section.type}</p>
+                        <p style="color: #ccc; font-size: 13px; margin-top: 5px;">${section.content.text.substring(0, 100)}...</p>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function openPreviewInNewTab() {
+            const lessonId = document.getElementById('preview-lesson-select').value;
+            if (!lessonId) {
+                alert('Avval darsni tanlang!');
+                return;
+            }
+            window.open(`index.html?lesson=${lessonId}`, '_blank');
+        }
+
+        // Legal Content Ingestion Functions
+        async function processLegalContent() {
+            const sourceKey = document.getElementById('legal-source').value;
+            const examType = document.getElementById('legal-exam-type').value;
+            const topic = document.getElementById('legal-topic').value;
+            
+            if (!topic) {
+                alert('Mavzu kiritish shart!');
+                return;
+            }
+            
+            const resultsContainer = document.getElementById('legal-content-results');
+            resultsContainer.innerHTML = '<p style="color: #00ffcc;">⏳ Processing...</p>';
+            
+            try {
+                const response = await fetch('/api/v1/legal-content/process', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        source_key: sourceKey,
+                        topic: topic,
+                        exam_type: examType
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    resultsContainer.innerHTML = `
+                        <div style="color: #00ffcc; margin-bottom: 10px;">✅ Muvaffaqiyatli!</div>
+                        <p><strong>Task ID:</strong> ${result.task_id}</p>
+                        <p><strong>Content ID:</strong> ${result.content_id}</p>
+                        <p><strong>Quality Score:</strong> ${result.quality_metrics.overall_quality.toFixed(2)}</p>
+                        <p><strong>Copyright Safety:</strong> ${result.quality_metrics.copyright_safety_score.toFixed(2)}</p>
+                        <p><strong>Accuracy:</strong> ${result.quality_metrics.accuracy_score.toFixed(2)}</p>
+                        <p><strong>Completeness:</strong> ${result.quality_metrics.completeness_score.toFixed(2)}</p>
+                    `;
+                } else {
+                    resultsContainer.innerHTML = `
+                        <div style="color: #ff3366; margin-bottom: 10px;">❌ Xatolik!</div>
+                        <p>${result.message}</p>
+                    `;
+                }
+            } catch (error) {
+                resultsContainer.innerHTML = `
+                    <div style="color: #ff3366; margin-bottom: 10px;">❌ Xatolik!</div>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+
+        async function batchProcessLegalContent() {
+            const sourceKey = document.getElementById('legal-source').value;
+            const examType = document.getElementById('legal-exam-type').value;
+            const topicsText = document.getElementById('batch-topics').value;
+            
+            if (!topicsText.trim()) {
+                alert('Mavzular kiritish shart!');
+                return;
+            }
+            
+            const topics = topicsText.split('\n').filter(t => t.trim());
+            
+            const resultsContainer = document.getElementById('legal-content-results');
+            resultsContainer.innerHTML = '<p style="color: #00ffcc;">⏳ Batch processing...</p>';
+            
+            try {
+                const response = await fetch('/api/v1/legal-content/batch-process', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        source_key: sourceKey,
+                        topics: topics,
+                        exam_type: examType
+                    })
+                });
+                
+                const result = await response.json();
+                
+                let html = `
+                    <div style="color: #00ffcc; margin-bottom: 10px;">✅ Batch Complete!</div>
+                    <p><strong>Total Topics:</strong> ${result.total_topics}</p>
+                    <p><strong>Successful:</strong> ${result.successful}</p>
+                    <p><strong>Rejected:</strong> ${result.rejected}</p>
+                    <p><strong>Failed:</strong> ${result.failed}</p>
+                    <h4 style="color: #00ffcc; margin-top: 15px; margin-bottom: 10px;">Results:</h4>
+                `;
+                
+                result.results.forEach(r => {
+                    const statusColor = r.status === 'success' ? '#00ffcc' : (r.status === 'rejected' ? '#ff9900' : '#ff3366');
+                    html += `
+                        <div style="background: rgba(0,0,0,0.2); padding: 8px; border-radius: 5px; margin-bottom: 5px; border-left: 3px solid ${statusColor};">
+                            <p style="color: #ccc; font-size: 13px;"><strong>${r.topic}</strong> - <span style="color: ${statusColor};">${r.status}</span></p>
+                            ${r.quality ? `<p style="color: #aaa; font-size: 11px;">Quality: ${r.quality.toFixed(2)}</p>` : ''}
+                        </div>
+                    `;
+                });
+                
+                resultsContainer.innerHTML = html;
+            } catch (error) {
+                resultsContainer.innerHTML = `
+                    <div style="color: #ff3366; margin-bottom: 10px;">❌ Xatolik!</div>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+
+        async function updateQualityThresholds() {
+            const qualityThreshold = parseFloat(document.getElementById('quality-threshold').value);
+            const copyrightSafetyThreshold = parseFloat(document.getElementById('copyright-safety-threshold').value);
+            
+            try {
+                const response = await fetch('/api/v1/legal-content/quality-thresholds', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        quality_threshold: qualityThreshold,
+                        copyright_safety_threshold: copyrightSafetyThreshold
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    alert('Quality thresholds yangilandi!');
+                } else {
+                    alert('Xatolik: ' + result.message);
+                }
+            } catch (error) {
+                alert('Xatolik: ' + error.message);
+            }
+        }
+
+        // Multi-Format File Upload Functions
+        let selectedFiles = [];
+
+        // Initialize file upload zone
+        function initFileUploadZone() {
+            const dropZone = document.getElementById('file-drop-zone');
+            const fileInput = document.getElementById('file-input');
+
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.style.background = 'rgba(0,255,204,0.1)';
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.style.background = 'rgba(0,255,204,0.05)';
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.style.background = 'rgba(0,255,204,0.05)';
+                handleFiles(e.dataTransfer.files);
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+
+            // Load supported formats
+            loadSupportedFormats();
+        }
+
+        function handleFiles(files) {
+            selectedFiles = Array.from(files);
+            const selectedFilesDiv = document.getElementById('selected-files');
+            const fileListDiv = document.getElementById('file-list');
+
+            if (selectedFiles.length > 0) {
+                selectedFilesDiv.style.display = 'block';
+                fileListDiv.innerHTML = selectedFiles.map((file, index) => `
+                    <div style="background: rgba(0,0,0,0.2); padding: 8px; border-radius: 5px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p style="color: #ccc; font-size: 13px;"><strong>${file.name}</strong></p>
+                            <p style="color: #666; font-size: 11px;">${(file.size / 1024 / 1024).toFixed(2)} MB - ${file.type || 'Unknown'}</p>
+                        </div>
+                        <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="removeFile(${index})">✕</button>
+                    </div>
+                `).join('');
+            } else {
+                selectedFilesDiv.style.display = 'none';
+            }
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            handleFiles(selectedFiles);
+        }
+
+        async function processUploadedFiles() {
+            const subject = document.getElementById('upload-subject').value;
+            const examType = document.getElementById('upload-exam-type').value;
+            const category = document.getElementById('upload-category').value;
+            const language = document.getElementById('upload-language').value;
+
+            if (!subject) {
+                alert('Fan kiritish shart!');
+                return;
+            }
+
+            if (selectedFiles.length === 0) {
+                alert('Fayl tanlang!');
+                return;
+            }
+
+            const resultsContainer = document.getElementById('file-upload-results');
+            resultsContainer.innerHTML = '<p style="color: #00ffcc;">⏳ Processing...</p>';
+
+            // Process files one by one
+            const results = [];
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('subject', subject);
+                    formData.append('exam_type', examType);
+                    formData.append('category', category);
+                    formData.append('language', language);
+
+                    const response = await fetch('/api/v1/file-upload/process', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    results.push({
+                        file_name: file.name,
+                        status: result.status,
+                        task_id: result.task_id,
+                        quality_score: result.quality_score,
+                        error: result.error
+                    });
+                } catch (error) {
+                    results.push({
+                        file_name: file.name,
+                        status: 'error',
+                        error: error.message
+                    });
+                }
+            }
+
+            // Display results
+            let html = `
+                <div style="color: #00ffcc; margin-bottom: 10px;">✅ Processing Complete!</div>
+                <p><strong>Total Files:</strong> ${results.length}</p>
+                <p><strong>Successful:</strong> ${results.filter(r => r.status === 'success').length}</p>
+                <p><strong>Failed:</strong> ${results.filter(r => r.status === 'error').length}</p>
+                <h4 style="color: #00ffcc; margin-top: 15px; margin-bottom: 10px;">Results:</h4>
+            `;
+
+            results.forEach(r => {
+                const statusColor = r.status === 'success' ? '#00ffcc' : '#ff3366';
+                html += `
+                    <div style="background: rgba(0,0,0,0.2); padding: 8px; border-radius: 5px; margin-bottom: 5px; border-left: 3px solid ${statusColor};">
+                        <p style="color: #ccc; font-size: 13px;"><strong>${r.file_name}</strong> - <span style="color: ${statusColor};">${r.status}</span></p>
+                        ${r.task_id ? `<p style="color: #aaa; font-size: 11px;">Task ID: ${r.task_id}</p>` : ''}
+                        ${r.quality_score ? `<p style="color: #aaa; font-size: 11px;">Quality: ${r.quality_score.toFixed(2)}</p>` : ''}
+                        ${r.error ? `<p style="color: #ff3366; font-size: 11px;">Error: ${r.error}</p>` : ''}
+                    </div>
+                `;
+            });
+
+            resultsContainer.innerHTML = html;
+
+            // Clear selected files
+            selectedFiles = [];
+            document.getElementById('selected-files').style.display = 'none';
+            document.getElementById('file-input').value = '';
+        }
+
+        async function loadSupportedFormats() {
+            try {
+                const response = await fetch('/api/v1/file-upload/formats');
+                const result = await response.json();
+
+                const formatsDiv = document.getElementById('supported-formats');
+                let html = `<p><strong>Max File Size:</strong> ${result.max_file_size_mb.toFixed(0)} MB</p>`;
+                html += '<p><strong>Supported Formats:</strong></p><ul style="margin-left: 20px; margin-top: 5px;">';
+                
+                for (const [ext, mime] of Object.entries(result.formats)) {
+                    html += `<li style="color: #aaa; font-size: 12px;">.${ext.toUpperCase()} - ${mime}</li>`;
+                }
+                html += '</ul>';
+
+                formatsDiv.innerHTML = html;
+            } catch (error) {
+                document.getElementById('supported-formats').innerHTML = '<p style="color: #ff3366;">Xatolik: ' + error.message + '</p>';
+            }
+        }
+
+        // Initialize file upload zone on page load
+        document.addEventListener('DOMContentLoaded', initFileUploadZone);
+    </script>
+</body>
+</html>

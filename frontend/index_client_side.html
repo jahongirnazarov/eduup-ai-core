@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EDUUPAI - Zero-Cost IELTS/SAT Platform</title>
+    <meta name="description" content="Zero-cost IELTS and SAT preparation platform with 2D AI teacher, running entirely client-side">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+
+        .teacher-section {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .exam-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .exam-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.3s;
+        }
+
+        .exam-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .exam-btn.active {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .subject-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .subject-btn {
+            padding: 10px 20px;
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .subject-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .subject-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .exam-area {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 400px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .option-btn {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover {
+            border-color: #667eea;
+            background: #f0f0ff;
+        }
+
+        .option-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option-btn.correct {
+            background: #38ef7d;
+            color: white;
+            border-color: #38ef7d;
+        }
+
+        .option-btn.incorrect {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            flex: 1;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.3s;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .score-display {
+            text-align: center;
+            padding: 20px;
+            background: #f0f0ff;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .score-display h2 {
+            color: #667eea;
+            font-size: 2em;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .tier-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .tier-free {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .tier-vip {
+            background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+            color: white;
+        }
+
+        .upgrade-btn {
+            background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            transition: transform 0.3s;
+        }
+
+        .upgrade-btn:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p style="margin-top: 20px;">Loading EDUUPAI Platform...</p>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎓 EDUUPAI</h1>
+            <p>Zero-Cost IELTS/SAT Preparation Platform</p>
+            <div style="margin-top: 15px;">
+                <span class="tier-badge tier-free" id="userTier">FREE TIER</span>
+                <button class="upgrade-btn" onclick="showUpgradeModal()">Upgrade to VIP</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="teacher-section">
+                <div id="teacher-container" style="width: 100%; max-width: 300px;"></div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <p style="color: #666; font-size: 14px;">2D AI Teacher</p>
+                    <p style="color: #999; font-size: 12px;">Powered by Local AI</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="exam-selector">
+                    <button class="exam-btn active" onclick="selectExam('IELTS')">IELTS</button>
+                    <button class="exam-btn" onclick="selectExam('SAT')">SAT</button>
+                </div>
+
+                <div class="subject-selector" id="subjectSelector">
+                    <button class="subject-btn active" onclick="selectSubject('reading')">Reading</button>
+                    <button class="subject-btn" onclick="selectSubject('listening')">Listening</button>
+                    <button class="subject-btn" onclick="selectSubject('writing')">Writing</button>
+                    <button class="subject-btn" onclick="selectSubject('speaking')">Speaking</button>
+                    <button class="subject-btn" onclick="selectSubject('math')">Math</button>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+
+                <div class="exam-area" id="examArea">
+                    <div class="score-display" id="startScreen">
+                        <h2>Ready to Start?</h2>
+                        <p style="margin-top: 10px; color: #666;">Select your exam type and subject above, then click start.</p>
+                        <button class="control-btn" onclick="startExam()" style="margin-top: 20px;">Start Exam</button>
+                    </div>
+
+                    <div class="question-card hidden" id="questionCard">
+                        <p class="question-text" id="questionText">Question text here...</p>
+                        <div class="options-grid" id="optionsGrid"></div>
+                        <div class="controls">
+                            <button class="control-btn" onclick="submitAnswer()">Submit Answer</button>
+                            <button class="control-btn" onclick="nextQuestion()" id="nextBtn" disabled>Next Question</button>
+                        </div>
+                    </div>
+
+                    <div class="score-display hidden" id="resultScreen">
+                        <h2>Exam Complete!</h2>
+                        <p style="font-size: 1.5em; color: #667eea;" id="finalScore">Score: 0/0</p>
+                        <p style="margin-top: 10px; color: #666;" id="scorePercentage">0%</p>
+                        <div class="controls">
+                            <button class="control-btn" onclick="startExam()">Retake Exam</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Services -->
+    <script src="../services/local_ai_engine.js"></script>
+    <script src="../components/2d_teacher.js"></script>
+    <script src="../services/web_speech_service.js"></script>
+    <script src="../services/indexeddb_service.js"></script>
+    <script src="../services/grading_system.js"></script>
+
+    <script>
+        // Global state
+        let currentExam = 'IELTS';
+        let currentSubject = 'reading';
+        let currentQuestionIndex = 0;
+        let selectedAnswer = null;
+        let examQuestions = [];
+        let userAnswers = {};
+        let teacher2D = null;
+
+        // Initialize platform
+        async function initializePlatform() {
+            try {
+                // Initialize IndexedDB
+                await indexedDBService.initialize();
+                
+                // Initialize 2D Teacher
+                teacher2D = new Teacher2D('teacher-container');
+                await teacher2D.initialize();
+                
+                // Initialize Web Speech Service
+                await webSpeechService.initialize();
+                
+                // Initialize Grading System
+                gradingSystem.loadQuestionBank({});
+                gradingSystem.loadGradingRules({});
+                
+                // Hide loading overlay
+                document.getElementById('loadingOverlay').classList.add('hidden');
+                
+                console.log('[Platform] Initialized successfully');
+            } catch (error) {
+                console.error('[Platform] Initialization failed:', error);
+                alert('Failed to initialize platform. Please refresh the page.');
+            }
+        }
+
+        // Select exam type
+        function selectExam(examType) {
+            currentExam = examType;
+            
+            // Update UI
+            document.querySelectorAll('.exam-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update subject options based on exam type
+            updateSubjectOptions();
+            
+            // Teacher reaction
+            if (teacher2D) {
+                teacher2D.setEmotion('explaining');
+                teacher2D.speak(`You selected ${examType}. Great choice!`);
+            }
+        }
+
+        // Update subject options based on exam type
+        function updateSubjectOptions() {
+            const selector = document.getElementById('subjectSelector');
+            
+            if (currentExam === 'IELTS') {
+                selector.innerHTML = `
+                    <button class="subject-btn active" onclick="selectSubject('reading')">Reading</button>
+                    <button class="subject-btn" onclick="selectSubject('listening')">Listening</button>
+                    <button class="subject-btn" onclick="selectSubject('writing')">Writing</button>
+                    <button class="subject-btn" onclick="selectSubject('speaking')">Speaking</button>
+                `;
+            } else {
+                selector.innerHTML = `
+                    <button class="subject-btn active" onclick="selectSubject('math')">Math</button>
+                    <button class="subject-btn" onclick="selectSubject('reading')">Reading</button>
+                    <button class="subject-btn" onclick="selectSubject('writing')">Writing</button>
+                `;
+            }
+            
+            currentSubject = 'reading';
+        }
+
+        // Select subject
+        function selectSubject(subject) {
+            currentSubject = subject;
+            
+            // Update UI
+            document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Teacher reaction
+            if (teacher2D) {
+                teacher2D.setEmotion('happy');
+                teacher2D.speak(`${subject} section selected. Let's begin!`);
+            }
+        }
+
+        // Start exam
+        function startExam() {
+            currentQuestionIndex = 0;
+            selectedAnswer = null;
+            userAnswers = {};
+            
+            // Generate questions
+            examQuestions = gradingSystem.generateDefaultQuestions(currentExam, currentSubject, 10);
+            
+            // Update UI
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('questionCard').classList.remove('hidden');
+            
+            // Teacher reaction
+            if (teacher2D) {
+                teacher2D.setEmotion('thinking');
+                teacher2D.speak('Starting exam now. Good luck!');
+            }
+            
+            // Load first question
+            loadQuestion(0);
+        }
+
+        // Load question
+        function loadQuestion(index) {
+            if (index >= examQuestions.length) {
+                showResults();
+                return;
+            }
+            
+            const question = examQuestions[index];
+            
+            // Update question text
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Update options
+            const optionsGrid = document.getElementById('optionsGrid');
+            optionsGrid.innerHTML = '';
+            
+            if (question.type === 'multiple_choice') {
+                question.options.forEach((option, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.textContent = option;
+                    btn.onclick = () => selectOption(option, btn);
+                    optionsGrid.appendChild(btn);
+                });
+            } else if (question.type === 'essay') {
+                const textarea = document.createElement('textarea');
+                textarea.placeholder = 'Write your answer here...';
+                textarea.style.width = '100%';
+                textarea.style.height = '150px';
+                textarea.style.padding = '10px';
+                textarea.style.border = '2px solid #ddd';
+                textarea.style.borderRadius = '8px';
+                textarea.style.fontSize = '16px';
+                textarea.oninput = (e) => selectOption(e.target.value, null);
+                optionsGrid.appendChild(textarea);
+            }
+            
+            // Update progress
+            const progress = ((index + 1) / examQuestions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            
+            // Reset buttons
+            document.getElementById('nextBtn').disabled = true;
+            selectedAnswer = null;
+        }
+
+        // Select option
+        function selectOption(answer, btnElement) {
+            selectedAnswer = answer;
+            
+            // Update UI
+            if (btnElement) {
+                document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+                btnElement.classList.add('selected');
+            }
+            
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        // Submit answer
+        function submitAnswer() {
+            if (!selectedAnswer) {
+                alert('Please select an answer');
+                return;
+            }
+            
+            const question = examQuestions[currentQuestionIndex];
+            userAnswers[question.questionId] = selectedAnswer;
+            
+            // Show correct answer
+            if (question.type === 'multiple_choice') {
+                document.querySelectorAll('.option-btn').forEach(btn => {
+                    if (btn.textContent === question.correctAnswer) {
+                        btn.classList.add('correct');
+                    } else if (btn.classList.contains('selected') && btn.textContent !== question.correctAnswer) {
+                        btn.classList.add('incorrect');
+                    }
+                });
+            }
+            
+            // Teacher reaction
+            const isCorrect = selectedAnswer === question.correctAnswer;
+            if (teacher2D) {
+                teacher2D.setEmotion(isCorrect ? 'happy' : 'confused');
+                teacher2D.speak(isCorrect ? 'Correct! Well done!' : 'Not quite. Let me explain...');
+            }
+            
+            // Enable next button
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        // Next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        // Show results
+        function showResults() {
+            // Calculate score
+            let correct = 0;
+            examQuestions.forEach(question => {
+                const userAnswer = userAnswers[question.questionId];
+                if (userAnswer === question.correctAnswer) {
+                    correct++;
+                }
+            });
+            
+            const percentage = (correct / examQuestions.length) * 100;
+            
+            // Update UI
+            document.getElementById('questionCard').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            document.getElementById('finalScore').textContent = `Score: ${correct}/${examQuestions.length}`;
+            document.getElementById('scorePercentage').textContent = `${percentage.toFixed(1)}%`;
+            
+            // Save to IndexedDB
+            indexedDBService.createExam({
+                examType: currentExam,
+                subject: currentSubject,
+                score: correct,
+                maxScore: examQuestions.length,
+                percentage: percentage
+            });
+            
+            // Teacher reaction
+            if (teacher2D) {
+                teacher2D.setEmotion(percentage >= 60 ? 'proud' : 'thinking');
+                teacher2D.speak(percentage >= 60 ? 
+                    `Excellent! You scored ${percentage.toFixed(1)}%` : 
+                    `You scored ${percentage.toFixed(1)}%. Keep practicing!`);
+            }
+        }
+
+        // Show upgrade modal
+        function showUpgradeModal() {
+            alert('VIP upgrade feature coming soon! Contact us for early access.');
+        }
+
+        // Initialize on load
+        window.onload = initializePlatform;
+    </script>
+</body>
+</html>

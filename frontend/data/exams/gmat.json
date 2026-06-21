@@ -1,0 +1,100 @@
+{
+  "standard": "GMAT",
+  "duration": 3600,
+  "listening": {
+    "audioUrl": "https://cloudinary.com/your-audio/gmat-listening.mp3",
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple-choice",
+        "question": "What is the speaker's main argument about business strategy?",
+        "options": [
+          "Focus only on short-term profits",
+          "Balance short-term and long-term goals",
+          "Ignore market trends",
+          "Avoid risk completely"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 2,
+        "type": "multiple-choice",
+        "question": "According to the passage, what is crucial for sustainable growth?",
+        "options": [
+          "Cutting costs",
+          "Innovation and adaptability",
+          "Hiring more employees",
+          "Expanding office space"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      }
+    ]
+  },
+  "reading": {
+    "passage": "Strategic Management in the Digital Age\n\nStrategic management has evolved significantly in response to the rapid pace of technological change and globalization. Traditional strategic planning models, which often assumed stable market conditions and predictable competitive landscapes, are increasingly inadequate in today's dynamic business environment.\n\nOne key development in strategic management is the emphasis on agility and flexibility. Companies must be able to pivot quickly in response to market changes, technological disruptions, and shifting consumer preferences. This requires organizational structures that support rapid decision-making and resource reallocation. Hierarchical bureaucracies are being replaced by flatter, more networked organizations that can respond more swiftly to emerging opportunities and threats.\n\nData analytics has also transformed strategic decision-making. Advanced analytics tools enable companies to process vast amounts of data and derive actionable insights. This data-driven approach reduces reliance on intuition and experience alone, allowing for more objective and evidence-based strategic choices. However, it also raises important questions about data privacy, algorithmic bias, and the ethical use of predictive analytics.\n\nAnother significant trend is the integration of sustainability considerations into strategic planning. Stakeholders increasingly expect companies to address environmental and social concerns alongside financial performance. This has led to the development of frameworks for measuring and reporting on environmental, social, and governance (ESG) metrics. Companies that effectively integrate sustainability into their strategy may gain competitive advantages through enhanced reputation, risk mitigation, and access to capital.\n\nThe rise of platform business models has also disrupted traditional strategic thinking. Platform companies that create ecosystems connecting buyers, sellers, and other participants can achieve rapid scale and network effects that create formidable competitive advantages. This has forced traditional companies to reconsider their value propositions and business models.\n\nAs strategic management continues to evolve, leaders must balance competing priorities: short-term performance with long-term sustainability, global integration with local responsiveness, and innovation with risk management. Success in this environment requires continuous learning, experimentation, and the ability to synthesize insights from multiple disciplines.",
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple-choice",
+        "question": "According to the passage, why are traditional strategic planning models inadequate today?",
+        "options": [
+          "They are too expensive to implement",
+          "Market conditions are now too dynamic and unpredictable",
+          "They focus too much on technology",
+          "They are only suitable for large companies"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 2,
+        "type": "multiple-choice",
+        "question": "What organizational change does the author mention as supporting agility?",
+        "options": [
+          "More hierarchical structures",
+          "Flatter, more networked organizations",
+          "Larger corporate headquarters",
+          "More middle management"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 3,
+        "type": "multiple-choice",
+        "question": "What concern does the author raise about data analytics in strategic management?",
+        "options": [
+          "It is too expensive",
+          "It raises questions about data privacy and algorithmic bias",
+          "It is not accurate enough",
+          "It is too complicated to use"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      },
+      {
+        "id": 4,
+        "type": "multiple-choice",
+        "question": "What is ESG according to the passage?",
+        "options": [
+          "A type of business software",
+          "Environmental, social, and governance metrics",
+          "A strategic planning framework",
+          "A financial reporting standard"
+        ],
+        "correctAnswer": 1,
+        "points": 1
+      }
+    ]
+  },
+  "writing": {
+    "prompt": "Analyze the following argument: 'Companies should focus exclusively on maximizing shareholder value.' Discuss the strengths and weaknesses of this approach and provide your own perspective with supporting evidence.",
+    "minWords": 300
+  },
+  "speaking": {
+    "prompt": "Describe a business strategy that you believe is particularly effective. Explain why it works and give examples of companies that have successfully implemented it.",
+    "duration": 120
+  }
+}

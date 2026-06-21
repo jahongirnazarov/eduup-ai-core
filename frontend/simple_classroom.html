@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduUp - Simple Virtual Classroom</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .classroom-info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .avatar-info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .exam-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #4a90e2;
+            color: white;
+        }
+        button:hover {
+            background: #357abd;
+        }
+        .message {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 EduUp Virtual Classroom</h1>
+        
+        <div class="classroom-info">
+            <h2>🏫 Sinf Xonasi Xususiyatlari</h2>
+            <ul>
+                <li>Realistik yog'och pol</li>
+                <li>Devorlar va shift</li>
+                <li>Detalli doska (ramka, chalklar)</li>
+                <li>O'qituvchi stoli (kitoblar bilan)</li>
+                <li>6 ta o'quvchi stuli va stullari</li>
+                <li>Oynalar, soat, posters</li>
+            </ul>
+        </div>
+        
+        <div class="avatar-info">
+            <h2>👩‍🏫 Malika O'qituvchi (25 yosh)</h2>
+            <ul>
+                <li>Tabiiy tashqi ko'rinish</li>
+                <li>Lab harakatlari nutqqa mos</li>
+                <li>Nafas olish animatsiyasi</li>
+                <li>Qo'l harakatlari gapirganda</li>
+                <li>Yurish va yozish harakatlari</li>
+                <li>Tabiiy ko'z yumish</li>
+            </ul>
+        </div>
+        
+        <div class="exam-buttons">
+            <button onclick="startSAT()">📝 SAT Imtihonini Boshlash</button>
+            <button onclick="startIELTS()">📚 IELTS Imtihonini Boshlash</button>
+            <button onclick="startLesson()">🎓 Dars Rejimi</button>
+        </div>
+        
+        <div class="message" id="message">
+            <p>Salom! Men sizning virtual o'qituvchingiz Malika. Qanday yordam bera olaman?</p>
+        </div>
+    </div>
+
+    <script>
+        function startSAT() {
+            document.getElementById('message').innerHTML = `
+                <h3>📝 SAT Digital Imtihoni</h3>
+                <p>4 modul: Reading/Writing Module 1 & 2, Math Module 1 & 2</p>
+                <p>Davomiyligi: 134 daqiqa</p>
+                <p>12 savol izohlar bilan</p>
+                <p><strong>To'liq 3D versiyasi uchun realistic_classroom.html faylini ishlatishingiz kerak.</strong></p>
+            `;
+        }
+        
+        function startIELTS() {
+            document.getElementById('message').innerHTML = `
+                <h3>📚 IELTS Academic Imtihoni</h3>
+                <p>Listening Section (4 savol)</p>
+                <p>Reading Section (3 matn, 8 savol)</p>
+                <p>Writing Task 2 (so'z hisobi)</p>
+                <p>Davomiyligi: 180 daqiqa</p>
+                <p><strong>To'liq 3D versiyasi uchun realistic_classroom.html faylini ishlatishingiz kerak.</strong></p>
+            `;
+        }
+        
+        function startLesson() {
+            document.getElementById('message').innerHTML = `
+                <h3>🎓 Dars Rejimi</h3>
+                <p>Dars rejimiga o'tdik. Qanday mavzuni o'rganmoqchisiz?</p>
+                <p><strong>To'liq 3D versiyasi uchun realistic_classroom.html faylini ishlatishingiz kerak.</strong></p>
+            `;
+        }
+    </script>
+</body>
+</html>

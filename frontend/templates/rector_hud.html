@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Rector Private HUD: Legal Ingestion Command Center</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Consolas', monospace; }
+        body { background: #040406; color: #00f07f; padding: 30px; }
+        .hud-container {
+            max-width: 900px; margin: 0 auto; background: rgba(6, 6, 10, 0.95);
+            border: 2px solid #ffaa00; box-shadow: 0 0 35px rgba(255, 170, 0, 0.3);
+            padding: 40px; border-radius: 16px;
+        }
+        h2 { text-align: center; color: #ffaa00; text-shadow: 0 0 15px #ffaa00; margin-bottom: 30px; letter-spacing: 2px; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: #00bcff; text-transform: uppercase; }
+        input[type="text"], textarea {
+            width: 100%; padding: 15px; background: #0b0b12; border: 1px solid #00f07f;
+            color: #fff; font-size: 16px; border-radius: 8px; box-shadow: inset 0 0 10px rgba(0,240,127,0.1);
+        }
+        input:focus, textarea:focus { outline: none; border-color: #ffaa00; box-shadow: 0 0 15px rgba(255,170,0,0.2); }
+        textarea { height: 250px; resize: none; line-height: 1.6; }
+        .trigger-btn {
+            width: 100%; padding: 18px; font-size: 18px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 3px; color: #040406; background: linear-gradient(90deg, #ffaa00, #00f07f);
+            border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 0 20px rgba(0,240,127,0.4);
+            transition: all 0.3s ease;
+        }
+        .trigger-btn:hover { transform: scale(1.02); box-shadow: 0 0 35px #ffaa00; }
+        .status-log-box {
+            margin-top: 30px; background: #000; border: 1px solid #ff0055;
+            padding: 20px; border-radius: 8px; font-size: 13px; color: #ff0055;
+            max-height: 200px; overflow-y: auto; box-shadow: 0 0 15px rgba(255,0,85,0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hud-container">
+        <h2>👑 RECTOR PRIVATE HUD: INSTANT LEGAL DATA SEEDER</h2>
+        
+        <div class="input-group">
+            <label>1. Standard/Fan doirasi (Masalan: DIGITAL_SAT_MATH, BMBA_DTM_KIMYO)</label>
+            <input type="text" id="hud-subject-node" placeholder="Fanning global tizim nomini kiriting...">
+        </div>
+
+        <div class="input-group">
+            <label>2. Darslik Mavzusi (Masalan: Kvadrat tenglamalar, Organik sintez)</label>
+            <input type="text" id="hud-topic-node" placeholder="Mavzu sarlavhasini kiriting...">
+        </div>
+
+        <div class="input-group">
+            <label>3. PDF Kitobdan Nusxalangan Xom Matn (Copy-Paste Raw Text Content)</label>
+            <textarea id="hud-raw-text-area" placeholder="Ushbu maydonga uchinchi shaxs PDF test materiallarini shundoq nusxalab tashlang..."></textarea>
+        </div>
+
+        <button class="trigger-btn" onclick="executeSovereignIngestionPipeline()">Avtomat Qayta Generatsiya Qilish Va Saqlash</button>
+
+        <div class="status-log-box" id="hud-telemetry-console">> Telemetry Console Status: IDLE | Awaiting administrative trigger vector...</div>
+    </div>
+
+    <script>
+        let databaseInstance = null;
+
+        // Initialize IndexedDB on load
+        window.addEventListener('load', function() {
+            const openRequest = indexedDB.open("EduUpSovereignKutubxona", 1);
+            openRequest.onupgradeneeded = function(e) {
+                let db = e.target.result;
+                if (!db.objectStoreNames.contains("syllabus_vault")) {
+                    db.createObjectStore("syllabus_vault", { keyPath: "subject_id" });
+                }
+            };
+            openRequest.onsuccess = function(e) {
+                databaseInstance = e.target.result;
+                logTelemetry("SYSTEM: IndexedDB initialized successfully");
+            };
+            openRequest.onerror = function(e) {
+                logTelemetry("ERROR: Failed to initialize IndexedDB");
+            };
+        });
+
+        function logTelemetry(message) {
+            const consoleNode = document.getElementById('hud-telemetry-console');
+            const timestamp = new Date().toLocaleTimeString();
+            consoleNode.innerHTML = `> [${timestamp}] ${message}<br>` + consoleNode.innerHTML;
+        }
+
+        async function executeSovereignIngestionPipeline() {
+            const subject = document.getElementById('hud-subject-node').value.trim();
+            const topic = document.getElementById('hud-topic-node').value.trim();
+            const rawText = document.getElementById('hud-raw-text-area').value.trim();
+            const consoleNode = document.getElementById('hud-telemetry-console');
+
+            // Validation
+            if (!subject || !topic || !rawText) {
+                logTelemetry("ERROR: Barcha maydonlarni to'ldiring (Subject, Topic, Raw Text)");
+                return;
+            }
+
+            logTelemetry(`INIT: Starting ingestion pipeline for ${subject} - ${topic}`);
+
+            try {
+                if (!databaseInstance) {
+                    logTelemetry("ERROR: Database not initialized");
+                    return;
+                }
+
+                const transaction = databaseInstance.transaction("syllabus_vault", "readwrite");
+                const store = transaction.objectStore("syllabus_vault");
+
+                // Check if subject already exists
+                const getRequest = store.get(subject);
+                
+                getRequest.onsuccess = function() {
+                    const existingRecord = getRequest.result;
+                    let topics = {};
+
+                    if (existingRecord && existingRecord.topics) {
+                        topics = existingRecord.topics;
+                        logTelemetry("INFO: Existing record found, updating topics");
+                    }
+
+                    // Add or update topic
+                    topics[topic] = rawText;
+
+                    const record = {
+                        subject_id: subject,
+                        topics: topics,
+                        updated_at: new Date().toISOString()
+                    };
+
+                    const putRequest = store.put(record);
+
+                    putRequest.onsuccess = function() {
+                        logTelemetry(`SUCCESS: Data ingested successfully for ${subject} - ${topic}`);
+                        logTelemetry(`INFO: Total topics in ${subject}: ${Object.keys(topics).length}`);
+                        
+                        // Clear inputs
+                        document.getElementById('hud-subject-node').value = '';
+                        document.getElementById('hud-topic-node').value = '';
+                        document.getElementById('hud-raw-text-area').value = '';
+                    };
+
+                    putRequest.onerror = function() {
+                        logTelemetry("ERROR: Failed to store data in IndexedDB");
+                    };
+                };
+
+                getRequest.onerror = function() {
+                    logTelemetry("ERROR: Failed to read existing data");
+                };
+
+                transaction.oncomplete = function() {
+                    logTelemetry("COMPLETE: Transaction finished successfully");
+                };
+
+                transaction.onerror = function() {
+                    logTelemetry("ERROR: Transaction failed");
+                };
+
+            } catch (error) {
+                logTelemetry(`CRITICAL ERROR: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>

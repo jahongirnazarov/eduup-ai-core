@@ -1,0 +1,118 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-06-16",
+  "subjects": {
+    "matematika": {
+      "id": "matematika",
+      "name": "Matematika",
+      "description": "Matematika asoslari va ilg'or mavzular",
+      "icon": "📐",
+      "lessons": [
+        {
+          "id": "math_001",
+          "title": "Kvadrat tenglamalar",
+          "level": "boshlangich",
+          "duration_minutes": 45,
+          "description": "ax² + bx + c = 0 ko'rinishidagi tenglamalarni yechish",
+          "content": "Kvadrat tenglamani diskriminant orqali yechamiz: D = b² - 4ac. Ildizlar: x = (-b ± √D) / 2a",
+          "video_url": "",
+          "thumbnail": "",
+          "prerequisites": [],
+          "skills_gained": ["Diskriminant", "Ildizlar topish", "Grafik tushunish"],
+          "quiz": {
+            "questions": [
+              {
+                "id": "q1",
+                "question": "x² - 5x + 6 = 0 tenglamaning ildizlarini toping",
+                "options": ["2 va 3", "1 va 6", "-2 va -3", "2 va -3"],
+                "correct_answer": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "math_002",
+          "title": "Chiziqli tenglamalar",
+          "level": "boshlangich",
+          "duration_minutes": 30,
+          "description": "y = mx + b ko'rinishidagi tenglamalar",
+          "content": "Chiziqli tenglamada m - burchak koeffitsiyenti, b - kesma",
+          "video_url": "",
+          "thumbnail": "",
+          "prerequisites": [],
+          "skills_gained": ["Burchak koeffitsiyenti", "Kesma", "Grafik"],
+          "quiz": {
+            "questions": [
+              {
+                "id": "q1",
+                "question": "y = 2x + 3 tenglamada burchak koeffitsiyenti qancha?",
+                "options": ["2", "3", "5", "0"],
+                "correct_answer": 0
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "ingliz-tili": {
+      "id": "ingliz-tili",
+      "name": "Ingliz Tili",
+      "description": "Ingliz tili grammatikasi va so'zlashuv",
+      "icon": "🇬🇧",
+      "lessons": [
+        {
+          "id": "eng_001",
+          "title": "Present Simple Tense",
+          "level": "boshlangich",
+          "duration_minutes": 40,
+          "description": "Hozirgi zamon sodda vaqt",
+          "content": "I work, He works, They work - qoida va istisnolar",
+          "video_url": "",
+          "thumbnail": "",
+          "prerequisites": [],
+          "skills_gained": ["Grammatika", "Gap tuzish", "Affirmativ/Negativ"],
+          "quiz": {
+            "questions": [
+              {
+                "id": "q1",
+                "question": "He ___ to school every day.",
+                "options": ["go", "goes", "going", "went"],
+                "correct_answer": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "fizika": {
+      "id": "fizika",
+      "name": "Fizika",
+      "description": "Fizika asoslari va qonunlar",
+      "icon": "⚡",
+      "lessons": [
+        {
+          "id": "phys_001",
+          "title": "Nyuton qonunlari",
+          "level": "o-rta",
+          "duration_minutes": 50,
+          "description": "Nyutonning uchta harakat qonuni",
+          "content": "1. Inersiya qonuni, 2. Tezlanish qonuni (F=ma), 3. Ta'sir va aks ta'sir qonuni",
+          "video_url": "",
+          "thumbnail": "",
+          "prerequisites": [],
+          "skills_gained": ["Kuch", "Tezlanish", "Massa"],
+          "quiz": {
+            "questions": [
+              {
+                "id": "q1",
+                "question": "F = ma formulasi qaysi qonunga tegishli?",
+                "options": ["1-qonun", "2-qonun", "3-qonun", "4-qonun"],
+                "correct_answer": 1
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

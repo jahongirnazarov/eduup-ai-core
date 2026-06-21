@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduUp Zero-Cost Classroom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.desmos.com/api/v1.9/calculator.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --chalkboard-dark: #1a3d1a;
+            --chalkboard-medium: #2d5a2d;
+            --chalkboard-light: #4a7c4a;
+            --bluebook-blue: #1e3a8a;
+            --bluebook-light: #3b82f6;
+            --ielts-red: #dc2626;
+            --ielts-gray: #f3f4f6;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a3d1a 0%, #2d5a2d 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 2rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .loading-progress-bar {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .loading-progress {
+            height: 100%;
+            background: #ffffff;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        .chalk-text {
+            font-family: 'Chalkboard SE', 'Comic Sans MS', cursive;
+        }
+        
+        #avatar-canvas {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 12.5vw;
+            height: 12.5vw;
+            min-width: 150px;
+            min-height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #3d7a3d;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        #three-canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+        }
+        
+        .chalkboard-text {
+            color: #f5f5f5;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .bg-chalkboard-dark {
+            background-color: var(--chalkboard-dark);
+        }
+        
+        .bg-chalkboard-medium {
+            background-color: var(--chalkboard-medium);
+        }
+        
+        .bg-chalkboard-light {
+            background-color: var(--chalkboard-light);
+        }
+        
+        .bg-bluebook-blue {
+            background-color: var(--bluebook-blue);
+        }
+        
+        .bg-bluebook-light {
+            background-color: var(--bluebook-light);
+        }
+        
+        .bg-ielts-red {
+            background-color: var(--ielts-red);
+        }
+        
+        .bg-ielts-gray {
+            background-color: var(--ielts-gray);
+        }
+        
+        .border-chalkboard-light {
+            border-color: var(--chalkboard-light);
+        }
+        
+        /* Avatar fallback for low-end devices */
+        .avatar-fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+        
+        /* Split screen for IELTS */
+        .split-screen {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            height: calc(100vh - 80px);
+        }
+        
+        @media (max-width: 768px) {
+            .split-screen {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-chalkboard-dark">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loading-text">Malika hozir ishga tushmoqda, iltimos biroz kuting...</div>
+        <div class="loading-progress-bar">
+            <div class="loading-progress" id="loading-progress"></div>
+        </div>
+    </div>
+
+    <div id="app" class="w-full h-screen relative">
+        <!-- Main Navigation -->
+        <nav class="absolute top-0 left-0 right-0 z-50 bg-chalkboard-medium/90 backdrop-blur-sm border-b border-chalkboard-light">
+            <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-xl font-bold text-white">EduUp Classroom</h1>
+                    <div class="flex space-x-2">
+                        <button onclick="router.navigate('classroom')" class="px-4 py-2 bg-chalkboard-light hover:bg-chalkboard-light/80 text-white rounded-lg transition">Classroom</button>
+                        <button onclick="router.navigate('sat')" class="px-4 py-2 bg-bluebook-blue hover:bg-bluebook-light text-white rounded-lg transition">SAT Exam</button>
+                        <button onclick="router.navigate('ielts')" class="px-4 py-2 bg-ielts-red hover:bg-red-700 text-white rounded-lg transition">IELTS Exam</button>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="llm-status" class="text-sm text-gray-300">Loading AI Models...</div>
+                    <div id="gpu-status" class="text-sm text-gray-300">Checking GPU...</div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Classroom View -->
+        <div id="classroom-view" class="w-full h-full bg-chalkboard-dark relative">
+            <!-- Chalkboard Area -->
+            <div id="chalkboard" class="absolute inset-0 pt-16 pb-32 pl-32 pr-8">
+                <div id="chalk-content" class="chalk-text text-4xl chalkboard-text leading-relaxed"></div>
+                <div id="three-canvas"></div>
+            </div>
+
+            <!-- Avatar Container (1/8 screen space) -->
+            <div id="avatar-canvas">
+                <canvas id="avatar-webgl"></canvas>
+                <div id="avatar-fallback" class="avatar-fallback hidden">👩‍🏫</div>
+            </div>
+
+            <!-- Controls -->
+            <div class="absolute bottom-4 right-4 flex space-x-2">
+                <button onclick="classroom.startLesson()" class="px-4 py-2 bg-chalkboard-light hover:bg-chalkboard-light/80 text-white rounded-lg transition">Start Lesson</button>
+                <button onclick="classroom.toggle3D()" class="px-4 py-2 bg-chalkboard-light hover:bg-chalkboard-light/80 text-white rounded-lg transition">Toggle 3D</button>
+                <button onclick="classroom.clearBoard()" class="px-4 py-2 bg-chalkboard-light hover:bg-chalkboard-light/80 text-white rounded-lg transition">Clear Board</button>
+            </div>
+        </div>
+
+        <!-- SAT Exam View -->
+        <div id="sat-view" class="w-full h-full bg-gray-100 hidden pt-16">
+            <div class="max-w-7xl mx-auto p-4">
+                <!-- SAT Header -->
+                <div class="bg-white rounded-lg shadow-lg p-4 mb-4 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-blue-900">SAT Practice Test</h2>
+                        <div class="flex items-center space-x-4 mt-2">
+                            <span class="text-sm text-gray-600">Module: <span id="sat-module" class="font-semibold">Math</span></span>
+                            <span class="text-sm text-gray-600">Question: <span id="sat-question-num" class="font-semibold">1/22</span></span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div id="sat-timer" class="text-3xl font-mono font-bold text-blue-600">35:00</div>
+                        <button onclick="satExam.showMathReference()" class="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-lg transition">Reference</button>
+                    </div>
+                </div>
+
+                <!-- SAT Content -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <!-- Question Area -->
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <div id="sat-question-content" class="text-lg mb-4">
+                            <p class="font-semibold mb-2">Question 1:</p>
+                            <p>If x + 3 = 7, what is the value of x?</p>
+                        </div>
+                        <div id="sat-choices" class="space-y-2">
+                            <button class="w-full text-left p-3 border rounded hover:bg-gray-50 transition" onclick="satExam.toggleStrikethrough('choice-a')">
+                                <span id="choice-a">A) 3</span>
+                            </button>
+                            <button class="w-full text-left p-3 border rounded hover:bg-gray-50 transition" onclick="satExam.toggleStrikethrough('choice-b')">
+                                <span id="choice-b">B) 4</span>
+                            </button>
+                            <button class="w-full text-left p-3 border rounded hover:bg-gray-50 transition" onclick="satExam.toggleStrikethrough('choice-c')">
+                                <span id="choice-c">C) 5</span>
+                            </button>
+                            <button class="w-full text-left p-3 border rounded hover:bg-gray-50 transition" onclick="satExam.toggleStrikethrough('choice-d')">
+                                <span id="choice-d">D) 10</span>
+                            </button>
+                        </div>
+                        <div class="mt-4 flex space-x-2">
+                            <button onclick="satExam.previousQuestion()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded transition">Previous</button>
+                            <button onclick="satExam.nextQuestion()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">Next</button>
+                            <button onclick="satExam.toggleMarkForReview()" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded transition">Mark for Review</button>
+                        </div>
+                    </div>
+
+                    <!-- Desmos Calculator -->
+                    <div class="bg-white rounded-lg shadow-lg p-4">
+                        <div id="desmos-calculator" style="height: 500px;"></div>
+                    </div>
+                </div>
+
+                <!-- Question Navigation -->
+                <div class="bg-white rounded-lg shadow-lg p-4 mt-4">
+                    <h3 class="font-semibold mb-2">Question Navigator</h3>
+                    <div id="question-nav" class="flex flex-wrap gap-2"></div>
+                </div>
+            </div>
+
+            <!-- Math Reference Modal -->
+            <div id="math-reference-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+                <div class="bg-white rounded-lg shadow-xl max-w-2xl max-h-[80vh] overflow-y-auto p-6">
+                    <h3 class="text-xl font-bold mb-4">Math Reference Sheet</h3>
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <p class="font-semibold">Area:</p>
+                            <p>Rectangle: A = lw</p>
+                            <p>Triangle: A = 1/2 bh</p>
+                            <p>Circle: A = πr²</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Volume:</p>
+                            <p>Rectangular prism: V = lwh</p>
+                            <p>Cylinder: V = πr²h</p>
+                            <p>Sphere: V = (4/3)πr³</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Pythagorean theorem:</p>
+                            <p>a² + b² = c²</p>
+                        </div>
+                    </div>
+                    <button onclick="satExam.hideMathReference()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Close</button>
+                </div>
+            </div>
+
+            <!-- Results Modal -->
+            <div id="sat-results-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+                <div class="bg-white rounded-lg shadow-xl p-6">
+                    <h3 class="text-2xl font-bold mb-4">SAT Results</h3>
+                    <div class="text-center">
+                        <p class="text-6xl font-bold text-blue-600" id="sat-score">750</p>
+                        <p class="text-gray-600 mt-2">Correct: <span id="sat-correct">18/22</span></p>
+                    </div>
+                    <button onclick="document.getElementById('sat-results-modal').classList.add('hidden')" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- IELTS Exam View -->
+        <div id="ielts-view" class="w-full h-full bg-gray-50 hidden pt-16">
+            <div class="max-w-7xl mx-auto p-4">
+                <!-- IELTS Header -->
+                <div class="bg-white rounded-lg shadow-lg p-4 mb-4 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-red-800">IELTS Practice Test</h2>
+                        <div class="flex items-center space-x-4 mt-2">
+                            <select id="ielts-module-select" class="border rounded px-3 py-1" onchange="ieltsExam.startModule(this.value)">
+                                <option value="reading">Reading</option>
+                                <option value="listening">Listening</option>
+                                <option value="speaking">Speaking</option>
+                                <option value="writing">Writing</option>
+                            </select>
+                            <span class="text-sm text-gray-600">Question: <span id="ielts-question-num" class="font-semibold">1/40</span></span>
+                        </div>
+                    </div>
+                    <div id="ielts-timer" class="text-3xl font-mono font-bold text-red-600">60:00</div>
+                </div>
+
+                <!-- Reading Module -->
+                <div id="ielts-reading" class="split-screen">
+                    <div class="bg-white rounded-lg shadow-lg p-6 overflow-y-auto">
+                        <h3 class="font-bold text-lg mb-4">Reading Passage</h3>
+                        <div id="reading-passage" class="text-gray-800 leading-relaxed">
+                            <p class="mb-4">The passage would be loaded here from the backend. Students can highlight text by selecting it.</p>
+                            <p class="mb-4">This is a sample passage to demonstrate the split-screen layout. The reading module tests comprehension through various question types.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-lg p-6 overflow-y-auto">
+                        <h3 class="font-bold text-lg mb-4">Questions</h3>
+                        <div id="reading-questions" class="space-y-4">
+                            <div class="p-4 border rounded">
+                                <p class="font-semibold mb-2">Question 1:</p>
+                                <p class="mb-2">What is the main topic of the passage?</p>
+                                <select class="w-full border rounded p-2">
+                                    <option value="">Select answer...</option>
+                                    <option value="a">A) Technology</option>
+                                    <option value="b">B) Education</option>
+                                    <option value="c">C) Environment</option>
+                                    <option value="d">D) Health</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listening Module -->
+                <div id="ielts-listening" class="hidden">
+                    <div class="bg-white rounded-lg shadow-lg p-6 mb-4">
+                        <div id="listening-audio" class="mb-4"></div>
+                        <div id="listening-questions" class="space-y-4">
+                            <div class="p-4 border rounded">
+                                <p class="font-semibold mb-2">Question 1:</p>
+                                <p class="mb-2">Complete the notes below. Write <strong>ONE WORD ONLY</strong> for each answer.</p>
+                                <input type="text" class="w-full border rounded p-2" placeholder="Your answer...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaking Module -->
+                <div id="ielts-speaking" class="hidden">
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h3 class="font-bold text-lg mb-4">Speaking Test</h3>
+                        <div id="speaking-container">
+                            <div class="mb-4 p-4 bg-gray-50 rounded">
+                                <p class="font-semibold mb-2">Part 1: Introduction</p>
+                                <p>Tell me about your hometown.</p>
+                            </div>
+                            <div class="flex space-x-4 mb-4">
+                                <button id="record-button" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">🎤 Record</button>
+                                <button id="stop-button" class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition hidden">⏹ Stop</button>
+                                <button id="playback-button" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition hidden">▶ Play</button>
+                            </div>
+                            <div id="speaking-results"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Writing Module -->
+                <div id="ielts-writing" class="hidden">
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h3 class="font-bold text-lg mb-4">Writing Task</h3>
+                        <div id="writing-task" class="mb-4 p-4 bg-gray-50 rounded">
+                            <p class="font-semibold mb-2">Task 2:</p>
+                            <p>Some people believe that the best way to succeed in life is to have a university education. Others disagree. Discuss both views and give your own opinion.</p>
+                        </div>
+                        <textarea id="writing-answer" class="w-full h-64 border rounded p-4" placeholder="Write your answer here..."></textarea>
+                        <button class="mt-4 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">Submit Answer</button>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="bg-white rounded-lg shadow-lg p-4 mt-4 flex justify-between">
+                    <button onclick="ieltsExam.previousQuestion()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded transition">Previous</button>
+                    <button onclick="ieltsExam.nextQuestion()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition">Next</button>
+                </div>
+            </div>
+
+            <!-- Results Modal -->
+            <div id="ielts-results-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+                <div class="bg-white rounded-lg shadow-xl p-6">
+                    <h3 class="text-2xl font-bold mb-4">IELTS Results</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="text-center p-4 bg-blue-50 rounded">
+                            <p class="text-sm text-gray-600">Reading</p>
+                            <p class="text-3xl font-bold text-blue-600" id="ielts-reading-band">7.0</p>
+                        </div>
+                        <div class="text-center p-4 bg-green-50 rounded">
+                            <p class="text-sm text-gray-600">Listening</p>
+                            <p class="text-3xl font-bold text-green-600" id="ielts-listening-band">7.5</p>
+                        </div>
+                        <div class="text-center p-4 bg-purple-50 rounded">
+                            <p class="text-sm text-gray-600">Speaking</p>
+                            <p class="text-3xl font-bold text-purple-600" id="ielts-speaking-band">6.5</p>
+                        </div>
+                        <div class="text-center p-4 bg-orange-50 rounded">
+                            <p class="text-sm text-gray-600">Writing</p>
+                            <p class="text-3xl font-bold text-orange-600" id="ielts-writing-band">7.0</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center p-4 bg-red-50 rounded">
+                        <p class="text-sm text-gray-600">Overall Band Score</p>
+                        <p class="text-4xl font-bold text-red-600" id="ielts-overall-band">7.0</p>
+                    </div>
+                    <button onclick="document.getElementById('ielts-results-modal').classList.add('hidden')" class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./main.js"></script>
+</body>
+</html>

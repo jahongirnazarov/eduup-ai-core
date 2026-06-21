@@ -1,0 +1,126 @@
+# 🌐 CLOUDFLARE PAGES CONFIGURATION
+# EDUUPAI - Zero-Cost Client-Side IELTS/SAT Platform
+# Domain: eduupai.uz
+
+name = "eduupai"
+main = "./frontend/index.html"
+compatibility_date = "2024-06-17"
+
+# Build configuration
+[build]
+command = "npm run build"
+cwd = "."
+watch_dir = "frontend"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+DOMAIN = "eduupai.uz"
+API_ENDPOINT = "https://api.eduupai.uz"
+
+# D1 Database configuration for VIP users
+[[d1_databases]]
+binding = "DB"
+database_name = "eduupai_vip_users"
+database_id = "YOUR_D1_DATABASE_ID"
+
+# KV namespace for caching (optional)
+[[kv_namespaces]]
+binding = "CACHE"
+id = "YOUR_KV_NAMESPACE_ID"
+
+# R2 storage for static assets (optional)
+[[r2_buckets]]
+binding = "ASSETS"
+bucket_name = "eduupai-assets"
+
+# Analytics configuration
+[analytics]
+enabled = true
+
+# Site configuration
+[site]
+bucket = "./frontend/dist"
+entry-point = "frontend"
+
+# Routing rules for admin panel
+[[routes]]
+pattern = "/admin-panel"
+custom_domain = false
+
+[[routes]]
+pattern = "/api/*"
+custom_domain = false
+
+# Custom domain configuration
+[[custom_domains]]
+domain = "eduupai.uz"
+
+[[custom_domains]]
+domain = "www.eduupai.uz"
+
+# Headers configuration
+[[headers]]
+for = "/*"
+[headers.values]
+X-Frame-Options = "DENY"
+X-Content-Type-Options = "nosniff"
+X-XSS-Protection = "1; mode=block"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Redirects
+[[redirects]]
+from = "http://eduupai.uz/*"
+to = "https://eduupai.uz/:splat"
+status = 301
+
+[[redirects]]
+from = "http://www.eduupai.uz/*"
+to = "https://www.eduupai.uz/:splat"
+status = 301
+
+[[redirects]]
+from = "https://eduupai.uz"
+to = "https://www.eduupai.uz"
+status = 301
+
+# Cache rules
+[[cache_rules]]
+pattern = "*.js"
+cache_ttl = 86400
+
+[[cache_rules]]
+pattern = "*.css"
+cache_ttl = 86400
+
+[[cache_rules]]
+pattern = "*.png"
+cache_ttl = 604800
+
+[[cache_rules]]
+pattern = "*.jpg"
+cache_ttl = 604800
+
+[[cache_rules]]
+pattern = "*.svg"
+cache_ttl = 604800
+
+# Functions (if needed for server-side operations)
+[functions]
+[[functions]]
+name = "payment-webhook"
+script = "functions/payment_webhook.js"
+
+[[functions]]
+name = "analytics-endpoint"
+script = "functions/analytics.js"
+
+# Limits and quotas
+[limits]
+cpu_ms = 50
+
+# Observability
+[observability]
+enabled = true
+head_sampling_rate = 1

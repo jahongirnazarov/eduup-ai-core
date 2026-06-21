@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Exam - EduUpAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .ielts-red {
+            background-color: #d32f2f;
+        }
+        
+        .ielts-red-text {
+            color: #d32f2f;
+        }
+        
+        .module-tab {
+            transition: all 0.3s ease;
+        }
+        
+        .module-tab.active {
+            background-color: #d32f2f;
+            color: white;
+        }
+        
+        .module-tab:not(.active):hover {
+            background-color: #fee;
+        }
+        
+        .choice-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .choice-btn:hover {
+            background-color: #fff3e0;
+        }
+        
+        .choice-btn.selected {
+            background-color: #d32f2f;
+            color: white;
+        }
+        
+        .writing-area {
+            resize: none;
+        }
+        
+        .writing-area:focus {
+            outline: none;
+            border-color: #d32f2f;
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+        }
+        
+        .audio-player {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .timer-warning {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .recording-indicator {
+            animation: recording-pulse 1.5s infinite;
+        }
+        
+        @keyframes recording-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); }
+        }
+        
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+        
+        /* Disable copy-paste in writing areas */
+        .no-copy-paste {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Top Navigation Bar -->
+    <nav class="ielts-red text-white px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <h1 class="text-xl font-bold">IELTS Practice</h1>
+            <span class="text-sm opacity-80" id="current-module-label">Listening</span>
+        </div>
+        <div class="flex items-center space-x-6">
+            <div id="timer" class="text-lg font-semibold">30:00</div>
+            <div class="flex items-center space-x-2">
+                <span class="text-sm">Question:</span>
+                <span id="ielts-question-num" class="font-semibold">1/40</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Module Tabs -->
+    <div class="bg-white border-b">
+        <div class="flex">
+            <button onclick="window.ieltsExam.startModule('listening')" class="module-tab flex-1 py-4 px-6 text-center font-medium active" id="tab-listening">
+                <div class="text-lg">🎧</div>
+                <div class="text-sm mt-1">Listening</div>
+                <div class="text-xs opacity-70">30 min</div>
+            </button>
+            <button onclick="window.ieltsExam.startModule('reading')" class="module-tab flex-1 py-4 px-6 text-center font-medium" id="tab-reading">
+                <div class="text-lg">📖</div>
+                <div class="text-sm mt-1">Reading</div>
+                <div class="text-xs opacity-70">60 min</div>
+            </button>
+            <button onclick="window.ieltsExam.startModule('writing')" class="module-tab flex-1 py-4 px-6 text-center font-medium" id="tab-writing">
+                <div class="text-lg">✍️</div>
+                <div class="text-sm mt-1">Writing</div>
+                <div class="text-xs opacity-70">60 min</div>
+            </button>
+            <button onclick="window.ieltsExam.startModule('speaking')" class="module-tab flex-1 py-4 px-6 text-center font-medium" id="tab-speaking">
+                <div class="text-lg">🎤</div>
+                <div class="text-sm mt-1">Speaking</div>
+                <div class="text-xs opacity-70">11-14 min</div>
+            </button>
+        </div>
+    </div>
+
+    <div class="flex">
+        <!-- Main Content Area -->
+        <div class="flex-1 p-6">
+            <!-- Listening Module -->
+            <div id="ielts-listening" class="module-content">
+                <!-- Audio Player -->
+                <div class="audio-player rounded-xl p-6 mb-6 text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">Listening Audio - Section 1</h3>
+                        <div class="flex items-center space-x-4">
+                            <span id="audio-progress" class="text-sm">0:00 / 5:30</span>
+                            <span id="play-count" class="text-xs bg-white/20 px-2 py-1 rounded">Plays: 1/1</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4 mb-4">
+                        <button onclick="window.ieltsExam.playAudio()" id="play-btn" class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-purple-600 hover:scale-105 transition">
+                            <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </button>
+                        <div class="flex-1 bg-white/30 rounded-full h-2">
+                            <div id="audio-progress-bar" class="progress-bar bg-white h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <p class="text-sm opacity-80">⚠️ You can only play this audio once. Listen carefully!</p>
+                </div>
+
+                <!-- Question Content -->
+                <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                    <h4 class="font-semibold mb-4 ielts-red-text">Questions 1-5</h4>
+                    <p class="text-gray-700 mb-4">Complete the notes below. Write <strong>NO MORE THAN TWO WORDS AND/OR A NUMBER</strong> for each answer.</p>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                        <h5 class="font-medium mb-2">Student Enrollment Form</h5>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex">
+                                <span class="w-32 font-medium">Name:</span>
+                                <span class="border-b border-gray-300 flex-1 ml-2">Sarah (1) __________</span>
+                            </div>
+                            <div class="flex">
+                                <span class="w-32 font-medium">Course:</span>
+                                <span class="border-b border-gray-300 flex-1 ml-2">Business (2) __________</span>
+                            </div>
+                            <div class="flex">
+                                <span class="w-32 font-medium">Start Date:</span>
+                                <span class="border-b border-gray-300 flex-1 ml-2">September (3) __________</span>
+                            </div>
+                            <div class="flex">
+                                <span class="w-32 font-medium">Duration:</span>
+                                <span class="border-b border-gray-300 flex-1 ml-2">(4) __________ weeks</span>
+                            </div>
+                            <div class="flex">
+                                <span class="w-32 font-medium">Fee:</span>
+                                <span class="border-b border-gray-300 flex-1 ml-2">£(5) __________</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Answer Inputs -->
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-4">
+                            <span class="w-16 font-semibold">1.</span>
+                            <input type="text" class="flex-1 border-2 rounded-lg px-4 py-2 focus:border-red-500 focus:outline-none" placeholder="Your answer" oninput="window.ieltsExam.saveAnswer(1, this.value)">
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="w-16 font-semibold">2.</span>
+                            <input type="text" class="flex-1 border-2 rounded-lg px-4 py-2 focus:border-red-500 focus:outline-none" placeholder="Your answer" oninput="window.ieltsExam.saveAnswer(2, this.value)">
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="w-16 font-semibold">3.</span>
+                            <input type="text" class="flex-1 border-2 rounded-lg px-4 py-2 focus:border-red-500 focus:outline-none" placeholder="Your answer" oninput="window.ieltsExam.saveAnswer(3, this.value)">
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="w-16 font-semibold">4.</span>
+                            <input type="text" class="flex-1 border-2 rounded-lg px-4 py-2 focus:border-red-500 focus:outline-none" placeholder="Your answer" oninput="window.ieltsExam.saveAnswer(4, this.value)">
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="w-16 font-semibold">5.</span>
+                            <input type="text" class="flex-1 border-2 rounded-lg px-4 py-2 focus:border-red-500 focus:outline-none" placeholder="Your answer" oninput="window.ieltsExam.saveAnswer(5, this.value)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reading Module -->
+            <div id="ielts-reading" class="module-content hidden">
+                <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                    <h4 class="font-semibold mb-4 ielts-red-text">Reading Passage 1</h4>
+                    <div class="prose max-w-none text-gray-700 mb-6">
+                        <h5 class="text-lg font-semibold mb-3">The History of Tea</h5>
+                        <p class="mb-4">The story of tea begins in China. According to legend, in 2737 BC, the Chinese emperor Shen Nung was sitting beneath a tree while his servant boiled drinking water, when some leaves from the tree blew into the water. Shen Nung, a renowned herbalist, decided to try the infusion that his servant had accidentally created. The tree was a Camellia sinensis, and the resulting drink was what we now call tea.</p>
+                        <p class="mb-4">Tea containers have been found in tombs dating from the Han dynasty (206 BC – 220 AD) but it was under the Tang dynasty (618–906 AD), that tea became firmly established as the national drink of China. It became such a favourite that during the late eighth century a writer called Lu Yu wrote the first book entirely about tea, the Ch'a Ching, or Tea Classic. It was shortly after this that tea was first introduced to Japan, by Japanese Buddhist monks who had travelled to China to study.</p>
+                        <p class="mb-4">Tea drinking has become a ritual in many cultures. In Britain, for example, afternoon tea is a cherished tradition that dates back to the 1840s. The Duchess of Bedford is credited with introducing the custom of having tea in the afternoon to bridge the gap between lunch and dinner. This tradition quickly spread among the upper classes and eventually became a nationwide habit.</p>
+                    </div>
+
+                    <h4 class="font-semibold mb-4 ielts-red-text">Questions 6-10</h4>
+                    <p class="text-gray-700 mb-4">Do the following statements agree with the information given in Reading Passage 1?</p>
+                    <div class="space-y-2 mb-4">
+                        <p><strong>TRUE</strong> if the statement agrees with the information</p>
+                        <p><strong>FALSE</strong> if the statement contradicts the information</p>
+                        <p><strong>NOT GIVEN</strong> if there is no information on this</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="mb-3">6. Shen Nung deliberately created tea by boiling leaves.</p>
+                            <div class="flex space-x-4">
+                                <button onclick="window.ieltsExam.selectAnswer(6, 'true')" class="choice-btn px-4 py-2 border-2 rounded-lg">TRUE</button>
+                                <button onclick="window.ieltsExam.selectAnswer(6, 'false')" class="choice-btn px-4 py-2 border-2 rounded-lg">FALSE</button>
+                                <button onclick="window.ieltsExam.selectAnswer(6, 'notgiven')" class="choice-btn px-4 py-2 border-2 rounded-lg">NOT GIVEN</button>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="mb-3">7. Tea was established as China's national drink during the Han dynasty.</p>
+                            <div class="flex space-x-4">
+                                <button onclick="window.ieltsExam.selectAnswer(7, 'true')" class="choice-btn px-4 py-2 border-2 rounded-lg">TRUE</button>
+                                <button onclick="window.ieltsExam.selectAnswer(7, 'false')" class="choice-btn px-4 py-2 border-2 rounded-lg">FALSE</button>
+                                <button onclick="window.ieltsExam.selectAnswer(7, 'notgiven')" class="choice-btn px-4 py-2 border-2 rounded-lg">NOT GIVEN</button>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="mb-3">8. Lu Yu wrote the first book about tea.</p>
+                            <div class="flex space-x-4">
+                                <button onclick="window.ieltsExam.selectAnswer(8, 'true')" class="choice-btn px-4 py-2 border-2 rounded-lg">TRUE</button>
+                                <button onclick="window.ieltsExam.selectAnswer(8, 'false')" class="choice-btn px-4 py-2 border-2 rounded-lg">FALSE</button>
+                                <button onclick="window.ieltsExam.selectAnswer(8, 'notgiven')" class="choice-btn px-4 py-2 border-2 rounded-lg">NOT GIVEN</button>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="mb-3">9. Tea was introduced to Japan by Chinese merchants.</p>
+                            <div class="flex space-x-4">
+                                <button onclick="window.ieltsExam.selectAnswer(9, 'true')" class="choice-btn px-4 py-2 border-2 rounded-lg">TRUE</button>
+                                <button onclick="window.ieltsExam.selectAnswer(9, 'false')" class="choice-btn px-4 py-2 border-2 rounded-lg">FALSE</button>
+                                <button onclick="window.ieltsExam.selectAnswer(9, 'notgiven')" class="choice-btn px-4 py-2 border-2 rounded-lg">NOT GIVEN</button>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="mb-3">10. Afternoon tea became popular in Britain during the 1840s.</p>
+                            <div class="flex space-x-4">
+                                <button onclick="window.ieltsExam.selectAnswer(10, 'true')" class="choice-btn px-4 py-2 border-2 rounded-lg">TRUE</button>
+                                <button onclick="window.ieltsExam.selectAnswer(10, 'false')" class="choice-btn px-4 py-2 border-2 rounded-lg">FALSE</button>
+                                <button onclick="window.ieltsExam.selectAnswer(10, 'notgiven')" class="choice-btn px-4 py-2 border-2 rounded-lg">NOT GIVEN</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Writing Module -->
+            <div id="ielts-writing" class="module-content hidden">
+                <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                    <h4 class="font-semibold mb-4 ielts-red-text">Writing Task 2</h4>
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                        <p class="text-sm text-yellow-800">⚠️ Copy and paste is disabled. Type your answer directly.</p>
+                    </div>
+                    <div class="mb-6">
+                        <p class="text-gray-700 mb-2">You should spend about 40 minutes on this task.</p>
+                        <p class="text-gray-700 mb-4">Write about the following topic:</p>
+                        <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                            <p class="font-medium text-lg">Some people believe that universities should focus on providing academic skills, while others think they should prepare students for employment.</p>
+                            <p class="font-medium text-lg mt-2">Discuss both views and give your own opinion.</p>
+                        </div>
+                        <p class="text-gray-700">Give reasons for your answer and include any relevant examples from your own knowledge or experience.</p>
+                        <p class="text-gray-700 mt-2">Write at least 250 words.</p>
+                    </div>
+
+                    <!-- Word Counter -->
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-600">Word Count: <span id="word-count" class="font-semibold">0</span></span>
+                        <span class="text-sm text-gray-600">Minimum: 250 words</span>
+                    </div>
+
+                    <!-- Writing Area with copy-paste disabled -->
+                    <textarea 
+                        id="writing-answer"
+                        class="writing-area w-full h-96 border-2 rounded-lg p-4 text-gray-700"
+                        placeholder="Start writing your answer here..."
+                        oninput="window.ieltsExam.updateWordCount(this.value); window.ieltsExam.saveWritingAnswer(this.value)"
+                        oncopy="return false;"
+                        onpaste="return false;"
+                        oncut="return false;"
+                    ></textarea>
+
+                    <div class="mt-4 flex justify-between">
+                        <div class="text-sm text-gray-500">
+                            Time remaining: <span id="writing-timer" class="font-semibold">40:00</span>
+                        </div>
+                        <button onclick="window.ieltsExam.submitWriting()" class="px-6 py-2 ielts-red text-white rounded-lg hover:bg-red-700 transition">
+                            Submit Writing Task
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Speaking Module -->
+            <div id="ielts-speaking" class="module-content hidden">
+                <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                    <h4 class="font-semibold mb-4 ielts-red-text">Speaking Part 2: Individual Long Turn</h4>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+                        <p class="text-sm text-blue-800">📝 You have 1 minute to prepare and 2 minutes to speak.</p>
+                    </div>
+
+                    <!-- Preparation Phase -->
+                    <div id="speaking-prep" class="mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h5 class="font-medium">Preparation Time</h5>
+                            <div class="text-2xl font-bold ielts-red-text" id="prep-timer">1:00</div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                            <p class="font-medium mb-2">Describe a book you have read recently.</p>
+                            <p class="text-sm text-gray-600">You should say:</p>
+                            <ul class="text-sm text-gray-600 list-disc list-inside mt-2">
+                                <li>What the book was about</li>
+                                <li>Why you chose to read it</li>
+                                <li>What you learned from it</li>
+                                <li>And explain whether you would recommend it to others</li>
+                            </ul>
+                        </div>
+                        <textarea 
+                            id="speaking-notes"
+                            class="w-full h-32 border-2 rounded-lg p-4 text-gray-700"
+                            placeholder="You can make notes here during your preparation time..."
+                        ></textarea>
+                        <button onclick="window.ieltsExam.startSpeaking()" class="mt-4 px-6 py-2 ielts-red text-white rounded-lg hover:bg-red-700 transition">
+                            Start Speaking
+                        </button>
+                    </div>
+
+                    <!-- Speaking Phase -->
+                    <div id="speaking-record" class="hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <h5 class="font-medium">Speaking Time</h5>
+                            <div class="text-2xl font-bold ielts-red-text" id="speaking-timer">2:00</div>
+                        </div>
+                        
+                        <div class="flex items-center justify-center mb-6">
+                            <button 
+                                id="record-btn"
+                                onclick="window.ieltsExam.toggleRecording()"
+                                class="w-24 h-24 rounded-full bg-red-500 text-white flex items-center justify-center recording-indicator hover:bg-red-600 transition"
+                            >
+                                <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <div class="text-center text-gray-600 mb-4">
+                            <p id="recording-status">Click to start recording</p>
+                        </div>
+
+                        <div id="audio-playback" class="hidden">
+                            <audio id="recorded-audio" controls class="w-full"></audio>
+                            <button onclick="window.ieltsExam.submitSpeaking()" class="mt-4 w-full px-6 py-2 ielts-red text-white rounded-lg hover:bg-red-700 transition">
+                                Submit Speaking Task
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between mt-6">
+                <button onclick="window.ieltsExam.previousQuestion()" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium">
+                    ← Previous
+                </button>
+                <button onclick="window.ieltsExam.nextQuestion()" class="px-6 py-3 ielts-red text-white rounded-lg hover:bg-red-700 transition font-medium">
+                    Next →
+                </button>
+            </div>
+        </div>
+
+        <!-- Question Navigation Sidebar -->
+        <div class="w-64 bg-white p-6 border-l">
+            <h3 class="text-lg font-semibold mb-4 ielts-red-text">Question Navigator</h3>
+            <div id="question-nav" class="grid grid-cols-5 gap-2">
+                <!-- Question navigation buttons will be generated by JavaScript -->
+            </div>
+            
+            <div class="mt-6 space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-green-500 rounded"></div>
+                    <span class="text-gray-600">Answered</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-red-600 rounded"></div>
+                    <span class="text-gray-600">Current</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-gray-200 rounded"></div>
+                    <span class="text-gray-600">Unanswered</span>
+                </div>
+            </div>
+            
+            <button onclick="window.ieltsExam.submitExam()" class="w-full mt-6 px-6 py-3 ielts-red text-white rounded-lg hover:bg-red-700 transition font-medium">
+                Submit Exam
+            </button>
+        </div>
+    </div>
+
+    <!-- Submit Confirmation Modal -->
+    <div id="submit-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full m-4">
+            <div class="p-6">
+                <h2 class="text-xl font-bold mb-4 ielts-red-text">Submit IELTS Exam?</h2>
+                <div class="mb-6">
+                    <p class="text-gray-600 mb-2">You have completed:</p>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>Listening: <span id="listening-status" class="font-semibold">In Progress</span></li>
+                        <li>Reading: <span id="reading-status" class="font-semibold">Not Started</span></li>
+                        <li>Writing: <span id="writing-status" class="font-semibold">Not Started</span></li>
+                        <li>Speaking: <span id="speaking-status" class="font-semibold">Not Started</span></li>
+                    </ul>
+                    <p class="text-gray-500 text-sm mt-4">Are you sure you want to submit? This action cannot be undone.</p>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="window.ieltsExam.hideSubmitModal()" class="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium">
+                        Cancel
+                    </button>
+                    <button onclick="window.ieltsExam.confirmSubmit()" class="flex-1 px-6 py-3 ielts-red text-white rounded-lg hover:bg-red-700 transition font-medium">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize IELTS exam controller
+        window.ieltsExam = {
+            currentModule: 'listening',
+            currentQuestion: 1,
+            answers: {},
+            writingAnswer: '',
+            timeRemaining: {
+                listening: 30 * 60,
+                reading: 60 * 60,
+                writing: 60 * 60,
+                speaking: 14 * 60
+            },
+            timerInterval: null,
+            audioPlayed: false,
+            audioElement: null,
+            isRecording: false,
+            mediaRecorder: null,
+            audioChunks: [],
+            moduleStatus: {
+                listening: false,
+                reading: false,
+                writing: false,
+                speaking: false
+            },
+
+            init: function() {
+                this.generateQuestionNav();
+                this.startTimer('listening');
+                this.initAudio();
+            },
+
+            initAudio: function() {
+                // Create audio element for single-play listening
+                this.audioElement = new Audio();
+                this.audioElement.addEventListener('timeupdate', () => {
+                    const progress = (this.audioElement.currentTime / this.audioElement.duration) * 100;
+                    document.getElementById('audio-progress-bar').style.width = `${progress}%`;
+                    
+                    const currentMins = Math.floor(this.audioElement.currentTime / 60);
+                    const currentSecs = Math.floor(this.audioElement.currentTime % 60);
+                    const totalMins = Math.floor(this.audioElement.duration / 60);
+                    const totalSecs = Math.floor(this.audioElement.duration % 60);
+                    
+                    document.getElementById('audio-progress').textContent = 
+                        `${currentMins}:${currentSecs.toString().padStart(2, '0')} / ${totalMins}:${totalSecs.toString().padStart(2, '0')}`;
+                });
+                
+                this.audioElement.addEventListener('ended', () => {
+                    document.getElementById('play-btn').disabled = true;
+                    document.getElementById('play-btn').classList.add('opacity-50', 'cursor-not-allowed');
+                });
+            },
+
+            playAudio: function() {
+                if (this.audioPlayed) {
+                    alert('You can only play the audio once!');
+                    return;
+                }
+                
+                // In a real implementation, this would load the actual audio file
+                // For demo purposes, we'll simulate audio playback
+                this.audioPlayed = true;
+                document.getElementById('play-count').textContent = 'Plays: 1/1';
+                
+                // Simulate audio progress
+                let progress = 0;
+                const duration = 330; // 5:30 in seconds
+                const interval = setInterval(() => {
+                    progress++;
+                    const percentage = (progress / duration) * 100;
+                    document.getElementById('audio-progress-bar').style.width = `${percentage}%`;
+                    
+                    const mins = Math.floor(progress / 60);
+                    const secs = progress % 60;
+                    document.getElementById('audio-progress').textContent = 
+                        `${mins}:${secs.toString().padStart(2, '0')} / 5:30`;
+                    
+                    if (progress >= duration) {
+                        clearInterval(interval);
+                        document.getElementById('play-btn').disabled = true;
+                        document.getElementById('play-btn').classList.add('opacity-50', 'cursor-not-allowed');
+                    }
+                }, 1000);
+            },
+
+            generateQuestionNav: function() {
+                const nav = document.getElementById('question-nav');
+                nav.innerHTML = '';
+                for (let i = 1; i <= 40; i++) {
+                    const btn = document.createElement('button');
+                    btn.textContent = i;
+                    btn.className = 'nav-btn w-10 h-10 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm';
+                    btn.onclick = () => this.loadQuestion(i);
+                    nav.appendChild(btn);
+                }
+            },
+
+            startModule: function(module) {
+                this.currentModule = module;
+                
+                // Update tabs
+                document.querySelectorAll('.module-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.getElementById(`tab-${module}`).classList.add('active');
+                
+                // Update label
+                document.getElementById('current-module-label').textContent = 
+                    module.charAt(0).toUpperCase() + module.slice(1);
+                
+                // Hide all modules
+                document.querySelectorAll('.module-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+                
+                // Show selected module
+                document.getElementById(`ielts-${module}`).classList.remove('hidden');
+                
+                // Start timer for this module
+                this.startTimer(module);
+            },
+
+            startTimer: function(module) {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+                
+                this.timerInterval = setInterval(() => {
+                    this.timeRemaining[module]--;
+                    const minutes = Math.floor(this.timeRemaining[module] / 60);
+                    const seconds = this.timeRemaining[module] % 60;
+                    
+                    const timerEl = document.getElementById('timer');
+                    if (timerEl) {
+                        timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                    
+                    // Writing-specific timer
+                    if (module === 'writing') {
+                        const writingTimerEl = document.getElementById('writing-timer');
+                        if (writingTimerEl) {
+                            writingTimerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                        }
+                    }
+                    
+                    if (this.timeRemaining[module] <= 300) { // 5 minutes warning
+                        if (timerEl) timerEl.classList.add('timer-warning', 'text-red-300');
+                    }
+                    
+                    if (this.timeRemaining[module] <= 0) {
+                        clearInterval(this.timerInterval);
+                        alert(`Time's up for ${module} module!`);
+                        this.moduleStatus[module] = true;
+                    }
+                }, 1000);
+            },
+
+            loadQuestion: function(questionNum) {
+                this.currentQuestion = questionNum;
+                document.getElementById('ielts-question-num').textContent = `${questionNum}/40`;
+                
+                // Update nav buttons
+                const navButtons = document.querySelectorAll('#question-nav button');
+                navButtons.forEach((btn, index) => {
+                    btn.classList.remove('current', 'answered');
+                    if (index + 1 === questionNum) {
+                        btn.classList.add('current');
+                    }
+                    if (this.answers[index + 1]) {
+                        btn.classList.add('answered');
+                    }
+                });
+            },
+
+            saveAnswer: function(questionNum, value) {
+                this.answers[questionNum] = value;
+                this.loadQuestion(questionNum);
+            },
+
+            selectAnswer: function(questionNum, value) {
+                this.answers[questionNum] = value;
+                
+                // Update UI
+                const parent = event.target.closest('.p-4.bg-gray-50');
+                if (parent) {
+                    parent.querySelectorAll('.choice-btn').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    event.target.classList.add('selected');
+                }
+                
+                this.loadQuestion(questionNum);
+            },
+
+            updateWordCount: function(text) {
+                const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+                const count = words.length;
+                document.getElementById('word-count').textContent = count;
+                
+                const wordCountEl = document.getElementById('word-count');
+                if (count < 250) {
+                    wordCountEl.classList.add('text-red-500');
+                    wordCountEl.classList.remove('text-green-500');
+                } else {
+                    wordCountEl.classList.remove('text-red-500');
+                    wordCountEl.classList.add('text-green-500');
+                }
+            },
+
+            saveWritingAnswer: function(value) {
+                this.writingAnswer = value;
+            },
+
+            submitWriting: function() {
+                const wordCount = document.getElementById('word-count').textContent;
+                if (parseInt(wordCount) < 250) {
+                    alert('Your answer is below the minimum word count of 250 words. Please write more.');
+                    return;
+                }
+                this.moduleStatus.writing = true;
+                alert('Writing task submitted successfully!');
+            },
+
+            startSpeaking: function() {
+                document.getElementById('speaking-prep').classList.add('hidden');
+                document.getElementById('speaking-record').classList.remove('hidden');
+                
+                // Start 2-minute speaking timer
+                let speakingTime = 120;
+                const speakingTimerEl = document.getElementById('speaking-timer');
+                
+                const speakingInterval = setInterval(() => {
+                    speakingTime--;
+                    const mins = Math.floor(speakingTime / 60);
+                    const secs = speakingTime % 60;
+                    speakingTimerEl.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+                    
+                    if (speakingTime <= 0) {
+                        clearInterval(speakingInterval);
+                        if (this.isRecording) {
+                            this.toggleRecording();
+                        }
+                        alert('Speaking time is over!');
+                    }
+                }, 1000);
+            },
+
+            toggleRecording: async function() {
+                if (!this.isRecording) {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        this.mediaRecorder = new MediaRecorder(stream);
+                        this.audioChunks = [];
+                        
+                        this.mediaRecorder.ondataavailable = (event) => {
+                            this.audioChunks.push(event.data);
+                        };
+                        
+                        this.mediaRecorder.onstop = () => {
+                            const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
+                            const audioUrl = URL.createObjectURL(audioBlob);
+                            document.getElementById('recorded-audio').src = audioUrl;
+                            document.getElementById('audio-playback').classList.remove('hidden');
+                        };
+                        
+                        this.mediaRecorder.start();
+                        this.isRecording = true;
+                        
+                        document.getElementById('record-btn').classList.add('bg-red-600');
+                        document.getElementById('recording-status').textContent = 'Recording... Click to stop';
+                    } catch (err) {
+                        alert('Could not access microphone. Please ensure microphone permissions are granted.');
+                    }
+                } else {
+                    this.mediaRecorder.stop();
+                    this.isRecording = false;
+                    
+                    document.getElementById('record-btn').classList.remove('bg-red-600');
+                    document.getElementById('recording-status').textContent = 'Recording stopped';
+                }
+            },
+
+            submitSpeaking: function() {
+                this.moduleStatus.speaking = true;
+                alert('Speaking task submitted successfully!');
+            },
+
+            previousQuestion: function() {
+                if (this.currentQuestion > 1) {
+                    this.loadQuestion(this.currentQuestion - 1);
+                }
+            },
+
+            nextQuestion: function() {
+                if (this.currentQuestion < 40) {
+                    this.loadQuestion(this.currentQuestion + 1);
+                }
+            },
+
+            submitExam: function() {
+                document.getElementById('listening-status').textContent = 
+                    this.moduleStatus.listening ? 'Completed' : 'In Progress';
+                document.getElementById('reading-status').textContent = 
+                    this.moduleStatus.reading ? 'Completed' : 'Not Started';
+                document.getElementById('writing-status').textContent = 
+                    this.moduleStatus.writing ? 'Completed' : 'Not Started';
+                document.getElementById('speaking-status').textContent = 
+                    this.moduleStatus.speaking ? 'Completed' : 'Not Started';
+                
+                document.getElementById('submit-modal').classList.remove('hidden');
+                document.getElementById('submit-modal').classList.add('flex');
+            },
+
+            hideSubmitModal: function() {
+                document.getElementById('submit-modal').classList.add('hidden');
+                document.getElementById('submit-modal').classList.remove('flex');
+            },
+
+            confirmSubmit: function() {
+                clearInterval(this.timerInterval);
+                
+                const answeredCount = Object.keys(this.answers).length;
+                alert(`IELTS Exam submitted!\n\nQuestions Answered: ${answeredCount}/40\n\nIn a real exam, your responses would be sent for AI-powered grading using the backend scoring engine.`);
+                
+                this.hideSubmitModal();
+                
+                // Return to main app
+                if (window.router) {
+                    window.router.navigate('classroom');
+                }
+            }
+        };
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            window.ieltsExam.init();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-06-16",
+  "exams": {
+    "dtm_matematika": {
+      "id": "dtm_matematika",
+      "name": "DTM Matematika",
+      "description": "Davlat test markazi matematika imtihoni",
+      "duration_minutes": 90,
+      "total_questions": 30,
+      "passing_score": 70,
+      "questions": [
+        {
+          "id": "dtm_m_001",
+          "question": "f(x) = x² + 2x - 3 funksiyaning minimum qiymatini toping",
+          "options": ["-4", "-1", "1", "4"],
+          "correct_answer": 0,
+          "difficulty": "medium",
+          "topic": "Kvadrat funksiyalar"
+        },
+        {
+          "id": "dtm_m_002",
+          "question": "log₂8 = ?",
+          "options": ["2", "3", "4", "8"],
+          "correct_answer": 1,
+          "difficulty": "easy",
+          "topic": "Logarifmlar"
+        },
+        {
+          "id": "dtm_m_003",
+          "question": "sin 30° = ?",
+          "options": ["0", "1/2", "√2/2", "√3/2"],
+          "correct_answer": 1,
+          "difficulty": "easy",
+          "topic": "Trigonometriya"
+        }
+      ]
+    },
+    "ielts_reading": {
+      "id": "ielts_reading",
+      "name": "IELTS Reading",
+      "description": "IELTS reading testi",
+      "duration_minutes": 60,
+      "total_questions": 40,
+      "passing_score": 6.0,
+      "questions": [
+        {
+          "id": "ielts_r_001",
+          "question": "According to the passage, what is the main cause of climate change?",
+          "options": ["Natural cycles", "Human activities", "Solar radiation", "Ocean currents"],
+          "correct_answer": 1,
+          "difficulty": "medium",
+          "topic": "Environment"
+        }
+      ]
+    }
+  }
+}

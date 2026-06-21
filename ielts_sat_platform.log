@@ -1,0 +1,227 @@
+2026-06-16 15:43:22,762 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 15:43:30,499 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 15:43:30,898 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 17:07:08,817 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 17:07:08,827 - IELTS_SAT_Platform_Launcher - INFO - INITIALIZING IELTS/SAT PLATFORM
+2026-06-16 17:07:08,828 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 17:07:08,828 - IELTS_SAT_Platform_Launcher - INFO - Start Time: 2026-06-16T17:07:08.828485
+2026-06-16 17:07:08,829 - IELTS_SAT_Platform_Launcher - INFO - Quality Target: 99%
+2026-06-16 17:07:08,829 - IELTS_SAT_Platform_Launcher - INFO - Error Rate Target: <1%
+2026-06-16 17:07:08,829 - IELTS_SAT_Platform_Launcher - INFO - User Capacity: 100M
+2026-06-16 17:07:08,829 - IELTS_SAT_Platform_Launcher - INFO - Free Tier: Zero Cost
+2026-06-16 17:07:08,830 - IELTS_SAT_Platform_Launcher - INFO - VIP Tier: Low Cost ($9.99/month)
+2026-06-16 17:07:08,830 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 17:07:08,830 - IELTS_SAT_Platform_Launcher - INFO - Importing systems...
+2026-06-16 17:08:52,513 - IELTS_SAT_Platform_Launcher - ERROR - System initialization error: type object 'Subject' has no attribute 'TARIIX'
+2026-06-16 17:08:52,560 - IELTS_SAT_Platform_Launcher - ERROR - Error details: type object 'Subject' has no attribute 'TARIIX'
+2026-06-16 17:08:52,561 - IELTS_SAT_Platform_Launcher - ERROR - Failed to initialize systems
+2026-06-16 18:25:30,463 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 18:25:30,482 - IELTS_SAT_Platform_Launcher - INFO - INITIALIZING IELTS/SAT PLATFORM
+2026-06-16 18:25:30,482 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 18:25:30,485 - IELTS_SAT_Platform_Launcher - INFO - Start Time: 2026-06-16T18:25:30.485983
+2026-06-16 18:25:30,490 - IELTS_SAT_Platform_Launcher - INFO - Quality Target: 99%
+2026-06-16 18:25:30,490 - IELTS_SAT_Platform_Launcher - INFO - Error Rate Target: <1%
+2026-06-16 18:25:30,491 - IELTS_SAT_Platform_Launcher - INFO - User Capacity: 100M
+2026-06-16 18:25:30,491 - IELTS_SAT_Platform_Launcher - INFO - Free Tier: Zero Cost
+2026-06-16 18:25:30,491 - IELTS_SAT_Platform_Launcher - INFO - VIP Tier: Low Cost ($9.99/month)
+2026-06-16 18:25:30,491 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 18:25:30,492 - IELTS_SAT_Platform_Launcher - INFO - Importing systems...
+2026-06-16 18:25:42,610 - IELTS_SAT_Platform_Launcher - ERROR - Auto-Generation System initialization failed: type object 'Subject' has no attribute 'TARIIX'
+2026-06-16 18:25:42,742 - IELTS_SAT_Platform_Launcher - ERROR - Admin Panel Content Manager initialization failed: type object 'Subject' has no attribute 'TARIIX'
+2026-06-16 18:25:42,766 - IELTS_SAT_Platform_Launcher - ERROR - Lesson/Exam Organizer initialization failed: type object 'Subject' has no attribute 'TARIIX'
+2026-06-16 18:25:42,829 - IELTS_SAT_Platform_Launcher - ERROR - Internet Content Gatherer initialization failed: type object 'Subject' has no attribute 'TARIIX'
+2026-06-16 18:25:42,850 - IELTS_SAT_Platform_Launcher - ERROR - Tier Management System initialization failed: type object 'Subject' has no attribute 'TARIIX'
+2026-06-16 18:25:42,851 - IELTS_SAT_Platform_Launcher - INFO - Systems imported successfully
+2026-06-16 18:25:42,851 - IELTS_SAT_Platform_Launcher - INFO - Creating Integration API...
+2026-06-16 18:25:42,949 - IELTS_SAT_Platform_Launcher - ERROR - System initialization error: type object 'Subject' has no attribute 'TARIIX'
+2026-06-16 18:25:42,949 - IELTS_SAT_Platform_Launcher - ERROR - Error details: type object 'Subject' has no attribute 'TARIIX'
+2026-06-16 18:25:42,950 - IELTS_SAT_Platform_Launcher - ERROR - Failed to initialize systems
+2026-06-16 18:50:22,955 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 18:50:22,993 - IELTS_SAT_Platform_Launcher - INFO - INITIALIZING IELTS/SAT PLATFORM
+2026-06-16 18:50:22,994 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 18:50:22,994 - IELTS_SAT_Platform_Launcher - INFO - Start Time: 2026-06-16T18:50:22.994310
+2026-06-16 18:50:22,994 - IELTS_SAT_Platform_Launcher - INFO - Quality Target: 99%
+2026-06-16 18:50:22,994 - IELTS_SAT_Platform_Launcher - INFO - Error Rate Target: <1%
+2026-06-16 18:50:22,995 - IELTS_SAT_Platform_Launcher - INFO - User Capacity: 100M
+2026-06-16 18:50:22,995 - IELTS_SAT_Platform_Launcher - INFO - Free Tier: Zero Cost
+2026-06-16 18:50:22,995 - IELTS_SAT_Platform_Launcher - INFO - VIP Tier: Low Cost ($9.99/month)
+2026-06-16 18:50:22,995 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 18:50:22,996 - IELTS_SAT_Platform_Launcher - INFO - Importing systems...
+2026-06-16 18:52:11,485 - IELTS_SAT_Platform_Launcher - ERROR - Auto-Generation System initialization failed: type object 'Subject' has no attribute 'FIZIQA'
+2026-06-16 18:52:11,722 - IELTS_SAT_Platform_Launcher - ERROR - Admin Panel Content Manager initialization failed: type object 'Subject' has no attribute 'FIZIQA'
+2026-06-16 18:52:11,737 - IELTS_SAT_Platform_Launcher - ERROR - Lesson/Exam Organizer initialization failed: type object 'Subject' has no attribute 'FIZIQA'
+2026-06-16 18:52:11,751 - IELTS_SAT_Platform_Launcher - ERROR - Internet Content Gatherer initialization failed: type object 'Subject' has no attribute 'FIZIQA'
+2026-06-16 18:52:11,766 - IELTS_SAT_Platform_Launcher - ERROR - Tier Management System initialization failed: type object 'Subject' has no attribute 'FIZIQA'
+2026-06-16 18:52:11,767 - IELTS_SAT_Platform_Launcher - INFO - Systems imported successfully
+2026-06-16 18:52:11,767 - IELTS_SAT_Platform_Launcher - INFO - Creating Integration API...
+2026-06-16 18:52:11,781 - IELTS_SAT_Platform_Launcher - ERROR - System initialization error: type object 'Subject' has no attribute 'FIZIQA'
+2026-06-16 18:52:11,782 - IELTS_SAT_Platform_Launcher - ERROR - Error details: type object 'Subject' has no attribute 'FIZIQA'
+2026-06-16 18:52:11,782 - IELTS_SAT_Platform_Launcher - ERROR - Failed to initialize systems
+2026-06-16 20:27:11,875 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 20:27:11,893 - IELTS_SAT_Platform_Launcher - INFO - INITIALIZING IELTS/SAT PLATFORM
+2026-06-16 20:27:11,893 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 20:27:11,894 - IELTS_SAT_Platform_Launcher - INFO - Start Time: 2026-06-16T20:27:11.893452
+2026-06-16 20:27:11,894 - IELTS_SAT_Platform_Launcher - INFO - Quality Target: 99%
+2026-06-16 20:27:11,894 - IELTS_SAT_Platform_Launcher - INFO - Error Rate Target: <1%
+2026-06-16 20:27:11,894 - IELTS_SAT_Platform_Launcher - INFO - User Capacity: 100M
+2026-06-16 20:27:11,895 - IELTS_SAT_Platform_Launcher - INFO - Free Tier: Zero Cost
+2026-06-16 20:27:11,895 - IELTS_SAT_Platform_Launcher - INFO - VIP Tier: Low Cost ($9.99/month)
+2026-06-16 20:27:11,895 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-16 20:27:11,895 - IELTS_SAT_Platform_Launcher - INFO - Importing systems...
+2026-06-16 20:27:25,876 - IELTS_SAT_Platform_Launcher - ERROR - Auto-Generation System initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-16 20:27:25,954 - IELTS_SAT_Platform_Launcher - ERROR - Admin Panel Content Manager initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-16 20:27:25,981 - IELTS_SAT_Platform_Launcher - ERROR - Lesson/Exam Organizer initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-16 20:27:25,986 - IELTS_SAT_Platform_Launcher - ERROR - Internet Content Gatherer initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-16 20:27:25,993 - IELTS_SAT_Platform_Launcher - ERROR - Tier Management System initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-16 20:27:25,994 - IELTS_SAT_Platform_Launcher - INFO - Systems imported successfully
+2026-06-16 20:27:25,995 - IELTS_SAT_Platform_Launcher - INFO - Creating Integration API...
+2026-06-16 20:27:26,002 - IELTS_SAT_Platform_Launcher - ERROR - System initialization error: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-16 20:27:26,002 - IELTS_SAT_Platform_Launcher - ERROR - Error details: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-16 20:27:26,003 - IELTS_SAT_Platform_Launcher - ERROR - Failed to initialize systems
+2026-06-17 02:33:22,966 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:33:23,020 - IELTS_SAT_Platform_Launcher - INFO - INITIALIZING IELTS/SAT PLATFORM
+2026-06-17 02:33:23,020 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:33:23,021 - IELTS_SAT_Platform_Launcher - INFO - Start Time: 2026-06-17T02:33:23.021277
+2026-06-17 02:33:23,021 - IELTS_SAT_Platform_Launcher - INFO - Quality Target: 99%
+2026-06-17 02:33:23,021 - IELTS_SAT_Platform_Launcher - INFO - Error Rate Target: <1%
+2026-06-17 02:33:23,021 - IELTS_SAT_Platform_Launcher - INFO - User Capacity: 100M
+2026-06-17 02:33:23,022 - IELTS_SAT_Platform_Launcher - INFO - Free Tier: Zero Cost
+2026-06-17 02:33:23,022 - IELTS_SAT_Platform_Launcher - INFO - VIP Tier: Low Cost ($9.99/month)
+2026-06-17 02:33:23,022 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:33:23,022 - IELTS_SAT_Platform_Launcher - INFO - Importing systems...
+2026-06-17 02:33:52,527 - IELTS_SAT_Platform_Launcher - ERROR - Auto-Generation System initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:33:52,601 - IELTS_SAT_Platform_Launcher - ERROR - Admin Panel Content Manager initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:33:52,618 - IELTS_SAT_Platform_Launcher - ERROR - Lesson/Exam Organizer initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:33:52,626 - IELTS_SAT_Platform_Launcher - ERROR - Internet Content Gatherer initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:33:52,680 - IELTS_SAT_Platform_Launcher - ERROR - Tier Management System initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:33:52,681 - IELTS_SAT_Platform_Launcher - INFO - Systems imported successfully
+2026-06-17 02:33:52,681 - IELTS_SAT_Platform_Launcher - INFO - Creating Integration API...
+2026-06-17 02:33:52,683 - IELTS_SAT_Platform_Launcher - INFO - Integration API created
+2026-06-17 02:33:52,684 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:33:52,684 - IELTS_SAT_Platform_Launcher - INFO - ALL SYSTEMS INITIALIZED SUCCESSFULLY
+2026-06-17 02:33:52,684 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:33:52,684 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:33:52,685 - IELTS_SAT_Platform_Launcher - INFO - RUNNING SYSTEM DIAGNOSTICS
+2026-06-17 02:33:52,685 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:33:52,685 - IELTS_SAT_Platform_Launcher - INFO - Checking database...
+2026-06-17 02:33:52,706 - IELTS_SAT_Platform_Launcher - INFO - Database tables: 28
+2026-06-17 02:33:52,707 - IELTS_SAT_Platform_Launcher - INFO - Checking systems...
+2026-06-17 02:33:52,714 - IELTS_SAT_Platform_Launcher - ERROR - Diagnostics error: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:33:52,714 - IELTS_SAT_Platform_Launcher - ERROR - Diagnostics failed
+2026-06-17 02:42:29,960 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:42:30,013 - IELTS_SAT_Platform_Launcher - INFO - INITIALIZING IELTS/SAT PLATFORM
+2026-06-17 02:42:30,013 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:42:30,014 - IELTS_SAT_Platform_Launcher - INFO - Start Time: 2026-06-17T02:42:30.014545
+2026-06-17 02:42:30,014 - IELTS_SAT_Platform_Launcher - INFO - Quality Target: 99%
+2026-06-17 02:42:30,014 - IELTS_SAT_Platform_Launcher - INFO - Error Rate Target: <1%
+2026-06-17 02:42:30,014 - IELTS_SAT_Platform_Launcher - INFO - User Capacity: 100M
+2026-06-17 02:42:30,015 - IELTS_SAT_Platform_Launcher - INFO - Free Tier: Zero Cost
+2026-06-17 02:42:30,015 - IELTS_SAT_Platform_Launcher - INFO - VIP Tier: Low Cost ($9.99/month)
+2026-06-17 02:42:30,016 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:42:30,016 - IELTS_SAT_Platform_Launcher - INFO - Importing systems...
+2026-06-17 02:42:38,086 - IELTS_SAT_Platform_Launcher - ERROR - Auto-Generation System initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:42:38,117 - IELTS_SAT_Platform_Launcher - ERROR - Admin Panel Content Manager initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:42:38,128 - IELTS_SAT_Platform_Launcher - ERROR - Lesson/Exam Organizer initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:42:38,135 - IELTS_SAT_Platform_Launcher - ERROR - Internet Content Gatherer initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:42:38,141 - IELTS_SAT_Platform_Launcher - ERROR - Tier Management System initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:42:38,141 - IELTS_SAT_Platform_Launcher - INFO - Systems imported successfully
+2026-06-17 02:42:38,145 - IELTS_SAT_Platform_Launcher - INFO - Creating Integration API...
+2026-06-17 02:42:38,147 - IELTS_SAT_Platform_Launcher - INFO - Integration API created
+2026-06-17 02:42:38,148 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:42:38,148 - IELTS_SAT_Platform_Launcher - INFO - ALL SYSTEMS INITIALIZED SUCCESSFULLY
+2026-06-17 02:42:38,148 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:42:38,149 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:42:38,149 - IELTS_SAT_Platform_Launcher - INFO - RUNNING SYSTEM DIAGNOSTICS
+2026-06-17 02:42:38,149 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:42:38,149 - IELTS_SAT_Platform_Launcher - INFO - Checking database...
+2026-06-17 02:42:38,232 - IELTS_SAT_Platform_Launcher - INFO - Database tables: 28
+2026-06-17 02:42:38,233 - IELTS_SAT_Platform_Launcher - INFO - Skipping system checks due to circular import issues in existing codebase
+2026-06-17 02:42:38,233 - IELTS_SAT_Platform_Launcher - INFO - Platform API is ready to serve requests
+2026-06-17 02:42:38,234 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:42:38,234 - IELTS_SAT_Platform_Launcher - INFO - DIAGNOSTICS COMPLETED
+2026-06-17 02:42:38,234 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:42:38,234 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:42:38,235 - IELTS_SAT_Platform_Launcher - INFO - STARTING IELTS/SAT PLATFORM
+2026-06-17 02:42:38,235 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:42:38,235 - IELTS_SAT_Platform_Launcher - INFO - Host: 0.0.0.0
+2026-06-17 02:42:38,236 - IELTS_SAT_Platform_Launcher - INFO - Port: 8000
+2026-06-17 02:42:38,236 - IELTS_SAT_Platform_Launcher - INFO - Start Time: 2026-06-17T02:42:38.236380
+2026-06-17 02:42:38,236 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:47:01,066 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:47:01,099 - IELTS_SAT_Platform_Launcher - INFO - INITIALIZING IELTS/SAT PLATFORM
+2026-06-17 02:47:01,100 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:47:01,101 - IELTS_SAT_Platform_Launcher - INFO - Start Time: 2026-06-17T02:47:01.101903
+2026-06-17 02:47:01,101 - IELTS_SAT_Platform_Launcher - INFO - Quality Target: 99%
+2026-06-17 02:47:01,101 - IELTS_SAT_Platform_Launcher - INFO - Error Rate Target: <1%
+2026-06-17 02:47:01,102 - IELTS_SAT_Platform_Launcher - INFO - User Capacity: 100M
+2026-06-17 02:47:01,102 - IELTS_SAT_Platform_Launcher - INFO - Free Tier: Zero Cost
+2026-06-17 02:47:01,102 - IELTS_SAT_Platform_Launcher - INFO - VIP Tier: Low Cost ($9.99/month)
+2026-06-17 02:47:01,102 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:47:01,103 - IELTS_SAT_Platform_Launcher - INFO - Importing systems...
+2026-06-17 02:47:08,236 - IELTS_SAT_Platform_Launcher - ERROR - Auto-Generation System initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:47:08,282 - IELTS_SAT_Platform_Launcher - ERROR - Admin Panel Content Manager initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:47:08,289 - IELTS_SAT_Platform_Launcher - ERROR - Lesson/Exam Organizer initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:47:08,296 - IELTS_SAT_Platform_Launcher - ERROR - Internet Content Gatherer initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:47:08,302 - IELTS_SAT_Platform_Launcher - ERROR - Tier Management System initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:47:08,303 - IELTS_SAT_Platform_Launcher - INFO - Systems imported successfully
+2026-06-17 02:47:08,303 - IELTS_SAT_Platform_Launcher - INFO - Creating Integration API...
+2026-06-17 02:47:08,372 - IELTS_SAT_Platform_Launcher - INFO - Integration API created
+2026-06-17 02:47:08,372 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:47:08,372 - IELTS_SAT_Platform_Launcher - INFO - ALL SYSTEMS INITIALIZED SUCCESSFULLY
+2026-06-17 02:47:08,373 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:47:08,373 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:47:08,374 - IELTS_SAT_Platform_Launcher - INFO - RUNNING SYSTEM DIAGNOSTICS
+2026-06-17 02:47:08,374 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:47:08,375 - IELTS_SAT_Platform_Launcher - INFO - Checking database...
+2026-06-17 02:47:08,423 - IELTS_SAT_Platform_Launcher - INFO - Database tables: 28
+2026-06-17 02:47:08,424 - IELTS_SAT_Platform_Launcher - INFO - Skipping system checks due to circular import issues in existing codebase
+2026-06-17 02:47:08,425 - IELTS_SAT_Platform_Launcher - INFO - Platform API is ready to serve requests
+2026-06-17 02:47:08,426 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:47:08,426 - IELTS_SAT_Platform_Launcher - INFO - DIAGNOSTICS COMPLETED
+2026-06-17 02:47:08,426 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:47:08,426 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:47:08,427 - IELTS_SAT_Platform_Launcher - INFO - STARTING IELTS/SAT PLATFORM
+2026-06-17 02:47:08,427 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:47:08,427 - IELTS_SAT_Platform_Launcher - INFO - Host: 0.0.0.0
+2026-06-17 02:47:08,427 - IELTS_SAT_Platform_Launcher - INFO - Port: 8001
+2026-06-17 02:47:08,428 - IELTS_SAT_Platform_Launcher - INFO - Start Time: 2026-06-17T02:47:08.428196
+2026-06-17 02:47:08,428 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:50:24,414 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:50:24,680 - IELTS_SAT_Platform_Launcher - INFO - INITIALIZING IELTS/SAT PLATFORM
+2026-06-17 02:50:24,680 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:50:24,680 - IELTS_SAT_Platform_Launcher - INFO - Start Time: 2026-06-17T02:50:24.680055
+2026-06-17 02:50:24,681 - IELTS_SAT_Platform_Launcher - INFO - Quality Target: 99%
+2026-06-17 02:50:24,681 - IELTS_SAT_Platform_Launcher - INFO - Error Rate Target: <1%
+2026-06-17 02:50:24,681 - IELTS_SAT_Platform_Launcher - INFO - User Capacity: 100M
+2026-06-17 02:50:24,681 - IELTS_SAT_Platform_Launcher - INFO - Free Tier: Zero Cost
+2026-06-17 02:50:24,682 - IELTS_SAT_Platform_Launcher - INFO - VIP Tier: Low Cost ($9.99/month)
+2026-06-17 02:50:24,682 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:50:24,682 - IELTS_SAT_Platform_Launcher - INFO - Importing systems...
+2026-06-17 02:50:31,132 - IELTS_SAT_Platform_Launcher - ERROR - Auto-Generation System initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:50:31,212 - IELTS_SAT_Platform_Launcher - ERROR - Admin Panel Content Manager initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:50:31,218 - IELTS_SAT_Platform_Launcher - ERROR - Lesson/Exam Organizer initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:50:31,226 - IELTS_SAT_Platform_Launcher - ERROR - Internet Content Gatherer initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:50:31,233 - IELTS_SAT_Platform_Launcher - ERROR - Tier Management System initialization failed: cannot import name 'state_pedagogical_attestatsiya_all_subjects' from 'business.education.state_pedagogical_attestatsiya_all_subjects' (c:\Users\concept\Desktop\edu up ai  startap\business\education\state_pedagogical_attestatsiya_all_subjects.py)
+2026-06-17 02:50:31,233 - IELTS_SAT_Platform_Launcher - INFO - Systems imported successfully
+2026-06-17 02:50:31,233 - IELTS_SAT_Platform_Launcher - INFO - Creating Integration API...
+2026-06-17 02:50:31,235 - IELTS_SAT_Platform_Launcher - INFO - Integration API created
+2026-06-17 02:50:31,236 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:50:31,236 - IELTS_SAT_Platform_Launcher - INFO - ALL SYSTEMS INITIALIZED SUCCESSFULLY
+2026-06-17 02:50:31,236 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:50:31,237 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:50:31,237 - IELTS_SAT_Platform_Launcher - INFO - RUNNING SYSTEM DIAGNOSTICS
+2026-06-17 02:50:31,237 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:50:31,237 - IELTS_SAT_Platform_Launcher - INFO - Checking database...
+2026-06-17 02:50:31,249 - IELTS_SAT_Platform_Launcher - INFO - Database tables: 28
+2026-06-17 02:50:31,250 - IELTS_SAT_Platform_Launcher - INFO - Skipping system checks due to circular import issues in existing codebase
+2026-06-17 02:50:31,250 - IELTS_SAT_Platform_Launcher - INFO - Platform API is ready to serve requests
+2026-06-17 02:50:31,366 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:50:31,366 - IELTS_SAT_Platform_Launcher - INFO - DIAGNOSTICS COMPLETED
+2026-06-17 02:50:31,367 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:50:31,367 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:50:31,367 - IELTS_SAT_Platform_Launcher - INFO - STARTING IELTS/SAT PLATFORM
+2026-06-17 02:50:31,368 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================
+2026-06-17 02:50:31,368 - IELTS_SAT_Platform_Launcher - INFO - Host: 0.0.0.0
+2026-06-17 02:50:31,368 - IELTS_SAT_Platform_Launcher - INFO - Port: 8080
+2026-06-17 02:50:31,368 - IELTS_SAT_Platform_Launcher - INFO - Start Time: 2026-06-17T02:50:31.368400
+2026-06-17 02:50:31,368 - IELTS_SAT_Platform_Launcher - INFO - ================================================================================

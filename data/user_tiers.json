@@ -1,0 +1,69 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-06-16",
+  "tiers": {
+    "free": {
+      "id": "free",
+      "name": "Bepul",
+      "price": 0,
+      "currency": "UZS",
+      "features": {
+        "lessons_access": "limited",
+        "lessons_percentage": 50,
+        "ai_queries_per_day": 10,
+        "ai_type": "client_side",
+        "offline_access": true,
+        "certificate": false,
+        "priority_support": false,
+        "3d_model": "basic",
+        "video_quality": "480p",
+        "download_content": false,
+        "community_access": true
+      },
+      "limitations": [
+        "Faqat 50% darslar",
+        "Kuniga 10 ta AI savol",
+        "Sertificate yo'q",
+        "Video yuklab olish mumkin emas"
+      ]
+    },
+    "vip": {
+      "id": "vip",
+      "name": "VIP",
+      "price": 50000,
+      "currency": "UZS",
+      "billing_period": "monthly",
+      "features": {
+        "lessons_access": "unlimited",
+        "lessons_percentage": 100,
+        "ai_queries_per_day": 1000,
+        "ai_type": "server_side",
+        "offline_access": true,
+        "certificate": true,
+        "priority_support": true,
+        "3d_model": "realistic",
+        "video_quality": "1080p",
+        "download_content": true,
+        "community_access": true,
+        "personal_tutor": true,
+        "advanced_analytics": true
+      },
+      "benefits": [
+        "Barcha darslarga to'liq access",
+        "Cheksiz AI savollar",
+        "Sertificate beriladi",
+        "Video yuklab olish mumkin",
+        "Personal AI tutor",
+        "Priority support"
+      ]
+    }
+  },
+  "upgrade_paths": {
+    "free_to_vip": {
+      "from": "free",
+      "to": "vip",
+      "discount_percentage": 0,
+      "trial_days": 7
+    }
+  }
+}

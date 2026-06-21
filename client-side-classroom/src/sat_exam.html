@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAT Exam - EduUpAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.desmos.com/api/v1.6/calculator.js?apiKey=dcb31709b452b1cf9dc26972cf0c1718"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        .sat-blue {
+            background-color: #0066cc;
+        }
+        
+        .sat-blue-text {
+            color: #0066cc;
+        }
+        
+        .choice-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .choice-btn:hover {
+            background-color: #e6f0ff;
+        }
+        
+        .choice-btn.selected {
+            background-color: #0066cc;
+            color: white;
+        }
+        
+        .choice-btn.strikethrough {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+        
+        .nav-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .nav-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-btn.current {
+            background-color: #0066cc;
+            color: white;
+        }
+        
+        .nav-btn.marked {
+            background-color: #fbbf24;
+            color: black;
+        }
+        
+        .nav-btn.answered {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .reference-modal {
+            backdrop-filter: blur(4px);
+        }
+        
+        #desmos-calculator {
+            width: 100%;
+            height: 400px;
+        }
+        
+        .timer-warning {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Top Navigation Bar -->
+    <nav class="sat-blue text-white px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <h1 class="text-xl font-bold">SAT Practice</h1>
+            <span class="text-sm opacity-80">Module 1: Math - Calculator</span>
+        </div>
+        <div class="flex items-center space-x-6">
+            <div id="timer" class="text-lg font-semibold">35:00</div>
+            <button onclick="window.satExam.toggleMarkForReview()" class="flex items-center space-x-2 px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                </svg>
+                <span>Mark for Review</span>
+            </button>
+            <button onclick="window.satExam.showMathReference()" class="flex items-center space-x-2 px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <span>Math Reference</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Question Panel -->
+        <div class="flex-1 p-6">
+            <!-- Question Header -->
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold sat-blue-text" id="sat-question-num">1/22</h2>
+                    <div class="flex space-x-2">
+                        <button onclick="window.satExam.toggleStrikethrough('choice-a')" class="px-3 py-1 text-sm border rounded hover:bg-gray-100">Strike A</button>
+                        <button onclick="window.satExam.toggleStrikethrough('choice-b')" class="px-3 py-1 text-sm border rounded hover:bg-gray-100">Strike B</button>
+                        <button onclick="window.satExam.toggleStrikethrough('choice-c')" class="px-3 py-1 text-sm border rounded hover:bg-gray-100">Strike C</button>
+                        <button onclick="window.satExam.toggleStrikethrough('choice-d')" class="px-3 py-1 text-sm border rounded hover:bg-gray-100">Strike D</button>
+                    </div>
+                </div>
+                
+                <!-- Question Content -->
+                <div class="mb-6">
+                    <p class="text-gray-800 text-lg leading-relaxed">
+                        If <span class="italic">x</span> + 3 = 7, what is the value of <span class="italic">2x</span>?
+                    </p>
+                </div>
+                
+                <!-- Answer Choices -->
+                <div class="space-y-3">
+                    <button id="choice-a" onclick="window.satExam.selectAnswer('a')" class="choice-btn w-full text-left p-4 border-2 rounded-lg flex items-center space-x-4">
+                        <span class="w-8 h-8 flex items-center justify-center bg-gray-200 rounded font-semibold">A</span>
+                        <span class="text-gray-700">4</span>
+                    </button>
+                    <button id="choice-b" onclick="window.satExam.selectAnswer('b')" class="choice-btn w-full text-left p-4 border-2 rounded-lg flex items-center space-x-4">
+                        <span class="w-8 h-8 flex items-center justify-center bg-gray-200 rounded font-semibold">B</span>
+                        <span class="text-gray-700">6</span>
+                    </button>
+                    <button id="choice-c" onclick="window.satExam.selectAnswer('c')" class="choice-btn w-full text-left p-4 border-2 rounded-lg flex items-center space-x-4">
+                        <span class="w-8 h-8 flex items-center justify-center bg-gray-200 rounded font-semibold">C</span>
+                        <span class="text-gray-700">8</span>
+                    </button>
+                    <button id="choice-d" onclick="window.satExam.selectAnswer('d')" class="choice-btn w-full text-left p-4 border-2 rounded-lg flex items-center space-x-4">
+                        <span class="w-8 h-8 flex items-center justify-center bg-gray-200 rounded font-semibold">D</span>
+                        <span class="text-gray-700">10</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Desmos Calculator -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="text-lg font-semibold mb-4 sat-blue-text">Graphing Calculator</h3>
+                <div id="desmos-calculator"></div>
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between mt-6">
+                <button onclick="window.satExam.previousQuestion()" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium">
+                    ← Previous
+                </button>
+                <button onclick="window.satExam.nextQuestion()" class="px-6 py-3 sat-blue text-white rounded-lg hover:bg-blue-700 transition font-medium">
+                    Next →
+                </button>
+            </div>
+        </div>
+
+        <!-- Question Navigation Sidebar -->
+        <div class="w-64 bg-white p-6 border-l">
+            <h3 class="text-lg font-semibold mb-4 sat-blue-text">Question Navigator</h3>
+            <div id="question-nav" class="grid grid-cols-4 gap-2">
+                <!-- Question navigation buttons will be generated by JavaScript -->
+            </div>
+            
+            <div class="mt-6 space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-green-500 rounded"></div>
+                    <span class="text-gray-600">Answered</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+                    <span class="text-gray-600">Marked for Review</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-blue-600 rounded"></div>
+                    <span class="text-gray-600">Current</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-gray-200 rounded"></div>
+                    <span class="text-gray-600">Unanswered</span>
+                </div>
+            </div>
+            
+            <button onclick="window.satExam.submitExam()" class="w-full mt-6 px-6 py-3 sat-blue text-white rounded-lg hover:bg-blue-700 transition font-medium">
+                Submit Exam
+            </button>
+        </div>
+    </div>
+
+    <!-- Math Reference Modal -->
+    <div id="math-reference-modal" class="reference-modal fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-y-auto m-4">
+            <div class="p-6 border-b flex justify-between items-center">
+                <h2 class="text-xl font-bold sat-blue-text">Math Reference Sheet</h2>
+                <button onclick="window.satExam.hideMathReference()" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <!-- Area and Volume Formulas -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Area and Volume Formulas</h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div class="p-3 bg-gray-50 rounded">
+                            <p class="font-medium">Rectangle</p>
+                            <p class="text-gray-600">A = lw</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded">
+                            <p class="font-medium">Triangle</p>
+                            <p class="text-gray-600">A = ½bh</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded">
+                            <p class="font-medium">Circle</p>
+                            <p class="text-gray-600">A = πr²</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded">
+                            <p class="font-medium">Circle Circumference</p>
+                            <p class="text-gray-600">C = 2πr</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded">
+                            <p class="font-medium">Rectangular Prism</p>
+                            <p class="text-gray-600">V = lwh</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded">
+                            <p class="font-medium">Cylinder</p>
+                            <p class="text-gray-600">V = πr²h</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded">
+                            <p class="font-medium">Sphere</p>
+                            <p class="text-gray-600">V = (4/3)πr³</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded">
+                            <p class="font-medium">Cone</p>
+                            <p class="text-gray-600">V = (1/3)πr²h</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded">
+                            <p class="font-medium">Pyramid</p>
+                            <p class="text-gray-600">V = (1/3)lwh</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pythagorean Theorem -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Pythagorean Theorem</h3>
+                    <div class="p-3 bg-gray-50 rounded text-center">
+                        <p class="text-xl">a² + b² = c²</p>
+                    </div>
+                </div>
+                
+                <!-- Special Right Triangles -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Special Right Triangles</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-3 bg-gray-50 rounded text-center">
+                            <p class="font-medium">45°-45°-90°</p>
+                            <p class="text-gray-600">x, x, x√2</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded text-center">
+                            <p class="font-medium">30°-60°-90°</p>
+                            <p class="text-gray-600">x, x√3, 2x</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Trigonometry -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Trigonometry</h3>
+                    <div class="grid grid-cols-3 gap-4 text-sm">
+                        <div class="p-3 bg-gray-50 rounded text-center">
+                            <p class="font-medium">sin θ</p>
+                            <p class="text-gray-600">opposite/hypotenuse</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded text-center">
+                            <p class="font-medium">cos θ</p>
+                            <p class="text-gray-600">adjacent/hypotenuse</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded text-center">
+                            <p class="font-medium">tan θ</p>
+                            <p class="text-gray-600">opposite/adjacent</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Confirmation Modal -->
+    <div id="submit-modal" class="reference-modal fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full m-4">
+            <div class="p-6">
+                <h2 class="text-xl font-bold mb-4 sat-blue-text">Submit Exam?</h2>
+                <div class="mb-6">
+                    <p class="text-gray-600 mb-2">You have answered <span id="answered-count" class="font-semibold">0</span> of 22 questions.</p>
+                    <p class="text-gray-600 mb-2">You have marked <span id="marked-count" class="font-semibold">0</span> questions for review.</p>
+                    <p class="text-gray-500 text-sm mt-4">Are you sure you want to submit? This action cannot be undone.</p>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="window.satExam.hideSubmitModal()" class="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium">
+                        Cancel
+                    </button>
+                    <button onclick="window.satExam.confirmSubmit()" class="flex-1 px-6 py-3 sat-blue text-white rounded-lg hover:bg-blue-700 transition font-medium">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample SAT questions data
+        const satQuestions = [
+            {
+                id: 1,
+                question: 'If x + 3 = 7, what is the value of 2x?',
+                choices: ['4', '6', '8', '10'],
+                correct: 'c'
+            },
+            {
+                id: 2,
+                question: 'A line in the xy-plane passes through the point (2, 5) and has a slope of 3. Which of the following is an equation of the line?',
+                choices: ['y = 3x - 1', 'y = 3x + 1', 'y = 3x - 5', 'y = 3x + 5'],
+                correct: 'a'
+            },
+            {
+                id: 3,
+                question: 'If 3x - 7 = 2x + 5, what is the value of x?',
+                choices: ['2', '5', '12', '19'],
+                correct: 'c'
+            },
+            {
+                id: 4,
+                question: 'The function f is defined by f(x) = 2x² - 8x + 6. What is the minimum value of f?',
+                choices: ['-2', '0', '2', '6'],
+                correct: 'a'
+            },
+            {
+                id: 5,
+                question: 'A circle has radius 5. What is the area of the circle?',
+                choices: ['5π', '10π', '25π', '50π'],
+                correct: 'c'
+            }
+        ];
+
+        // Initialize SAT exam controller
+        window.satExam = {
+            currentQuestion: 1,
+            answers: {},
+            markedForReview: [],
+            timeRemaining: 35 * 60, // 35 minutes in seconds
+            timerInterval: null,
+            calculator: null,
+
+            init: function() {
+                this.generateQuestionNav();
+                this.startTimer();
+                this.loadQuestion(1);
+                this.initDesmos();
+            },
+
+            initDesmos: function() {
+                if (typeof Desmos !== 'undefined') {
+                    this.calculator = Desmos.GraphingCalculator(document.getElementById('desmos-calculator'), {
+                        expressions: true,
+                        settingsMenu: true,
+                        zoomButtons: true,
+                        expressionsTopbar: true,
+                        pointsOfInterest: true
+                    });
+                }
+            },
+
+            generateQuestionNav: function() {
+                const nav = document.getElementById('question-nav');
+                nav.innerHTML = '';
+                for (let i = 1; i <= 22; i++) {
+                    const btn = document.createElement('button');
+                    btn.textContent = i;
+                    btn.className = 'nav-btn w-10 h-10 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300';
+                    btn.onclick = () => this.loadQuestion(i);
+                    nav.appendChild(btn);
+                }
+            },
+
+            loadQuestion: function(questionNum) {
+                this.currentQuestion = questionNum;
+                document.getElementById('sat-question-num').textContent = `${questionNum}/22`;
+                
+                // Update nav buttons
+                const navButtons = document.querySelectorAll('#question-nav button');
+                navButtons.forEach((btn, index) => {
+                    btn.classList.remove('current', 'answered', 'marked');
+                    if (index + 1 === questionNum) {
+                        btn.classList.add('current');
+                    }
+                    if (this.answers[index + 1]) {
+                        btn.classList.add('answered');
+                    }
+                    if (this.markedForReview.includes(index + 1)) {
+                        btn.classList.add('marked');
+                    }
+                });
+
+                // Load question content (using sample data)
+                const question = satQuestions.find(q => q.id === questionNum) || satQuestions[0];
+                const questionText = document.querySelector('.bg-white.rounded-xl.shadow-sm p.text-gray-800');
+                if (questionText) {
+                    questionText.innerHTML = this.formatQuestion(question.question);
+                }
+
+                // Update choices
+                const choices = ['a', 'b', 'c', 'd'];
+                choices.forEach((choice, index) => {
+                    const btn = document.getElementById(`choice-${choice}`);
+                    if (btn && question.choices[index]) {
+                        btn.querySelector('span:last-child').textContent = question.choices[index];
+                        btn.classList.remove('selected', 'strikethrough');
+                        if (this.answers[questionNum] === choice) {
+                            btn.classList.add('selected');
+                        }
+                    }
+                });
+            },
+
+            formatQuestion: function(text) {
+                // Replace LaTeX-style notation with HTML
+                return text
+                    .replace(/\\(\w+)/g, '<em>$1</em>')
+                    .replace(/\^(\d+)/g, '<sup>$1</sup>')
+                    .replace(/_\{([^}]+)\}/g, '<sub>$1</sub>');
+            },
+
+            selectAnswer: function(choice) {
+                this.answers[this.currentQuestion] = choice;
+                
+                // Update UI
+                const choices = ['a', 'b', 'c', 'd'];
+                choices.forEach(c => {
+                    const btn = document.getElementById(`choice-${c}`);
+                    if (btn) btn.classList.remove('selected');
+                });
+                
+                const selectedBtn = document.getElementById(`choice-${choice}`);
+                if (selectedBtn) selectedBtn.classList.add('selected');
+                
+                // Update nav
+                this.loadQuestion(this.currentQuestion);
+            },
+
+            toggleStrikethrough: function(choiceId) {
+                const btn = document.getElementById(choiceId);
+                if (btn) {
+                    btn.classList.toggle('strikethrough');
+                }
+            },
+
+            toggleMarkForReview: function() {
+                const index = this.markedForReview.indexOf(this.currentQuestion);
+                if (index > -1) {
+                    this.markedForReview.splice(index, 1);
+                } else {
+                    this.markedForReview.push(this.currentQuestion);
+                }
+                this.loadQuestion(this.currentQuestion);
+            },
+
+            showMathReference: function() {
+                document.getElementById('math-reference-modal').classList.remove('hidden');
+                document.getElementById('math-reference-modal').classList.add('flex');
+            },
+
+            hideMathReference: function() {
+                document.getElementById('math-reference-modal').classList.add('hidden');
+                document.getElementById('math-reference-modal').classList.remove('flex');
+            },
+
+            previousQuestion: function() {
+                if (this.currentQuestion > 1) {
+                    this.loadQuestion(this.currentQuestion - 1);
+                }
+            },
+
+            nextQuestion: function() {
+                if (this.currentQuestion < 22) {
+                    this.loadQuestion(this.currentQuestion + 1);
+                }
+            },
+
+            startTimer: function() {
+                this.timerInterval = setInterval(() => {
+                    this.timeRemaining--;
+                    const minutes = Math.floor(this.timeRemaining / 60);
+                    const seconds = this.timeRemaining % 60;
+                    const timerEl = document.getElementById('timer');
+                    timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (this.timeRemaining <= 300) { // 5 minutes warning
+                        timerEl.classList.add('timer-warning', 'text-red-300');
+                    }
+                    
+                    if (this.timeRemaining <= 0) {
+                        clearInterval(this.timerInterval);
+                        this.submitExam();
+                    }
+                }, 1000);
+            },
+
+            submitExam: function() {
+                document.getElementById('answered-count').textContent = Object.keys(this.answers).length;
+                document.getElementById('marked-count').textContent = this.markedForReview.length;
+                document.getElementById('submit-modal').classList.remove('hidden');
+                document.getElementById('submit-modal').classList.add('flex');
+            },
+
+            hideSubmitModal: function() {
+                document.getElementById('submit-modal').classList.add('hidden');
+                document.getElementById('submit-modal').classList.remove('flex');
+            },
+
+            confirmSubmit: function() {
+                clearInterval(this.timerInterval);
+                
+                // Calculate score
+                let correct = 0;
+                satQuestions.forEach(q => {
+                    if (this.answers[q.id] === q.correct) {
+                        correct++;
+                    }
+                });
+                
+                const score = Math.round((correct / satQuestions.length) * 800);
+                
+                alert(`Exam submitted!\n\nCorrect: ${correct}/${satQuestions.length}\nEstimated Score: ${score}/800\n\nIn a real exam, detailed analytics would be generated here.`);
+                
+                this.hideSubmitModal();
+                
+                // Return to main app
+                if (window.router) {
+                    window.router.navigate('classroom');
+                }
+            }
+        };
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            window.satExam.init();
+        });
+    </script>
+</body>
+</html>

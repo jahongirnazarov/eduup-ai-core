@@ -1,0 +1,16 @@
+name = "eduup-zero-cost-classroom"
+main = "src/index.html"
+compatibility_date = "2024-01-01"
+
+[site]
+bucket = "./dist"
+
+# Enable Cloudflare Pages features
+[build]
+command = "npm run build"
+cwd = "."
+watch_dir = "src"
+
+# Environment variables (optional)
+[vars]
+ENVIRONMENT = "production"
